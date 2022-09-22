@@ -16,7 +16,7 @@
     "deploy:prod": "npm run build && pm2 start ecosystem.config.js --only prod",
     "deploy:dev": "pm2 start ecosystem.config.js --only dev",
     "docker:start": "docker-compose up -d",
-    "deploy:stop": "docker-compose down"
+    "docker:stop": "docker-compose down"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -32,10 +32,9 @@
     "hpp": "^0.2.3",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
-    "mysql2": "^2.3.3",
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
     "sequelize": "^6.21.3",
-    "swagger-jsdoc": "^6.2.1",
-    "swagger-ui-express": "^4.5.0",
     "winston": "^3.8.1",
     "winston-daily-rotate-file": "^4.7.1"
   },

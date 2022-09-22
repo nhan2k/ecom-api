@@ -26,20 +26,22 @@ services:
     networks:
       - backend
     links:
-      - mysql
+      - postgres
     depends_on:
-      - mysql
-  mysql:
-    image: mysql:5.7
-    container_name: mysql
+      - postgres
+  postgres:
+    image: postgres:14.5
+    container_name: postgres
     environment:
-      MYSQL_ROOT_USER: root
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1
+      POSTGRES_DB: postgres
     ports:
-      - '3306:3306'
+      - '5432:5432'
     networks:
       - backend
+    expose:
+      - '5432'
 
 networks:
   backend:
