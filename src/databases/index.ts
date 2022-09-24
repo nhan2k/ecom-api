@@ -3,9 +3,9 @@ import { NODE_ENV, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE } from '@
 import UserModel from '@/modules/user/users.model';
 import { logger } from '@/utils/logger';
 
-const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
+const sequelize = new Sequelize.Sequelize(String(DB_DATABASE), String(DB_USER), String(DB_PASSWORD), {
   dialect: 'postgres',
-  host: DB_HOST,
+  host: String(DB_HOST),
   port: Number(DB_PORT),
   timezone: '+09:00',
   define: {

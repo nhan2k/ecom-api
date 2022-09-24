@@ -1,15 +1,17 @@
-import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
-import { User } from '@/interfaces/users.interface';
+import { Sequelize, DataTypes, Model } from 'sequelize';
 
-export type UserCreationAttributes = Optional<User, 'id' | 'email' | 'password'>;
+export class UserModel extends Model {
+  declare id: number;
+  declare username: string;
+  declare password: string;
+  declare firstName: string;
+  declare lastName: string;
+  declare email: string;
+  declare phoneNumber: string;
+  declare status: number;
 
-export class UserModel extends Model<User, UserCreationAttributes> implements User {
-  public id: number;
-  public email: string;
-  public password: string;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
 
 export default function (sequelize: Sequelize): typeof UserModel {
@@ -17,20 +19,41 @@ export default function (sequelize: Sequelize): typeof UserModel {
     {
       id: {
         autoIncrement: true,
+        autoIncrementIdentity: true,
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
-      email: {
+      username: {
         allowNull: false,
-        type: DataTypes.STRING(45),
+        type: DataTypes.STRING,
       },
       password: {
         allowNull: false,
-        type: DataTypes.STRING(255),
+        type: DataTypes.STRING,
+      },
+      email: {
+        allowNull: true,
+        type: DataTypes.STRING,
+      },
+      firstName: {
+        allowNull: true,
+        type: DataTypes.STRING,
+      },
+      lastName: {
+        allowNull: true,
+        type: DataTypes.STRING,
+      },
+      phoneNumber: {
+        allowNull: true,
+        type: DataTypes.STRING,
+      },
+      status: {
+        allowNull: true,
+        type: DataTypes.INTEGER,
       },
     },
     {
-      tableName: 'users',
+      tableName: 'user',
       sequelize,
     },
   );

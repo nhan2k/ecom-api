@@ -19,9 +19,10 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "importHelpers": true,
+    "strictNullChecks": true,
     "baseUrl": "src",
     "paths": {
-      "@/*": ["*"],
+      "@/*": ["*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.json", ".env"],
