@@ -41,7 +41,10 @@ services:
       - '5433:5433'
     expose:
       - '5433'
-    command: -p 5433      
+    command: -p 5433  
+    volumes:
+      - psql-dev:/var/lib/postgresql/data
+   
 
 networks:
   backend:
@@ -50,3 +53,5 @@ networks:
 volumes:
   data:
     driver: local
+  psql-dev:
+    name: psql-dev

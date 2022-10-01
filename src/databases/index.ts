@@ -1,6 +1,5 @@
 import Sequelize from 'sequelize';
 import { NODE_ENV, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE } from '@/config';
-import UserModel from '@/modules/user/users.model';
 import { logger } from '@/utils/logger';
 
 const sequelize = new Sequelize.Sequelize(String(DB_DATABASE), String(DB_USER), String(DB_PASSWORD), {
@@ -11,8 +10,9 @@ const sequelize = new Sequelize.Sequelize(String(DB_DATABASE), String(DB_USER), 
   define: {
     charset: 'utf8mb4',
     collate: 'utf8mb4_general_ci',
-    underscored: true,
+    underscored: false,
     freezeTableName: true,
+    paranoid: true,
   },
   pool: {
     min: 0,
@@ -25,10 +25,4 @@ const sequelize = new Sequelize.Sequelize(String(DB_DATABASE), String(DB_USER), 
   benchmark: true,
 });
 
-const DB = {
-  Users: UserModel(sequelize),
-  sequelize, // connection instance (RAW queries)
-  Sequelize, // library
-};
-
-export default DB;
+export { sequelize };

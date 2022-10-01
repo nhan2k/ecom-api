@@ -1,3 +1,4 @@
+import { HttpResponse } from '@/exceptions/HttpException';
 import { NextFunction, Request, Response } from 'express';
 import AuthService from './auth.service';
 
@@ -9,7 +10,7 @@ class AuthController {
       const userData = req.body;
       const signUpUserData: any = await this.authService.signup(userData);
 
-      res.status(201).json({ data: signUpUserData, message: 'signup' });
+      return new HttpResponse(201, { message: 'signup', data: signUpUserData }).sendResponse(res);
     } catch (error) {
       next(error);
     }
@@ -18,10 +19,9 @@ class AuthController {
   public logIn = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userData = req.body;
-      const { cookie, findUser } = await this.authService.login(userData);
+      const { findUser } = await this.authService.login(userData);
 
-      res.setHeader('Set-Cookie', [cookie]);
-      res.status(200).json({ data: findUser, message: 'login' });
+      return new HttpResponse(200, { message: 'signup', data: findUser }).sendResponse(res);
     } catch (error) {
       next(error);
     }
@@ -36,7 +36,6 @@ class AuthController {
       };
       const logOutUserData: any = await this.authService.logout(userData);
 
-      res.setHeader('Set-Cookie', ['Authorization=; Max-age=0']);
       res.status(200).json({ data: logOutUserData, message: 'logout' });
     } catch (error) {
       next(error);

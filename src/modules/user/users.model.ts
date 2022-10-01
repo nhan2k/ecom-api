@@ -1,5 +1,5 @@
-import { Sequelize, DataTypes, Model } from 'sequelize';
-
+import { DataTypes, Model } from 'sequelize';
+import { sequelize } from '@/databases';
 export class UserModel extends Model {
   declare id: number;
   declare username: string;
@@ -9,54 +9,57 @@ export class UserModel extends Model {
   declare email: string;
   declare phoneNumber: string;
   declare status: number;
-
-  declare readonly createdAt: Date;
-  declare readonly updatedAt: Date;
+  declare createdAt: Date;
+  declare updatedAt: Date;
+  declare deletedAt: Date;
 }
 
-export default function (sequelize: Sequelize): typeof UserModel {
-  UserModel.init(
-    {
-      id: {
-        autoIncrement: true,
-        autoIncrementIdentity: true,
-        primaryKey: true,
-        type: DataTypes.INTEGER,
-      },
-      username: {
-        allowNull: false,
-        type: DataTypes.STRING,
-      },
-      password: {
-        allowNull: false,
-        type: DataTypes.STRING,
-      },
-      email: {
-        allowNull: true,
-        type: DataTypes.STRING,
-      },
-      firstName: {
-        allowNull: true,
-        type: DataTypes.STRING,
-      },
-      lastName: {
-        allowNull: true,
-        type: DataTypes.STRING,
-      },
-      phoneNumber: {
-        allowNull: true,
-        type: DataTypes.STRING,
-      },
-      status: {
-        allowNull: true,
-        type: DataTypes.INTEGER,
-      },
+UserModel.init(
+  {
+    id: {
+      autoIncrement: true,
+      autoIncrementIdentity: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER,
     },
-    {
-      tableName: 'user',
-      sequelize,
+    username: {
+      allowNull: false,
+      type: DataTypes.STRING,
     },
-  );
+    password: {
+      allowNull: false,
+      type: DataTypes.STRING,
+    },
+    email: {
+      type: DataTypes.STRING,
+    },
+    firstName: {
+      type: DataTypes.STRING,
+    },
+    lastName: {
+      type: DataTypes.STRING,
+    },
+    phoneNumber: {
+      type: DataTypes.STRING,
+    },
+    status: {
+      type: DataTypes.INTEGER,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+    },
+  },
+  {
+    tableName: 'user',
+    sequelize,
+    paranoid: true,
+  },
+);
 
-  return UserModel;
-}
+export default UserModel;

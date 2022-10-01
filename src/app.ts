@@ -5,16 +5,23 @@ import express, { Router } from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
-import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from '@/config';
+import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS, SESSION_SECRET, SESSION_MAX_AGE } from '@/config';
 import DB from '@/databases';
 import errorMiddleware from '@/middlewares/error.middleware';
 import { logger, stream } from '@/utils/logger';
 import IndexRoute from '@/routes/index.routes';
+import passport from 'passport';
+import connectRedis from 'connect-redis';
+import session from 'express-session';
+import Ioredis from 'ioredis';
+import path from 'path';
+
 class App {
   public app: express.Application;
   public env: string;
   public port: string | number;
   public router: Router;
+  public redisStore = connectRedis(session);
 
   constructor() {
     this.app = express();
@@ -59,6 +66,30 @@ class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
+    this.app.use(express.static(path.join(__dirname, 'public')));
+
+    const redisClient = new Ioredis({
+      port: 15846, // Redis port
+      host: 'redis-15846.c98.us-east-1-4.ec2.cloud.redislabs.com', // Redis host
+      username: 'default', // needs Redis >= 6
+      password: 'MXnm20zEaiCloDoyO3aucaYNmP6PkQix',
+      db: 0, // Defaults to 0}
+    });
+
+    this.app.use(
+      session({
+        saveUninitialized: false,
+        secret: String(SESSION_SECRET),
+        cookie: {
+          maxAge: Number(SESSION_MAX_AGE),
+        },
+        store: new this.redisStore({ client: redisClient }),
+      }),
+    );
+    this.app.use(passport.authenticate('session'));
+
+    this.app.use(passport.initialize());
+    this.app.use(passport.session());
   }
 
   private initializeRoutes() {

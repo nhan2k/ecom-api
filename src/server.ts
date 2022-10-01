@@ -13,7 +13,7 @@ class Server {
 
       app.listen();
     } catch (error: any) {
-      logger.error(`Unable connect App`);
+      logger.error(`Unable connect App ${error}`);
     }
   }
 }

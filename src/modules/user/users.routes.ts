@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import UsersController from './users.controller';
-import validationMiddleware from '@/middlewares/validation.middleware';
+import authenticatedLocal from '@/middlewares/auth.middleware';
 
 class UsersRoute {
-  public path = '/users';
+  public path = '/user';
   public router = Router();
   public usersController = new UsersController();
 
@@ -12,11 +12,11 @@ class UsersRoute {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, this.usersController.getUsers);
-    this.router.get(`${this.path}/:id(\\d+)`, this.usersController.getUserById);
-    this.router.post(`${this.path}`, this.usersController.createUser);
-    this.router.put(`${this.path}/:id(\\d+)`, this.usersController.updateUser);
-    this.router.delete(`${this.path}/:id(\\d+)`, this.usersController.deleteUser);
+    this.router.get(`${this.path}`, authenticatedLocal, this.usersController.getUsers);
+    this.router.get(`${this.path}/:id(\\d+)`, authenticatedLocal, this.usersController.getUserById);
+    this.router.post(`${this.path}`, authenticatedLocal, this.usersController.createUser);
+    this.router.put(`${this.path}/:id(\\d+)`, authenticatedLocal, this.usersController.updateUser);
+    this.router.delete(`${this.path}/:id(\\d+)`, authenticatedLocal, this.usersController.deleteUser);
   }
 }
 
