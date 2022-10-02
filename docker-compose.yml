@@ -26,20 +26,25 @@ services:
     networks:
       - backend
     links:
-      - mysql
+      - postgres
     depends_on:
-      - mysql
-  mysql:
-    image: mysql:5.7
-    container_name: mysql
+      - postgres
+  postgres:
+    image: postgres:14.5
+    container_name: dev
     environment:
-      MYSQL_ROOT_USER: root
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dev
+      POSTGRES_HOST: localhost
     ports:
-      - '3306:3306'
-    networks:
-      - backend
+      - '5433:5433'
+    expose:
+      - '5433'
+    command: -p 5433  
+    volumes:
+      - psql-dev:/var/lib/postgresql/data
+   
 
 networks:
   backend:
@@ -48,3 +53,5 @@ networks:
 volumes:
   data:
     driver: local
+  psql-dev:
+    name: psql-dev

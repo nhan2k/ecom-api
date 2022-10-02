@@ -1,11 +1,21 @@
 import App from '@/app';
-import AuthRoute from '@routes/auth.route';
-import IndexRoute from '@routes/index.route';
-import UsersRoute from '@routes/users.route';
-import validateEnv from '@utils/validateEnv';
+import validateEnv from '@/utils/validateEnv';
+import { logger } from './utils/logger';
 
-validateEnv();
+class Server {
+  constructor() {
+    validateEnv();
+    this.listenApp();
+  }
+  listenApp() {
+    try {
+      const app = new App();
 
-const app = new App([new IndexRoute(), new UsersRoute(), new AuthRoute()]);
+      app.listen();
+    } catch (error: any) {
+      logger.error(`Unable connect App ${error}`);
+    }
+  }
+}
 
-app.listen();
+export default new Server();
