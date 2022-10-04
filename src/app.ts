@@ -6,7 +6,7 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
 import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS, SESSION_SECRET, SESSION_MAX_AGE } from '@/config';
-import DB from '@/databases';
+import { sequelize } from '@/databases';
 import errorMiddleware from '@/middlewares/error.middleware';
 import { logger, stream } from '@/utils/logger';
 import IndexRoute from '@/routes/index.routes';
@@ -50,7 +50,7 @@ class App {
 
   private async connectToDatabase() {
     try {
-      await DB.sequelize.authenticate();
+      await sequelize.authenticate();
       logger.info('Connection has been established successfully.');
     } catch (error: any) {
       logger.error(`Unable to connect to the database: ${error.message}`);
@@ -79,11 +79,12 @@ class App {
     this.app.use(
       session({
         saveUninitialized: false,
+        resave: true,
         secret: String(SESSION_SECRET),
         cookie: {
           maxAge: Number(SESSION_MAX_AGE),
         },
-        store: new this.redisStore({ client: redisClient }),
+        // store: new this.redisStore({ client: redisClient }),
       }),
     );
     this.app.use(passport.authenticate('session'));
