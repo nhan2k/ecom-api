@@ -1,0 +1,57 @@
+version: '3.7'
+
+services:
+  proxy:
+    image: nginx:alpine
+    container_name: proxy
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    restart: 'unless-stopped'
+    networks:
+      - backend
+  server:
+    build:
+      context: ./
+      target: development-build-stage
+      dockerfile: Dockerfile
+    container_name: server
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    restart: 'unless-stopped'
+    networks:
+      - backend
+    links:
+      - postgres
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:14.5
+    container_name: dev
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dev
+      POSTGRES_HOST: localhost
+    ports:
+      - '5433:5433'
+    expose:
+      - '5433'
+    command: -p 5433  
+    volumes:
+      - psql-dev:/var/lib/postgresql/data
+   
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  data:
+    driver: local
+  psql-dev:
+    name: psql-dev
