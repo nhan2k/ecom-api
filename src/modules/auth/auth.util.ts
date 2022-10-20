@@ -1,4 +1,4 @@
-import { SECRET_KEY } from '@/config';
+import { SECRET_KEY } from '@config/env';
 import { sign } from 'jsonwebtoken';
 
 class AuthUtil {

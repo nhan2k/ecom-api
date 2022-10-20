@@ -20,9 +20,13 @@
     "resolveJsonModule": true,
     "importHelpers": true,
     "strictNullChecks": true,
-    "baseUrl": "src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["src/*"],
+      "@utils/*": ["src/utils/*"],
+      "@modules/*": ["src/modules/*"],
+      "@connections/*": ["src/connections/*"],
+      "@config/*": ["src/config/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.json", ".env"],

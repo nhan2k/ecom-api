@@ -18,9 +18,13 @@
       "compress": false,
       "mangle": false
     },
-    "baseUrl": "src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["*"],
+      "@/*": ["src/*"],
+      "@utils/*": ["src/utils/*"],
+      "@modules/*": ["src/modules/*"],
+      "@connections/*": ["src/connections/*"],
+      "@config/*": ["src/config/*"]
     }
   },
   "module": {

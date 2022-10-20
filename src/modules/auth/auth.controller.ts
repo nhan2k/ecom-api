@@ -1,4 +1,4 @@
-import { HttpResponse } from '@/exceptions/HttpException';
+import { HttpResponse } from '@config/Http';
 import { NextFunction, Request, Response } from 'express';
 import AuthService from './auth.service';
 
@@ -8,20 +8,20 @@ class AuthController {
   public signUp = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userData = req.body;
-      const signUpUserData: any = await this.authService.signup(userData);
+      await this.authService.signup(userData);
 
-      return new HttpResponse(201, { message: 'signup', data: signUpUserData }).sendResponse(res);
+      return new HttpResponse(201, { message: 'Signup success' }).sendResponse(res);
     } catch (error) {
-      next(error);
+      return new HttpResponse(201, { message: 'Signup success' }).sendResponse(res);
     }
   };
 
   public logIn = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userData = req.body;
-      const { findUser } = await this.authService.login(userData);
+      const data = await this.authService.login(userData);
 
-      return new HttpResponse(200, { message: 'signup', data: findUser }).sendResponse(res);
+      return new HttpResponse(200, { message: 'signup', data: data }).sendResponse(res);
     } catch (error) {
       next(error);
     }
@@ -29,16 +29,14 @@ class AuthController {
 
   public logOut = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userData: any = {
-        id: req.body.id,
-        email: req.body.email,
-        password: req.body.password,
-      };
-      const logOutUserData: any = await this.authService.logout(userData);
-
-      res.status(200).json({ data: logOutUserData, message: 'logout' });
+      req.session.destroy(function (error) {
+        if (error) {
+          return res.status(200).json({ message: error.message });
+        }
+        return res.status(200).json({ message: 'Logout success' });
+      });
     } catch (error) {
-      next(error);
+      return res.status(200).json({ message: error.message });
     }
   };
 }

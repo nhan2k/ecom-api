@@ -5,8 +5,8 @@ import express, { Router } from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
-import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS, SESSION_SECRET, SESSION_MAX_AGE } from '@/config';
-import { sequelize } from '@/databases';
+import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS, SESSION_SECRET, SESSION_MAX_AGE } from '@config/env';
+import { sequelize } from '@connections/databases';
 import errorMiddleware from '@/middlewares/error.middleware';
 import { logger, stream } from '@/utils/logger';
 import IndexRoute from '@/routes/index.routes';
@@ -22,11 +22,12 @@ class App {
   public port: string | number;
   public router: Router;
   public redisStore = connectRedis(session);
+  public logFile = __filename;
 
   constructor() {
     this.app = express();
     this.env = NODE_ENV || 'development';
-    this.port = PORT || 3000;
+    this.port = PORT || 4000;
     this.router = new IndexRoute().router;
 
     this.connectToDatabase();
@@ -38,22 +39,20 @@ class App {
   public listen() {
     try {
       this.app.listen(this.port, () => {
-        logger.info(`=================================`);
-        logger.info(`======= ENV: ${this.env} =======`);
-        logger.info(`🚀 App listening on the port ${this.port}`);
-        logger.info(`=================================`);
+        logger.info(`${this.logFile} ======= ENV: ${this.env} =======`);
+        logger.info(`${this.logFile} 🚀 App listening on the port ${this.port}`);
       });
     } catch (error: any) {
-      logger.error(`Unable to connect to the app: ${error.message}`);
+      logger.error(`${this.logFile} Unable to connect to the app: ${error.message}`);
     }
   }
 
   private async connectToDatabase() {
     try {
       await sequelize.authenticate();
-      logger.info('Connection has been established successfully.');
+      logger.info(`${this.logFile} Connection has been established successfully.`);
     } catch (error: any) {
-      logger.error(`Unable to connect to the database: ${error.message}`);
+      logger.error(`${this.logFile} Unable to connect to the database: ${error.message}`);
     }
   }
 
@@ -69,11 +68,7 @@ class App {
     this.app.use(express.static(path.join(__dirname, 'public')));
 
     const redisClient = new Ioredis({
-      port: 15846, // Redis port
-      host: 'redis-15846.c98.us-east-1-4.ec2.cloud.redislabs.com', // Redis host
-      username: 'default', // needs Redis >= 6
-      password: 'MXnm20zEaiCloDoyO3aucaYNmP6PkQix',
-      db: 0, // Defaults to 0}
+      password: 'eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81',
     });
 
     this.app.use(
@@ -84,7 +79,7 @@ class App {
         cookie: {
           maxAge: Number(SESSION_MAX_AGE),
         },
-        // store: new this.redisStore({ client: redisClient }),
+        store: new this.redisStore({ client: redisClient }),
       }),
     );
     this.app.use(passport.authenticate('session'));

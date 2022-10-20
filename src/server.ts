@@ -3,6 +3,8 @@ import validateEnv from '@/utils/validateEnv';
 import { logger } from './utils/logger';
 
 class Server {
+  public logFile = __filename;
+
   constructor() {
     validateEnv();
     this.listenApp();
@@ -13,7 +15,7 @@ class Server {
 
       app.listen();
     } catch (error: any) {
-      logger.error(`Unable connect App ${error}`);
+      logger.error(`${this.logFile} Unable connect App ${error.message}`);
     }
   }
 }

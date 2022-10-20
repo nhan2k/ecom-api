@@ -17,20 +17,7 @@ class AuthRoute {
   private initializeRoutes() {
     this.router.post(`${this.path}/signup`, signup, this.authController.signUp);
     this.router.post(`${this.path}/login`, passport.authenticate('local'), this.authController.logIn);
-    this.router.post(
-      `${this.path}/logout`,
-      (req: Request, res: Response, next: NextFunction) => {
-        req.logOut((error: any) => {
-          if (error) {
-            logger.error(`req.logOut ${error.message}`);
-            return next(error);
-          }
-          next();
-        });
-      },
-      auththenticationToken,
-      this.authController.logOut,
-    );
+    this.router.post(`${this.path}/logout`, auththenticationToken, this.authController.logOut);
   }
 }
 
