@@ -4,8 +4,9 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('order', {
       id: {
-        autoIncrement: true,
         primaryKey: true,
+        autoIncrement: true,
+        autoIncrementIdentity: true,
         type: Sequelize.BIGINT(20),
       },
       userId: {

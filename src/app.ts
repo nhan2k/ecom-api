@@ -15,6 +15,7 @@ import connectRedis from 'connect-redis';
 import session from 'express-session';
 import Ioredis from 'ioredis';
 import path from 'path';
+import Associations from '@connections/databases/associations';
 
 class App {
   public app: express.Application;
@@ -50,6 +51,7 @@ class App {
   private async connectToDatabase() {
     try {
       await sequelize.authenticate();
+      new Associations().associations();
       logger.info(`${this.logFile} Connection has been established successfully.`);
     } catch (error: any) {
       logger.error(`${this.logFile} Unable to connect to the database: ${error.message}`);

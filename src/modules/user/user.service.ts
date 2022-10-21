@@ -1,5 +1,5 @@
 import { hash } from 'bcryptjs';
-import UserModel from '@/modules/user/users.model';
+import UserModel from '@/modules/user/user.model';
 import { HttpResponse, HttpStatus } from '@config/Http';
 import { isEmpty } from '@/utils/util';
 

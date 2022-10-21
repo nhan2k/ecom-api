@@ -6,6 +6,7 @@ module.exports = {
       id: {
         autoIncrement: true,
         primaryKey: true,
+        autoIncrementIdentity: true,
         type: Sequelize.BIGINT(20),
       },
       productId: {

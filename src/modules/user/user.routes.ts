@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import UsersController from './users.controller';
+import UsersController from './user.controller';
 import authenticatedLocal from '@/middlewares/auth.middleware';
 
 class UsersRoute {

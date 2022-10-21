@@ -6,15 +6,16 @@ module.exports = {
       id: {
         autoIncrement: true,
         primaryKey: true,
+        autoIncrementIdentity: true,
         type: Sequelize.BIGINT(20),
       },
       productId: {
         type: Sequelize.BIGINT(20),
       },
       cartId: {
-        type: Sequelize.STRING(100),
+        type: Sequelize.BIGINT(20),
       },
-      slug: {
+      sku: {
         type: Sequelize.STRING(100),
       },
       price: {

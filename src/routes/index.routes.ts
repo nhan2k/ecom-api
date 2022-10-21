@@ -5,7 +5,7 @@ import { Identifier } from 'sequelize';
 import { logger } from '@/utils/logger';
 import passport from 'passport';
 import passportLocal from 'passport-local';
-import UserModel from '@/modules/user/users.model';
+import UserModel from '@/modules/user/user.model';
 
 class IndexRoute {
   public path = '/';
@@ -26,7 +26,7 @@ class IndexRoute {
             return done(done(null, false, { message: 'Incorrect username or password.' }));
           }
 
-          bcrypt.compare(password, user.password).then(res => {
+          bcrypt.compare(password, user.passwordhash).then(res => {
             if (!res) {
               return done(done(null, false, { message: 'Incorrect password.' }));
             }

@@ -6,6 +6,7 @@ module.exports = {
       id: {
         autoIncrement: true,
         primaryKey: true,
+        autoIncrementIdentity: true,
         type: Sequelize.BIGINT(20),
       },
       firstName: {
@@ -40,6 +41,9 @@ module.exports = {
       },
       intro: {
         type: Sequelize.STRING,
+      },
+      profile: {
+        type: Sequelize.TEXT,
       },
       updatedAt: {
         type: Sequelize.DATE,

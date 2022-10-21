@@ -4,7 +4,7 @@ import { SECRET_KEY } from '@config/env';
 import { HttpResponse, HttpStatus } from '@config/Http';
 import { DefinedError, JSONSchemaType } from 'ajv';
 import Ajv from 'ajv';
-import UserModel from '@/modules/user/users.model';
+import UserModel from '@/modules/user/user.model';
 import { logger } from '@utils/logger';
 
 const logFile = __filename;

@@ -1,49 +1,41 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '@connections/databases';
-export class UserModel extends Model {
+export class CategoryModel extends Model {
   declare id: number;
-  declare username: string;
-  declare password: string;
-  declare firstName: string;
-  declare lastName: string;
-  declare email: string;
-  declare phoneNumber: string;
-  declare status: number;
+  declare parentId: number;
+  declare title: string;
+  declare metaTitle: string;
+  declare slug: string;
+  declare content: string;
   declare createdAt: Date;
   declare updatedAt: Date;
   declare deletedAt: Date;
 }
 
-UserModel.init(
+CategoryModel.init(
   {
     id: {
       autoIncrement: true,
       autoIncrementIdentity: true,
       primaryKey: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
     },
-    username: {
+    parentId: {
+      type: DataTypes.BIGINT,
+    },
+    title: {
+      type: DataTypes.STRING,
       allowNull: false,
+    },
+    metaTitle: {
       type: DataTypes.STRING,
     },
-    password: {
+    slug: {
+      type: DataTypes.STRING,
       allowNull: false,
-      type: DataTypes.STRING,
     },
-    email: {
-      type: DataTypes.STRING,
-    },
-    firstName: {
-      type: DataTypes.STRING,
-    },
-    lastName: {
-      type: DataTypes.STRING,
-    },
-    phoneNumber: {
-      type: DataTypes.STRING,
-    },
-    status: {
-      type: DataTypes.INTEGER,
+    content: {
+      type: DataTypes.TEXT,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -56,10 +48,10 @@ UserModel.init(
     },
   },
   {
-    tableName: 'user',
+    tableName: 'category',
     sequelize,
     paranoid: true,
   },
 );
 
-export default UserModel;
+export default CategoryModel;

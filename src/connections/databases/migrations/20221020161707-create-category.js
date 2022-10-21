@@ -5,6 +5,7 @@ module.exports = {
     return queryInterface.createTable('category', {
       id: {
         autoIncrement: true,
+        autoIncrementIdentity: true,
         primaryKey: true,
         type: Sequelize.BIGINT(20),
       },

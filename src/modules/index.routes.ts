@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import UserRoute from './user/users.routes';
+import UserRoute from './user/user.routes';
 import AuthRoute from './auth/auth.routes';
 
 class ModuleRoute {

@@ -6,6 +6,7 @@ module.exports = {
       id: {
         autoIncrement: true,
         primaryKey: true,
+        autoIncrementIdentity: true,
         type: Sequelize.BIGINT(20),
       },
       userId: {
@@ -19,6 +20,9 @@ module.exports = {
       },
       status: {
         type: Sequelize.SMALLINT,
+      },
+      subTotal: {
+        type: Sequelize.FLOAT,
       },
       firstName: {
         type: Sequelize.STRING(50),

@@ -1,6 +1,6 @@
 import { compare, hash } from 'bcryptjs';
 import AuthUtil from './auth.util';
-import UserModel from '@/modules/user/users.model';
+import UserModel from '@/modules/user/user.model';
 import { logger } from '@utils/logger';
 
 class AuthService {
