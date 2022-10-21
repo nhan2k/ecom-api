@@ -7,7 +7,7 @@ export class UserModel extends Model {
   declare lastName: string;
   declare mobile: string;
   declare email: string;
-  declare passwordhash: string;
+  declare passwordHash: string;
   declare admin: number;
   declare vendor: number;
   declare registeredAt: Date;
@@ -41,7 +41,7 @@ UserModel.init(
     email: {
       type: DataTypes.STRING(50),
     },
-    passwordhash: {
+    passwordHash: {
       type: DataTypes.STRING(150),
       allowNull: false,
     },

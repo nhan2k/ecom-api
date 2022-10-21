@@ -1,42 +1,42 @@
-import { HttpResponse } from '@config/Http';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import AuthService from './auth.service';
+import { HttpResponse, HttpStatus } from '@config/Http';
 
 class AuthController {
   public authService = new AuthService();
 
-  public signUp = async (req: Request, res: Response, next: NextFunction) => {
+  public signUp = async (req: Request, res: Response) => {
     try {
       const userData = req.body;
-      await this.authService.signup(userData);
+      const result = await this.authService.signup(userData);
 
-      return new HttpResponse(201, { message: 'Signup success' }).sendResponse(res);
+      return new HttpResponse(HttpStatus.Created, result).sendResponse(res);
     } catch (error) {
-      return new HttpResponse(201, { message: 'Signup success' }).sendResponse(res);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
     }
   };
 
-  public logIn = async (req: Request, res: Response, next: NextFunction) => {
+  public logIn = async (req: Request, res: Response) => {
     try {
       const userData = req.body;
       const data = await this.authService.login(userData);
 
-      return new HttpResponse(200, { message: 'signup', data: data }).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, data).sendResponse(res);
     } catch (error) {
-      next(error);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
     }
   };
 
-  public logOut = async (req: Request, res: Response, next: NextFunction) => {
+  public logOut = async (req: Request, res: Response) => {
     try {
       req.session.destroy(function (error) {
         if (error) {
-          return res.status(200).json({ message: error.message });
+          return res.status(HttpStatus.BadRequest).json({ message: error.message });
         }
-        return res.status(200).json({ message: 'Logout success' });
+        return res.status(HttpStatus.OK).json({ message: 'Logout success' });
       });
     } catch (error) {
-      return res.status(200).json({ message: error.message });
+      return res.status(HttpStatus.BadRequest).json({ message: error.message });
     }
   };
 }

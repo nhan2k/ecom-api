@@ -6,13 +6,14 @@ import { logger } from '@utils/logger';
 class AuthService {
   public async signup(userData: any): Promise<{ message: string }> {
     try {
-      const hashedPassword = await hash(userData.password, 10);
-      await UserModel.create({ username: userData.username, password: hashedPassword });
+      const { email, password } = userData;
+      const hashedPassword = await hash(password, 10);
+      await UserModel.create({ email, passwordHash: hashedPassword });
 
       return { message: 'SignUp success' };
     } catch (error) {
       logger.error(error.message);
-      return { message: 'SignUp fail' };
+      return { message: error.message };
     }
   }
 

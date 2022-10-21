@@ -1,15 +1,18 @@
 import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
+import Ajv from 'ajv';
+import { DefinedError, JSONSchemaType } from 'ajv';
+import addFormats from 'ajv-formats';
+
 import { SECRET_KEY } from '@config/env';
 import { HttpResponse, HttpStatus } from '@config/Http';
-import { DefinedError, JSONSchemaType } from 'ajv';
-import Ajv from 'ajv';
 import UserModel from '@/modules/user/user.model';
 import { logger } from '@utils/logger';
 
 const logFile = __filename;
 
 const ajv = new Ajv();
+addFormats(ajv, ['email']);
 const auththenticationToken = async (req: Request, res: Response, next: NextFunction): Promise<HttpResponse | void> => {
   try {
     const Authorization = String(req.header('Authorization')).split(' ')[1];
@@ -33,9 +36,8 @@ const auththenticationToken = async (req: Request, res: Response, next: NextFunc
 };
 
 interface UserSignUp {
-  username: string;
+  email: string;
   password: string;
-  email?: string;
   phone_number?: string;
 }
 const signup = async (req: Request, res: Response, next: NextFunction) => {
@@ -43,12 +45,11 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
     const userSchema: JSONSchemaType<UserSignUp> = {
       type: 'object',
       properties: {
-        username: { type: 'string', minLength: 8 },
+        email: { type: 'string', nullable: true, format: 'email' },
         password: { type: 'string', minLength: 8 },
-        email: { type: 'string', nullable: true },
         phone_number: { type: 'string', nullable: true },
       },
-      required: ['username', 'password'],
+      required: ['email', 'password'],
     };
     const validate = ajv.compile(userSchema);
 
@@ -60,17 +61,15 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
         }
       }
     }
-
-    console.log('object');
-    const isUsername = await UserModel.findOne({ where: { username: req.body.username } });
-    if (isUsername) {
-      return new HttpResponse(HttpStatus.BadRequest, { message: 'Username is exists' }).sendResponse(res);
+    const isEmailExists = await UserModel.findOne({ where: { email: req.body.email } });
+    if (isEmailExists) {
+      return new HttpResponse(HttpStatus.BadRequest, { message: 'Email is exists' }).sendResponse(res);
     }
 
     next();
   } catch (error) {
     logger.error(`${logFile} ${error.message}`);
-    return new HttpResponse(HttpStatus.BadRequest, 'Wrong signup');
+    return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
   }
 };
 
