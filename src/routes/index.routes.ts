@@ -18,16 +18,17 @@ class IndexRoute {
     this.initializeRoutes();
 
     passport.use(
-      new this.LocalStrategy(async (username: string, password: string, done: any) => {
+      new this.LocalStrategy(async (email: string, password: string, done: any) => {
         try {
-          const user = await UserModel.findOne({ where: { username: username }, attributes: ['username', 'password', 'id'] });
-
+          const user = await UserModel.findOne({ where: { email: email }, attributes: ['email', 'passwordHash', 'id'] });
           if (!user) {
+            logger.error(`${this.logFile} ${'Incorrect username or password'}`);
             return done(done(null, false, { message: 'Incorrect username or password.' }));
           }
 
-          bcrypt.compare(password, user.passwordhash).then(res => {
+          bcrypt.compare(password, user.passwordHash).then(res => {
             if (!res) {
+              logger.error(`${this.logFile} ${'Incorrect password'}`);
               return done(done(null, false, { message: 'Incorrect password.' }));
             }
             return done(null, user);
@@ -35,7 +36,7 @@ class IndexRoute {
 
           return done(null, user);
         } catch (error: any) {
-          logger.error(`${this.logFile} error local strategy ${error.message}`);
+          logger.error(`${this.logFile} ${error.message}`);
           return done(error);
         }
       }),

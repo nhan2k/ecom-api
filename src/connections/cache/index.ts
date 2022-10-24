@@ -5,10 +5,10 @@ import Ioredis from 'ioredis';
 
 const connectCache = () => {
   try {
-    const redisStore = connectRedis(session);
     const redisClient = new Ioredis({
       password: 'eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81',
     });
+    const redisStore = connectRedis(session);
   } catch (error) {
     logger.error(`${error.message}`);
   }

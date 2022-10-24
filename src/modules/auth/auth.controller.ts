@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
 import AuthService from './auth.service';
 import { HttpResponse, HttpStatus } from '@config/Http';
+import { logger } from '@utils/logger';
 
 class AuthController {
   public authService = new AuthService();
+  public logFile = __filename;
 
   public signUp = async (req: Request, res: Response) => {
     try {
@@ -23,8 +25,13 @@ class AuthController {
 
       return new HttpResponse(HttpStatus.OK, data).sendResponse(res);
     } catch (error) {
+      logger.error(`${this.logFile} ${error}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
     }
+  };
+
+  public signInFail = async (req: Request, res: Response) => {
+    return new HttpResponse(HttpStatus.BadRequest, { message: 'SignIn Fail' }).sendResponse(res);
   };
 
   public logOut = async (req: Request, res: Response) => {

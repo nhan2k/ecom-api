@@ -12,10 +12,6 @@ class ModuleRoute {
   }
 
   private initializeRoutes() {
-    this.router.get('/', (req: Request, res: Response) => {
-      res.send('App is running');
-    });
-
     this.router.use(this.userRoute.router);
     this.router.use(this.authRoute.router);
   }

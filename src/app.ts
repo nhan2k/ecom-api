@@ -35,6 +35,7 @@ class App {
     this.initializeMiddlewares();
     this.initializeRoutes();
     this.initializeErrorHandling();
+    this.connectCache();
   }
 
   public listen() {
@@ -68,26 +69,6 @@ class App {
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
     this.app.use(express.static(path.join(__dirname, 'public')));
-
-    const redisClient = new Ioredis({
-      password: 'eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81',
-    });
-
-    this.app.use(
-      session({
-        saveUninitialized: false,
-        resave: true,
-        secret: String(SESSION_SECRET),
-        cookie: {
-          maxAge: Number(SESSION_MAX_AGE),
-        },
-        store: new this.redisStore({ client: redisClient }),
-      }),
-    );
-    this.app.use(passport.authenticate('session'));
-
-    this.app.use(passport.initialize());
-    this.app.use(passport.session());
   }
 
   private initializeRoutes() {
@@ -96,6 +77,34 @@ class App {
 
   private initializeErrorHandling() {
     this.app.use(errorMiddleware);
+  }
+
+  private connectCache() {
+    try {
+      const redisClient = new Ioredis({
+        password: 'eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81',
+      });
+
+      this.app.use(
+        session({
+          saveUninitialized: false,
+          resave: true,
+          secret: String(SESSION_SECRET),
+          cookie: {
+            maxAge: Number(SESSION_MAX_AGE),
+          },
+          store: new this.redisStore({ client: redisClient }),
+        }),
+      );
+      this.app.use(passport.authenticate('session'));
+
+      this.app.use(passport.initialize());
+      this.app.use(passport.session());
+      logger.info(`Connect Redis & Enable passport`);
+    } catch (error) {
+      logger.error(`connectCache ${error}`);
+      return error;
+    }
   }
 }
 
