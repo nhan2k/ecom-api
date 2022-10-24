@@ -22,7 +22,6 @@ class AuthController {
     try {
       const userData = req.body;
       const data = await this.authService.login(userData);
-
       return new HttpResponse(HttpStatus.OK, data).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error}`);

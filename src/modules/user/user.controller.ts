@@ -1,63 +1,65 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import userService from './user.service';
+import UserModel from '@modules/user/user.model';
+import { HttpResponse, HttpStatus } from '@config/Http';
 
-class UsersController {
+class UserController {
   public userService = new userService();
 
-  public getUsers = async (req: Request, res: Response, next: NextFunction) => {
+  public getUsers = async (req: Request, res: Response) => {
     try {
-      const findAllUsersData: any[] = await this.userService.findAllUser();
+      const findAllUsersData: UserModel[] = await this.userService.findAllUser();
 
-      res.status(200).json({ data: findAllUsersData, message: 'findAll' });
+      return new HttpResponse(HttpStatus.Created, findAllUsersData).sendResponse(res);
     } catch (error) {
-      next(error);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
     }
   };
 
-  public getUserById = async (req: Request, res: Response, next: NextFunction) => {
+  public getUserById = async (req: Request, res: Response) => {
     try {
       const userId = Number(req.params.id);
-      const findOneUserData: any = await this.userService.findUserById(userId);
+      const findOneUserData: UserModel = await this.userService.findUserById(userId);
 
-      res.status(200).json({ data: findOneUserData, message: 'findOne' });
+      return new HttpResponse(HttpStatus.Created, findOneUserData).sendResponse(res);
     } catch (error) {
-      next(error);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
     }
   };
 
-  public createUser = async (req: Request, res: Response, next: NextFunction) => {
+  public createUser = async (req: Request, res: Response) => {
     try {
       const userData: any = req.body;
       const createUserData: any = await this.userService.createUser(userData);
 
-      res.status(201).json({ data: createUserData, message: 'created' });
+      return new HttpResponse(HttpStatus.Created, createUserData).sendResponse(res);
     } catch (error) {
-      next(error);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
     }
   };
 
-  public updateUser = async (req: Request, res: Response, next: NextFunction) => {
+  public updateUser = async (req: Request, res: Response) => {
     try {
       const userId = Number(req.params.id);
       const userData: any = req.body;
       const updateUserData: any = await this.userService.updateUser(userId, userData);
 
-      res.status(200).json({ data: updateUserData, message: 'updated' });
+      return new HttpResponse(HttpStatus.Created, updateUserData).sendResponse(res);
     } catch (error) {
-      next(error);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
     }
   };
 
-  public deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+  public deleteUser = async (req: Request, res: Response) => {
     try {
       const userId = Number(req.params.id);
       const deleteUserData: any = await this.userService.deleteUser(userId);
 
-      res.status(200).json({ data: deleteUserData, message: 'deleted' });
+      return new HttpResponse(HttpStatus.Created, deleteUserData).sendResponse(res);
     } catch (error) {
-      next(error);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
     }
   };
 }
 
-export default UsersController;
+export default UserController;

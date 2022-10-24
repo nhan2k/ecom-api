@@ -7,7 +7,7 @@ class AuthUtil {
     const secretKey: string = String(SECRET_KEY);
     const expiresIn: number = 60 * 60;
 
-    return { expiresIn, token: sign(dataStoredInToken, secretKey, { expiresIn }) };
+    return { token: sign(dataStoredInToken, secretKey, { expiresIn }) };
   }
 }
 

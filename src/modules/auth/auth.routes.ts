@@ -15,9 +15,9 @@ class AuthRoute {
 
   private initializeRoutes() {
     this.router.post(`${this.path}/signup`, signup, this.authController.signUp);
-    this.router.post(`${this.path}`, passport.authenticate('local', { failureRedirect: `/api/v1/${this.path}/login` }), this.authController.logIn);
+    this.router.post(`${this.path}`, this.authController.logIn);
     this.router.get(`${this.path}/login`, this.authController.signInFail);
-    this.router.post(`${this.path}/logout`, auththenticationToken, this.authController.logOut);
+    this.router.post(`${this.path}/logout`, passport.authenticate('jwt', { session: false }), auththenticationToken, this.authController.logOut);
   }
 }
 

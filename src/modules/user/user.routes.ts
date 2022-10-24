@@ -1,8 +1,8 @@
 import { Router } from 'express';
+import passport from 'passport';
 import UsersController from './user.controller';
-import authenticatedLocal from '@/middlewares/auth.middleware';
 
-class UsersRoute {
+class UserRoute {
   public path = '/user';
   public router = Router();
   public usersController = new UsersController();
@@ -12,12 +12,12 @@ class UsersRoute {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, authenticatedLocal, this.usersController.getUsers);
-    this.router.get(`${this.path}/:id(\\d+)`, authenticatedLocal, this.usersController.getUserById);
-    this.router.post(`${this.path}`, authenticatedLocal, this.usersController.createUser);
-    this.router.put(`${this.path}/:id(\\d+)`, authenticatedLocal, this.usersController.updateUser);
-    this.router.delete(`${this.path}/:id(\\d+)`, authenticatedLocal, this.usersController.deleteUser);
+    this.router.get(`${this.path}`, passport.authenticate('jwt', { session: false }), this.usersController.getUsers);
+    this.router.get(`${this.path}/:id(\\d+)`, this.usersController.getUserById);
+    this.router.post(`${this.path}`, this.usersController.createUser);
+    this.router.put(`${this.path}/:id(\\d+)`, this.usersController.updateUser);
+    this.router.delete(`${this.path}/:id(\\d+)`, this.usersController.deleteUser);
   }
 }
 
-export default UsersRoute;
+export default UserRoute;

@@ -18,16 +18,20 @@ class AuthService {
   }
 
   public async login(userData: any): Promise<{ message: string } | { token: any }> {
-    const findUser: any = await UserModel.findOne({ where: { email: userData.email } });
+    try {
+      const findUser: any = await UserModel.findOne({ where: { email: userData.email } });
 
-    const isPasswordMatching: boolean = await compare(userData.password, findUser.password);
-    if (!isPasswordMatching) {
-      return { message: 'Password not matching' };
+      const isPasswordMatching: boolean = await compare(userData.password, findUser.passwordHash);
+      if (!isPasswordMatching) {
+        return { message: 'Password not matching' };
+      }
+
+      const token = new AuthUtil().createToken(findUser);
+
+      return token;
+    } catch (error) {
+      return error;
     }
-
-    const token = new AuthUtil().createToken(findUser);
-
-    return token;
   }
 
   public async logout(userData: any): Promise<any> {
