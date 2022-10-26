@@ -2,12 +2,13 @@ import { compare, hash } from 'bcryptjs';
 import AuthUtil from './auth.util';
 import UserModel from '@/modules/user/user.model';
 import { logger } from '@utils/logger';
+import { SALT } from '@config/env';
 
 class AuthService {
   public async signup(userData: any): Promise<{ message: string }> {
     try {
       const { email, password } = userData;
-      const hashedPassword = await hash(password, 10);
+      const hashedPassword = await hash(password, Number(SALT));
       await UserModel.create({ email, passwordHash: hashedPassword });
 
       return { message: 'SignUp success' };
@@ -32,14 +33,6 @@ class AuthService {
     } catch (error) {
       return error;
     }
-  }
-
-  public async logout(userData: any): Promise<any> {
-    const findUser: any = await UserModel.findOne({ where: { email: userData.email, password: userData.password } });
-    if (!findUser) {
-      return { message: `User doesn't exist` };
-    }
-    return findUser;
   }
 }
 

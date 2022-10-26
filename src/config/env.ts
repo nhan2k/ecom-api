@@ -19,4 +19,5 @@ export const {
   ISSUER,
   AUDIENCE,
   REDIS_PASS,
+  SALT,
 } = process.env;

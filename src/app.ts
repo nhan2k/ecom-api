@@ -24,11 +24,10 @@ import { logger, stream } from '@/utils/logger';
 import IndexRoute from '@/routes/index.routes';
 import passport from 'passport';
 import connectRedis from 'connect-redis';
-import session, { MemoryStore } from 'express-session';
+import session from 'express-session';
 import Ioredis from 'ioredis';
 import path from 'path';
 import Associations from '@connections/databases/associations';
-import { Identifier } from 'sequelize';
 import UserModel from '@modules/user/user.model';
 import passportJWT from 'passport-jwt';
 import passportLocal from 'passport-local/lib';
@@ -78,7 +77,7 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use(morgan(String(LOG_FORMAT), { stream }));
-    this.app.use(cors({ origin: ORIGIN }));
+    this.app.use(cors({ origin: ORIGIN, credentials: CREDENTIALS }));
     this.app.use(hpp());
     this.app.use(helmet());
     this.app.use(compression());
@@ -117,7 +116,6 @@ class App {
     passport.use(
       new this.JwtStrategy(opts, async function (jwt_payload, done) {
         try {
-          console.log('first');
           const user: UserModel | null = await UserModel.findOne({ where: { id: jwt_payload.id }, attributes: ['id'] });
           if (user) {
             return done(null, user);
@@ -159,7 +157,7 @@ class App {
       ),
     );
 
-    // this.app.use(passport.authenticate('session'));
+    this.app.use(passport.authenticate('session'));
     this.router = new IndexRoute().router;
     this.app.use('/', this.router);
   }

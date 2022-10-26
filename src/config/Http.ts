@@ -4,10 +4,11 @@ enum HttpStatus {
   OK = 200,
   Created,
   BadRequest = 400,
+  Unauthorized,
   NotFound = 404,
   InternalServerError = 500,
 }
-type status = 200 | 201 | 400 | 404 | 500;
+type status = 200 | 201 | 400 | 401 | 404 | 500;
 
 class HttpResponse {
   public status: status;

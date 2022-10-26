@@ -4,13 +4,12 @@ import { HttpResponse, HttpStatus } from '@config/Http';
 import { logger } from '@utils/logger';
 
 class AuthController {
-  public authService = new AuthService();
   public logFile = __filename;
 
   public signUp = async (req: Request, res: Response) => {
     try {
       const userData = req.body;
-      const result = await this.authService.signup(userData);
+      const result = await new AuthService().signup(userData);
 
       return new HttpResponse(HttpStatus.Created, result).sendResponse(res);
     } catch (error) {
@@ -21,7 +20,7 @@ class AuthController {
   public logIn = async (req: Request, res: Response) => {
     try {
       const userData = req.body;
-      const data = await this.authService.login(userData);
+      const data = await new AuthService().login(userData);
       return new HttpResponse(HttpStatus.OK, data).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error}`);
@@ -38,8 +37,10 @@ class AuthController {
       req.session.destroy(function (error) {
         if (error) {
           return res.status(HttpStatus.BadRequest).json({ message: error.message });
+        } else {
+          res.clearCookie('connect.sid');
+          return res.status(HttpStatus.OK).json({ message: 'Logout success' });
         }
-        return res.status(HttpStatus.OK).json({ message: 'Logout success' });
       });
     } catch (error) {
       return res.status(HttpStatus.BadRequest).json({ message: error.message });
