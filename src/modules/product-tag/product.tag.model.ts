@@ -10,6 +10,12 @@ export class ProductTagModel extends Model {
 
 ProductTagModel.init(
   {
+    id: {
+      primaryKey: true,
+      autoIncrement: true,
+      autoIncrementIdentity: true,
+      type: DataTypes.BIGINT,
+    },
     productId: {
       type: DataTypes.BIGINT,
       allowNull: false,

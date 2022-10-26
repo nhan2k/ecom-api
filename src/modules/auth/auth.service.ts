@@ -17,7 +17,7 @@ class AuthService {
     }
   }
 
-  public async login(userData: any): Promise<{ message: string } | { token: any }> {
+  public async login(userData: any): Promise<{ message: string } | { accessToken: string; refreshToken: string }> {
     try {
       const findUser: any = await UserModel.findOne({ where: { email: userData.email } });
 
@@ -26,9 +26,9 @@ class AuthService {
         return { message: 'Password not matching' };
       }
 
-      const token = new AuthUtil().createToken(findUser);
+      const { accessToken, refreshToken } = new AuthUtil().createToken(findUser);
 
-      return token;
+      return { accessToken, refreshToken };
     } catch (error) {
       return error;
     }

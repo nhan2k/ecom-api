@@ -5,28 +5,40 @@ import express, { Router } from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
-import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS, SESSION_SECRET, SESSION_MAX_AGE } from '@config/env';
+import {
+  NODE_ENV,
+  PORT,
+  LOG_FORMAT,
+  ORIGIN,
+  CREDENTIALS,
+  SESSION_SECRET,
+  SESSION_MAX_AGE,
+  ISSUER,
+  AUDIENCE,
+  SECRET_KEY,
+  REDIS_PASS,
+} from '@config/env';
 import { sequelize } from '@connections/databases';
 import errorMiddleware from '@/middlewares/error.middleware';
 import { logger, stream } from '@/utils/logger';
 import IndexRoute from '@/routes/index.routes';
 import passport from 'passport';
 import connectRedis from 'connect-redis';
-import session from 'express-session';
+import session, { MemoryStore } from 'express-session';
 import Ioredis from 'ioredis';
 import path from 'path';
 import Associations from '@connections/databases/associations';
 import { Identifier } from 'sequelize';
-import passportLocal from 'passport-local';
-import UserModel from '@/modules/user/user.model';
+import UserModel from '@modules/user/user.model';
 import passportJWT from 'passport-jwt';
+import passportLocal from 'passport-local/lib';
+import { compare } from 'bcryptjs';
 
 class App {
   public app: express.Application;
   public env: string;
   public port: string | number;
   public router: Router;
-  public redisStore = connectRedis(session);
   public logFile = __filename;
   public LocalStrategy = passportLocal.Strategy;
   public JwtStrategy = passportJWT.Strategy;
@@ -57,7 +69,7 @@ class App {
   private async connectToDatabase() {
     try {
       await sequelize.authenticate();
-      new Associations().associations();
+      // new Associations().associations();
       logger.info(`${this.logFile} Connection has been established successfully.`);
     } catch (error: any) {
       logger.error(`${this.logFile} Unable to connect to the database: ${error.message}`);
@@ -66,7 +78,7 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use(morgan(String(LOG_FORMAT), { stream }));
-    this.app.use(cors({ origin: ORIGIN, credentials: CREDENTIALS }));
+    this.app.use(cors({ origin: ORIGIN }));
     this.app.use(hpp());
     this.app.use(helmet());
     this.app.use(compression());
@@ -74,39 +86,38 @@ class App {
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
     this.app.use(express.static(path.join(__dirname, 'public')));
-  }
-
-  private initializeRoutes() {
+    this.app.use(passport.initialize());
+    const RedisStore = connectRedis(session);
     const redisClient = new Ioredis({
-      password: 'eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81',
+      password: REDIS_PASS,
     });
-
     this.app.use(
       session({
         saveUninitialized: false,
         resave: true,
         secret: String(SESSION_SECRET),
         cookie: {
+          secure: false,
+          httpOnly: false,
           maxAge: Number(SESSION_MAX_AGE),
         },
-        store: new this.redisStore({ client: redisClient }),
+        store: new RedisStore({ client: redisClient }),
       }),
     );
-
-    this.app.use(passport.initialize());
     this.app.use(passport.session());
+  }
 
-    this.router = new IndexRoute().router;
-    this.app.use('/', this.router);
-
-    var opts: any = {};
-    opts.jwtFromRequest = this.ExtractJwt.fromAuthHeaderAsBearerToken();
-    opts.secretOrKey = 'secretKey';
-    // opts.issuer = 'accounts.examplesoft.com';
-    // opts.audience = 'yoursite.net';
+  private initializeRoutes() {
+    let opts: any = {
+      jwtFromRequest: this.ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: SECRET_KEY,
+      issuer: ISSUER,
+      audience: AUDIENCE,
+    };
     passport.use(
       new this.JwtStrategy(opts, async function (jwt_payload, done) {
         try {
+          console.log('first');
           const user: UserModel | null = await UserModel.findOne({ where: { id: jwt_payload.id }, attributes: ['id'] });
           if (user) {
             return done(null, user);
@@ -120,23 +131,37 @@ class App {
       }),
     );
 
-    passport.serializeUser(function (user: any, done) {
-      done(null, user.id);
-    });
+    passport.use(
+      new this.LocalStrategy(
+        {
+          usernameField: 'email',
+          passwordField: 'password',
+        },
+        async function (username: string, password: string, done: any) {
+          try {
+            const user: UserModel | null = await UserModel.findOne({ where: { email: username }, attributes: ['email', 'passwordHash', 'id'] });
+            if (!user) {
+              done(null, false);
+            } else {
+              compare(password, user.passwordHash).then(res => {
+                if (res) {
+                  done(null, user);
+                } else {
+                  done(null, false);
+                }
+              });
+            }
+          } catch (error: any) {
+            logger.error(`${this.logFile} ${error.message}`);
+            done(error, false);
+          }
+        },
+      ),
+    );
 
-    passport.deserializeUser(async (id: Identifier, done) => {
-      try {
-        const user = await UserModel.findOne({ where: { id: id } });
-
-        if (user) {
-          done(null, user);
-        }
-      } catch (error: any) {
-        logger.error(`${this.logFile} deserializeUser error ${error.message}`);
-        done(error);
-      }
-    });
     // this.app.use(passport.authenticate('session'));
+    this.router = new IndexRoute().router;
+    this.app.use('/', this.router);
   }
 
   private initializeErrorHandling() {

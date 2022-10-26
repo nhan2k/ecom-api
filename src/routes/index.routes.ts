@@ -13,7 +13,7 @@ class IndexRoute {
 
   private initializeRoutes() {
     this.router.get('/', (req: Request, res: Response) => {
-      res.send('App is running');
+      res.status(200).json({ message: 'App is running' });
     });
 
     this.router.use('/api/v1', this.moduleRoute.router);

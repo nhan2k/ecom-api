@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import ProductController from './product.controller';
-import authenticatedLocal from '@/middlewares/auth.middleware';
 
 class ProductRoute {
   public path = '/product';
@@ -12,11 +11,11 @@ class ProductRoute {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, authenticatedLocal, this.ProductController.getProducts);
-    this.router.get(`${this.path}/:id(\\d+)`, authenticatedLocal, this.ProductController.getProductById);
-    this.router.post(`${this.path}`, authenticatedLocal, this.ProductController.createProduct);
-    this.router.put(`${this.path}/:id(\\d+)`, authenticatedLocal, this.ProductController.updateProduct);
-    this.router.delete(`${this.path}/:id(\\d+)`, authenticatedLocal, this.ProductController.deleteProduct);
+    this.router.get(`${this.path}`, this.ProductController.getProducts);
+    this.router.get(`${this.path}/:id(\\d+)`, this.ProductController.getProductById);
+    this.router.post(`${this.path}`, this.ProductController.createProduct);
+    this.router.put(`${this.path}/:id(\\d+)`, this.ProductController.updateProduct);
+    this.router.delete(`${this.path}/:id(\\d+)`, this.ProductController.deleteProduct);
   }
 }
 

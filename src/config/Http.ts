@@ -22,7 +22,7 @@ class HttpResponse {
   }
 
   sendResponse(res: Response) {
-    res.status(this.status).json(this.data);
+    return res.status(this.status).json(this.data);
   }
 }
 

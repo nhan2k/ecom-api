@@ -1,61 +1,70 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import ProductService from './product.service';
+import { HttpResponse, HttpStatus } from '@config/Http';
+import { logger } from '@utils/logger';
+import { TProduct } from './product.interface';
 
 class ProductController {
-  public productService = new ProductService();
+  private logFile = __filename;
+  public ProductService = new ProductService();
 
-  public getProducts = async (req: Request, res: Response, next: NextFunction) => {
+  public getProducts = async (req: Request, res: Response): Promise<void> => {
     try {
-      const findAllProductsData: any[] = await this.productService.findAllProduct();
+      const findAllProductsData: TProduct[] = await this.ProductService.findAllProducts();
 
-      res.status(200).json({ data: findAllProductsData, message: 'findAll' });
+      return new HttpResponse(HttpStatus.Created, findAllProductsData).sendResponse(res);
     } catch (error) {
-      next(error);
+      logger.error(`${this.logFile} ${error.message}`);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
     }
   };
 
-  public getProductById = async (req: Request, res: Response, next: NextFunction) => {
+  public getProductById = async (req: Request, res: Response): Promise<void> => {
     try {
       const ProductId = Number(req.params.id);
-      const findOneProductData: any = await this.productService.findProductById(ProductId);
+      const findOneProductData: TProduct | null = await this.ProductService.findProductById(ProductId);
 
-      res.status(200).json({ data: findOneProductData, message: 'findOne' });
+      return new HttpResponse(HttpStatus.Created, findOneProductData).sendResponse(res);
     } catch (error) {
-      next(error);
+      logger.error(`${this.logFile} ${error.message}`);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
     }
   };
 
-  public createProduct = async (req: Request, res: Response, next: NextFunction) => {
+  public createProduct = async (req: Request, res: Response): Promise<void> => {
     try {
       const ProductData: any = req.body;
-      const createProductData: any = await this.productService.createProduct(ProductData);
+      const createProductData: { message: string } = await this.ProductService.createProduct(ProductData);
 
-      res.status(201).json({ data: createProductData, message: 'created' });
+      return new HttpResponse(HttpStatus.Created, createProductData).sendResponse(res);
     } catch (error) {
-      next(error);
+      logger.error(`${this.logFile} ${error.message}`);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
     }
   };
 
-  public updateProduct = async (req: Request, res: Response, next: NextFunction) => {
+  public updateProduct = async (req: Request, res: Response): Promise<void> => {
     try {
       const ProductId = Number(req.params.id);
       const ProductData: any = req.body;
-      const updateProductData: any = await this.productService.updateProduct(ProductId, ProductData);
+      const updateProductData: any = await this.ProductService.updateProduct(ProductId, ProductData);
 
-      res.status(200).json({ data: updateProductData, message: 'updated' });
+      return new HttpResponse(HttpStatus.Created, updateProductData).sendResponse(res);
     } catch (error) {
-      next(error);
+      logger.error(`${this.logFile} ${error.message}`);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
     }
   };
 
-  public deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
+  public deleteProduct = async (req: Request, res: Response): Promise<void> => {
     try {
       const ProductId = Number(req.params.id);
-      const deleteProductData: any = await this.productService.deleteProduct(ProductId);
+      const deleteProductData: any = await this.ProductService.deleteProduct(ProductId);
 
-      res.status(200).json({ data: deleteProductData, message: 'deleted' });
+      return new HttpResponse(HttpStatus.Created, deleteProductData).sendResponse(res);
     } catch (error) {
-      next(error);
+      logger.error(`${this.logFile} ${error.message}`);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
     }
   };
 }

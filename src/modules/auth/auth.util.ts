@@ -2,12 +2,16 @@ import { SECRET_KEY } from '@config/env';
 import { sign } from 'jsonwebtoken';
 
 class AuthUtil {
-  public createToken(user: any): any {
+  public createToken(user: { id: number }): { accessToken: string; refreshToken: string } {
     const dataStoredInToken: any = { id: user.id };
     const secretKey: string = String(SECRET_KEY);
-    const expiresIn: number = 60 * 60;
+    const expiresIn: string = '7d';
+    const expiresInRefresh: string = '30d';
 
-    return { token: sign(dataStoredInToken, secretKey, { expiresIn }) };
+    return {
+      accessToken: sign(dataStoredInToken, secretKey, { expiresIn }),
+      refreshToken: sign(dataStoredInToken, secretKey, { expiresIn: expiresInRefresh }),
+    };
   }
 }
 
