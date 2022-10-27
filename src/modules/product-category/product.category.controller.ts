@@ -8,7 +8,7 @@ class ProductCategoryController {
   private logFile = __filename;
   public ProductCategoryService = new ProductCategoryService();
 
-  public getProductCategories = async (req: Request, res: Response): Promise<void> => {
+  public getProductCategories = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const findAllProductCategoriesData: TProductCategory[] = await this.ProductCategoryService.findAllProductCategories();
 
@@ -19,7 +19,7 @@ class ProductCategoryController {
     }
   };
 
-  public getProductCategoryById = async (req: Request, res: Response): Promise<void> => {
+  public getProductCategoryById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductCategoryId = Number(req.params.id);
       const findOneProductCategoryData: TProductCategory | null = await this.ProductCategoryService.findProductCategoryById(ProductCategoryId);
@@ -31,7 +31,7 @@ class ProductCategoryController {
     }
   };
 
-  public createProductCategory = async (req: Request, res: Response): Promise<void> => {
+  public createProductCategory = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductCategoryData: any = req.body;
       const createProductCategoryData: { message: string } = await this.ProductCategoryService.createProductCategory(ProductCategoryData);
@@ -43,7 +43,7 @@ class ProductCategoryController {
     }
   };
 
-  public updateProductCategory = async (req: Request, res: Response): Promise<void> => {
+  public updateProductCategory = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductCategoryId = Number(req.params.id);
       const ProductCategoryData: any = req.body;
@@ -56,7 +56,7 @@ class ProductCategoryController {
     }
   };
 
-  public deleteProductCategory = async (req: Request, res: Response): Promise<void> => {
+  public deleteProductCategory = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductCategoryId = Number(req.params.id);
       const deleteProductCategoryData: any = await this.ProductCategoryService.deleteProductCategory(ProductCategoryId);

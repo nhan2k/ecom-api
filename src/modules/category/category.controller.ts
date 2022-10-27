@@ -8,7 +8,7 @@ class CategoryController {
   private logFile = __filename;
   public categoryService = new CategoryService();
 
-  public getCategories = async (req: Request, res: Response): Promise<void> => {
+  public getCategories = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const findAllCategoriesData: TCategory[] = await this.categoryService.findAllCategories();
 
@@ -19,7 +19,7 @@ class CategoryController {
     }
   };
 
-  public getCategoryById = async (req: Request, res: Response): Promise<void> => {
+  public getCategoryById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CategoryId = Number(req.params.id);
       const findOneCategoryData: TCategory | null = await this.categoryService.findCategoryById(CategoryId);
@@ -31,7 +31,7 @@ class CategoryController {
     }
   };
 
-  public createCategory = async (req: Request, res: Response): Promise<void> => {
+  public createCategory = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CategoryData: any = req.body;
       const createCategoryData: { message: string } = await this.categoryService.createCategory(CategoryData);
@@ -43,7 +43,7 @@ class CategoryController {
     }
   };
 
-  public updateCategory = async (req: Request, res: Response): Promise<void> => {
+  public updateCategory = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CategoryId = Number(req.params.id);
       const CategoryData: any = req.body;
@@ -56,7 +56,7 @@ class CategoryController {
     }
   };
 
-  public deleteCategory = async (req: Request, res: Response): Promise<void> => {
+  public deleteCategory = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CategoryId = Number(req.params.id);
       const deleteCategoryData: any = await this.categoryService.deleteCategory(CategoryId);

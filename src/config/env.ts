@@ -20,4 +20,6 @@ export const {
   AUDIENCE,
   REDIS_PASS,
   SALT,
+  ACCESS_EXPIRESIN,
+  REFRESH_EXPIRESIN,
 } = process.env;

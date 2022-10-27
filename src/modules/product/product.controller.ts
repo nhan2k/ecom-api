@@ -8,7 +8,7 @@ class ProductController {
   private logFile = __filename;
   public ProductService = new ProductService();
 
-  public getProducts = async (req: Request, res: Response): Promise<void> => {
+  public getProducts = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const findAllProductsData: TProduct[] = await this.ProductService.findAllProducts();
 
@@ -19,7 +19,7 @@ class ProductController {
     }
   };
 
-  public getProductById = async (req: Request, res: Response): Promise<void> => {
+  public getProductById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductId = Number(req.params.id);
       const findOneProductData: TProduct | null = await this.ProductService.findProductById(ProductId);
@@ -31,7 +31,7 @@ class ProductController {
     }
   };
 
-  public createProduct = async (req: Request, res: Response): Promise<void> => {
+  public createProduct = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductData: any = req.body;
       const createProductData: { message: string } = await this.ProductService.createProduct(ProductData);
@@ -43,7 +43,7 @@ class ProductController {
     }
   };
 
-  public updateProduct = async (req: Request, res: Response): Promise<void> => {
+  public updateProduct = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductId = Number(req.params.id);
       const ProductData: any = req.body;
@@ -56,7 +56,7 @@ class ProductController {
     }
   };
 
-  public deleteProduct = async (req: Request, res: Response): Promise<void> => {
+  public deleteProduct = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductId = Number(req.params.id);
       const deleteProductData: any = await this.ProductService.deleteProduct(ProductId);

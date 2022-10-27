@@ -8,7 +8,7 @@ class UserController {
   private logFile = __filename;
   public userService = new userService();
 
-  public getUsers = async (req: Request, res: Response): Promise<void> => {
+  public getUsers = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const findAllUsersData: TUser[] = await this.userService.findAllUser();
 
@@ -19,7 +19,7 @@ class UserController {
     }
   };
 
-  public getUserById = async (req: Request, res: Response): Promise<void> => {
+  public getUserById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const userId = Number(req.params.id);
       const findOneUserData: TUser | null = await this.userService.findUserById(userId);
@@ -31,7 +31,7 @@ class UserController {
     }
   };
 
-  public createUser = async (req: Request, res: Response): Promise<void> => {
+  public createUser = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const userData: any = req.body;
       const createUserData: any = await this.userService.createUser(userData);
@@ -43,7 +43,7 @@ class UserController {
     }
   };
 
-  public updateUser = async (req: Request, res: Response): Promise<void> => {
+  public updateUser = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const userId = Number(req.params.id);
       const userData: any = req.body;
@@ -56,7 +56,7 @@ class UserController {
     }
   };
 
-  public deleteUser = async (req: Request, res: Response): Promise<void> => {
+  public deleteUser = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const userId = Number(req.params.id);
       const deleteUserData: any = await this.userService.deleteUser(userId);

@@ -6,16 +6,31 @@ class PassportAuthen {
 
   authenRequest(req: Request, res: Response, next: NextFunction) {
     if (req.isAuthenticated()) {
-      console.log(req.user['id']);
       next();
     } else {
       return new HttpResponse(HttpStatus.Unauthorized, { message: 'Unauthentication' }).sendResponse(res);
     }
   }
 
-  authenRequestVendor(req: Request, res: Response, next: NextFunction) {
+  async authenRequestVendor(req: Request, res: Response, next: NextFunction) {
     if (req.user) {
-      if (req.user['id']) next();
+      if (req.user['vendor'] === 0) {
+        return new HttpResponse(HttpStatus.Unauthorized, { message: 'Permission Penied' }).sendResponse(res);
+      } else {
+        next();
+      }
+    } else {
+      return new HttpResponse(HttpStatus.Unauthorized, { message: 'Unauthentication' }).sendResponse(res);
+    }
+  }
+
+  async authenRequestAdmin(req: Request, res: Response, next: NextFunction) {
+    if (req.user) {
+      if (req.user['admin'] === 0) {
+        return new HttpResponse(HttpStatus.Unauthorized, { message: 'Permission Penied' }).sendResponse(res);
+      } else {
+        next();
+      }
     } else {
       return new HttpResponse(HttpStatus.Unauthorized, { message: 'Unauthentication' }).sendResponse(res);
     }

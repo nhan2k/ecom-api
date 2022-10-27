@@ -19,22 +19,18 @@ class IndexRoute {
   constructor() {
     this.initializeRoutes();
 
-    passport.serializeUser(function (user: any, done) {
-      done(null, user.id);
+    passport.serializeUser(function (user: UserModel, done) {
+      if (!user) {
+        return done(null, false);
+      }
+      done(null, user);
     });
 
-    passport.deserializeUser(async (id: Identifier, done) => {
-      try {
-        const user: UserModel | null = await UserModel.findOne({ where: { id: id }, attributes: ['id', 'email', 'admin', 'vendor'] });
-
-        if (user) {
-          done(null, user);
-        } else {
-          done(null, false);
-        }
-      } catch (error: any) {
-        logger.error(`${this.logFile} deserializeUser error ${error.message}`);
-        done(error);
+    passport.deserializeUser((user: UserModel, done) => {
+      if (!user) {
+        return done(null, false);
+      } else {
+        done(null, user);
       }
     });
   }

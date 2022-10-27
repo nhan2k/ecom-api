@@ -3,7 +3,6 @@ import { verify } from 'jsonwebtoken';
 import Ajv from 'ajv';
 import { DefinedError, JSONSchemaType } from 'ajv';
 import addFormats from 'ajv-formats';
-
 import { SECRET_KEY } from '@config/env';
 import { HttpResponse, HttpStatus } from '@config/Http';
 import UserModel from '@/modules/user/user.model';

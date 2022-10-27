@@ -8,7 +8,7 @@ class TagController {
   private logFile = __filename;
   public TagService = new TagService();
 
-  public getTags = async (req: Request, res: Response): Promise<void> => {
+  public getTags = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const findAllTagsData: TTag[] = await this.TagService.findAllTags();
 
@@ -19,7 +19,7 @@ class TagController {
     }
   };
 
-  public getTagById = async (req: Request, res: Response): Promise<void> => {
+  public getTagById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const TagId = Number(req.params.id);
       const findOneTagData: TTag | null = await this.TagService.findTagById(TagId);
@@ -31,7 +31,7 @@ class TagController {
     }
   };
 
-  public createTag = async (req: Request, res: Response): Promise<void> => {
+  public createTag = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const TagData: any = req.body;
       const createTagData: { message: string } = await this.TagService.createTag(TagData);
@@ -43,7 +43,7 @@ class TagController {
     }
   };
 
-  public updateTag = async (req: Request, res: Response): Promise<void> => {
+  public updateTag = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const TagId = Number(req.params.id);
       const TagData: any = req.body;
@@ -56,7 +56,7 @@ class TagController {
     }
   };
 
-  public deleteTag = async (req: Request, res: Response): Promise<void> => {
+  public deleteTag = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const TagId = Number(req.params.id);
       const deleteTagData: any = await this.TagService.deleteTag(TagId);

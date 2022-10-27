@@ -18,16 +18,14 @@ class AuthService {
     }
   }
 
-  public async login(userData: any): Promise<{ message: string } | { accessToken: string; refreshToken: string }> {
+  public async login(email: string): Promise<{ message: string } | { accessToken: string; refreshToken: string }> {
     try {
-      const findUser: any = await UserModel.findOne({ where: { email: userData.email } });
-
-      const isPasswordMatching: boolean = await compare(userData.password, findUser.passwordHash);
-      if (!isPasswordMatching) {
-        return { message: 'Password not matching' };
+      const findUser: UserModel | null = await UserModel.findOne({ where: { email: email }, attributes: ['vendor', 'admin'] });
+      if (!findUser) {
+        return { message: 'Not found user' };
       }
-
-      const { accessToken, refreshToken } = new AuthUtil().createToken(findUser);
+      const { vendor, admin } = findUser;
+      const { accessToken, refreshToken } = new AuthUtil().createToken({ vendor, admin });
 
       return { accessToken, refreshToken };
     } catch (error) {

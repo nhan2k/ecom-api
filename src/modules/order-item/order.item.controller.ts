@@ -8,7 +8,7 @@ class OrderItemController {
   private logFile = __filename;
   public OrderItemService = new OrderItemService();
 
-  public getOrderItems = async (req: Request, res: Response): Promise<void> => {
+  public getOrderItems = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const findAllOrderItemsData: TOrderItem[] = await this.OrderItemService.findAllOrderItems();
 
@@ -19,7 +19,7 @@ class OrderItemController {
     }
   };
 
-  public getOrderItemById = async (req: Request, res: Response): Promise<void> => {
+  public getOrderItemById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const OrderItemId = Number(req.params.id);
       const findOneOrderItemData: TOrderItem | null = await this.OrderItemService.findOrderItemById(OrderItemId);
@@ -31,7 +31,7 @@ class OrderItemController {
     }
   };
 
-  public createOrderItem = async (req: Request, res: Response): Promise<void> => {
+  public createOrderItem = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const OrderItemData: any = req.body;
       const createOrderItemData: { message: string } = await this.OrderItemService.createOrderItem(OrderItemData);
@@ -43,7 +43,7 @@ class OrderItemController {
     }
   };
 
-  public updateOrderItem = async (req: Request, res: Response): Promise<void> => {
+  public updateOrderItem = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const OrderItemId = Number(req.params.id);
       const OrderItemData: any = req.body;
@@ -56,7 +56,7 @@ class OrderItemController {
     }
   };
 
-  public deleteOrderItem = async (req: Request, res: Response): Promise<void> => {
+  public deleteOrderItem = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const OrderItemId = Number(req.params.id);
       const deleteOrderItemData: any = await this.OrderItemService.deleteOrderItem(OrderItemId);

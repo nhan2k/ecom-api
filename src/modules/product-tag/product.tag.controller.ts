@@ -8,7 +8,7 @@ class ProductTagController {
   private logFile = __filename;
   public ProductTagService = new ProductTagService();
 
-  public getProductCategories = async (req: Request, res: Response): Promise<void> => {
+  public getProductCategories = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const findAllProductCategoriesData: TProductTag[] = await this.ProductTagService.findAllProductCategories();
 
@@ -19,7 +19,7 @@ class ProductTagController {
     }
   };
 
-  public getProductTagById = async (req: Request, res: Response): Promise<void> => {
+  public getProductTagById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductTagId = Number(req.params.id);
       const findOneProductTagData: TProductTag | null = await this.ProductTagService.findProductTagById(ProductTagId);
@@ -31,7 +31,7 @@ class ProductTagController {
     }
   };
 
-  public createProductTag = async (req: Request, res: Response): Promise<void> => {
+  public createProductTag = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductTagData: any = req.body;
       const createProductTagData: { message: string } = await this.ProductTagService.createProductTag(ProductTagData);
@@ -43,7 +43,7 @@ class ProductTagController {
     }
   };
 
-  public updateProductTag = async (req: Request, res: Response): Promise<void> => {
+  public updateProductTag = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductTagId = Number(req.params.id);
       const ProductTagData: any = req.body;
@@ -56,7 +56,7 @@ class ProductTagController {
     }
   };
 
-  public deleteProductTag = async (req: Request, res: Response): Promise<void> => {
+  public deleteProductTag = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductTagId = Number(req.params.id);
       const deleteProductTagData: any = await this.ProductTagService.deleteProductTag(ProductTagId);

@@ -8,7 +8,7 @@ class OrderController {
   private logFile = __filename;
   public OrderService = new OrderService();
 
-  public getOrders = async (req: Request, res: Response): Promise<void> => {
+  public getOrders = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const findAllOrdersData: TOrder[] = await this.OrderService.findAllOrders();
 
@@ -19,7 +19,7 @@ class OrderController {
     }
   };
 
-  public getOrderById = async (req: Request, res: Response): Promise<void> => {
+  public getOrderById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const OrderId = Number(req.params.id);
       const findOneOrderData: TOrder | null = await this.OrderService.findOrderById(OrderId);
@@ -31,7 +31,7 @@ class OrderController {
     }
   };
 
-  public createOrder = async (req: Request, res: Response): Promise<void> => {
+  public createOrder = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const OrderData: any = req.body;
       const createOrderData: { message: string } = await this.OrderService.createOrder(OrderData);
@@ -43,7 +43,7 @@ class OrderController {
     }
   };
 
-  public updateOrder = async (req: Request, res: Response): Promise<void> => {
+  public updateOrder = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const OrderId = Number(req.params.id);
       const OrderData: any = req.body;
@@ -56,7 +56,7 @@ class OrderController {
     }
   };
 
-  public deleteOrder = async (req: Request, res: Response): Promise<void> => {
+  public deleteOrder = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const OrderId = Number(req.params.id);
       const deleteOrderData: any = await this.OrderService.deleteOrder(OrderId);

@@ -8,7 +8,7 @@ class TransactionController {
   private logFile = __filename;
   public TransactionService = new TransactionService();
 
-  public getTransactions = async (req: Request, res: Response): Promise<void> => {
+  public getTransactions = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const findAllTransactionsData: TTransaction[] = await this.TransactionService.findAllTransactions();
 
@@ -19,7 +19,7 @@ class TransactionController {
     }
   };
 
-  public getTransactionById = async (req: Request, res: Response): Promise<void> => {
+  public getTransactionById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const TransactionId = Number(req.params.id);
       const findOneTransactionData: TTransaction | null = await this.TransactionService.findTransactionById(TransactionId);
@@ -31,7 +31,7 @@ class TransactionController {
     }
   };
 
-  public createTransaction = async (req: Request, res: Response): Promise<void> => {
+  public createTransaction = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const TransactionData: any = req.body;
       const createTransactionData: { message: string } = await this.TransactionService.createTransaction(TransactionData);
@@ -43,7 +43,7 @@ class TransactionController {
     }
   };
 
-  public updateTransaction = async (req: Request, res: Response): Promise<void> => {
+  public updateTransaction = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const TransactionId = Number(req.params.id);
       const TransactionData: any = req.body;
@@ -56,7 +56,7 @@ class TransactionController {
     }
   };
 
-  public deleteTransaction = async (req: Request, res: Response): Promise<void> => {
+  public deleteTransaction = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const TransactionId = Number(req.params.id);
       const deleteTransactionData: any = await this.TransactionService.deleteTransaction(TransactionId);

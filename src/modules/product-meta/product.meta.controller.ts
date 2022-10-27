@@ -8,7 +8,7 @@ class ProductMetaController {
   private logFile = __filename;
   public ProductMetaService = new ProductMetaService();
 
-  public getProductCategories = async (req: Request, res: Response): Promise<void> => {
+  public getProductCategories = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const findAllProductCategoriesData: TProductMeta[] = await this.ProductMetaService.findAllProductCategories();
 
@@ -19,7 +19,7 @@ class ProductMetaController {
     }
   };
 
-  public getProductMetaById = async (req: Request, res: Response): Promise<void> => {
+  public getProductMetaById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductMetaId = Number(req.params.id);
       const findOneProductMetaData: TProductMeta | null = await this.ProductMetaService.findProductMetaById(ProductMetaId);
@@ -31,7 +31,7 @@ class ProductMetaController {
     }
   };
 
-  public createProductMeta = async (req: Request, res: Response): Promise<void> => {
+  public createProductMeta = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductMetaData: any = req.body;
       const createProductMetaData: { message: string } = await this.ProductMetaService.createProductMeta(ProductMetaData);
@@ -43,7 +43,7 @@ class ProductMetaController {
     }
   };
 
-  public updateProductMeta = async (req: Request, res: Response): Promise<void> => {
+  public updateProductMeta = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductMetaId = Number(req.params.id);
       const ProductMetaData: any = req.body;
@@ -56,7 +56,7 @@ class ProductMetaController {
     }
   };
 
-  public deleteProductMeta = async (req: Request, res: Response): Promise<void> => {
+  public deleteProductMeta = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductMetaId = Number(req.params.id);
       const deleteProductMetaData: any = await this.ProductMetaService.deleteProductMeta(ProductMetaId);

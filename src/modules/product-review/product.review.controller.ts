@@ -8,7 +8,7 @@ class ProductReviewController {
   private logFile = __filename;
   public ProductReviewService = new ProductReviewService();
 
-  public getProductCategories = async (req: Request, res: Response): Promise<void> => {
+  public getProductCategories = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const findAllProductCategoriesData: TProductReview[] = await this.ProductReviewService.findAllProductCategories();
 
@@ -19,7 +19,7 @@ class ProductReviewController {
     }
   };
 
-  public getProductReviewById = async (req: Request, res: Response): Promise<void> => {
+  public getProductReviewById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductReviewId = Number(req.params.id);
       const findOneProductReviewData: TProductReview | null = await this.ProductReviewService.findProductReviewById(ProductReviewId);
@@ -31,7 +31,7 @@ class ProductReviewController {
     }
   };
 
-  public createProductReview = async (req: Request, res: Response): Promise<void> => {
+  public createProductReview = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductReviewData: any = req.body;
       const createProductReviewData: { message: string } = await this.ProductReviewService.createProductReview(ProductReviewData);
@@ -43,7 +43,7 @@ class ProductReviewController {
     }
   };
 
-  public updateProductReview = async (req: Request, res: Response): Promise<void> => {
+  public updateProductReview = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductReviewId = Number(req.params.id);
       const ProductReviewData: any = req.body;
@@ -56,7 +56,7 @@ class ProductReviewController {
     }
   };
 
-  public deleteProductReview = async (req: Request, res: Response): Promise<void> => {
+  public deleteProductReview = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductReviewId = Number(req.params.id);
       const deleteProductReviewData: any = await this.ProductReviewService.deleteProductReview(ProductReviewId);

@@ -8,7 +8,7 @@ class CartItemController {
   private logFile = __filename;
   public CartItemService = new CartItemService();
 
-  public getCartItems = async (req: Request, res: Response): Promise<void> => {
+  public getCartItems = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const findAllCartItemsData: TCartItem[] = await this.CartItemService.findAllCartItems();
 
@@ -19,7 +19,7 @@ class CartItemController {
     }
   };
 
-  public getCartItemById = async (req: Request, res: Response): Promise<void> => {
+  public getCartItemById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CartItemId = Number(req.params.id);
       const findOneCartItemData: TCartItem | null = await this.CartItemService.findCartItemById(CartItemId);
@@ -31,7 +31,7 @@ class CartItemController {
     }
   };
 
-  public createCartItem = async (req: Request, res: Response): Promise<void> => {
+  public createCartItem = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CartItemData: any = req.body;
       const createCartItemData: { message: string } = await this.CartItemService.createCartItem(CartItemData);
@@ -43,7 +43,7 @@ class CartItemController {
     }
   };
 
-  public updateCartItem = async (req: Request, res: Response): Promise<void> => {
+  public updateCartItem = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CartItemId = Number(req.params.id);
       const CartItemData: any = req.body;
@@ -56,7 +56,7 @@ class CartItemController {
     }
   };
 
-  public deleteCartItem = async (req: Request, res: Response): Promise<void> => {
+  public deleteCartItem = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CartItemId = Number(req.params.id);
       const deleteCartItemData: any = await this.CartItemService.deleteCartItem(CartItemId);

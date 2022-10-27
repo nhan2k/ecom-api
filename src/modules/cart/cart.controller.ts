@@ -8,7 +8,7 @@ class CartController {
   private logFile = __filename;
   public CartService = new CartService();
 
-  public getCarts = async (req: Request, res: Response): Promise<void> => {
+  public getCarts = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const findAllCartsData: TCart[] = await this.CartService.findAllCart();
 
@@ -19,7 +19,7 @@ class CartController {
     }
   };
 
-  public getCartById = async (req: Request, res: Response): Promise<void> => {
+  public getCartById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CartId = Number(req.params.id);
       const findOneCartData: TCart | null = await this.CartService.findCartById(CartId);
@@ -31,7 +31,7 @@ class CartController {
     }
   };
 
-  public createCart = async (req: Request, res: Response): Promise<void> => {
+  public createCart = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CartData: any = req.body;
       const createCartData: any = await this.CartService.createCart(CartData);
@@ -43,7 +43,7 @@ class CartController {
     }
   };
 
-  public updateCart = async (req: Request, res: Response): Promise<void> => {
+  public updateCart = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CartId = Number(req.params.id);
       const CartData: any = req.body;
@@ -56,7 +56,7 @@ class CartController {
     }
   };
 
-  public deleteCart = async (req: Request, res: Response): Promise<void> => {
+  public deleteCart = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CartId = Number(req.params.id);
       const deleteCartData: any = await this.CartService.deleteCart(CartId);

@@ -137,13 +137,17 @@ class App {
         },
         async function (username: string, password: string, done: any) {
           try {
-            const user: UserModel | null = await UserModel.findOne({ where: { email: username }, attributes: ['email', 'passwordHash', 'id'] });
+            const user: UserModel | null = await UserModel.findOne({
+              where: { email: username },
+              attributes: ['email', 'passwordHash', 'id', 'vendor', 'admin'],
+            });
             if (!user) {
               done(null, false);
             } else {
               compare(password, user.passwordHash).then(res => {
                 if (res) {
-                  done(null, user);
+                  const { email, id, vendor, admin } = user;
+                  done(null, { email, id, vendor, admin });
                 } else {
                   done(null, false);
                 }
