@@ -22,4 +22,8 @@ export const {
   SALT,
   ACCESS_EXPIRESIN,
   REFRESH_EXPIRESIN,
+  REDIS_HOST,
+  REDIS_PORT,
+  REDIS_DB,
+  REDIS_USERNAME,
 } = process.env;

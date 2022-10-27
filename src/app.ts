@@ -17,6 +17,10 @@ import {
   AUDIENCE,
   SECRET_KEY,
   REDIS_PASS,
+  REDIS_HOST,
+  REDIS_PORT,
+  REDIS_DB,
+  REDIS_USERNAME,
 } from '@config/env';
 import { sequelize } from '@connections/databases';
 import errorMiddleware from '@/middlewares/error.middleware';
@@ -88,7 +92,11 @@ class App {
     this.app.use(passport.initialize());
     const RedisStore = connectRedis(session);
     const redisClient = new Ioredis({
+      host: REDIS_HOST,
+      username: REDIS_USERNAME,
       password: REDIS_PASS,
+      port: Number(REDIS_PORT),
+      db: Number(REDIS_DB),
     });
     this.app.use(
       session({
@@ -107,7 +115,7 @@ class App {
   }
 
   private initializeRoutes() {
-    let opts: any = {
+    let opts: passportJWT.StrategyOptions = {
       jwtFromRequest: this.ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: SECRET_KEY,
       issuer: ISSUER,

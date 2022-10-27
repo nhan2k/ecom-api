@@ -5,7 +5,7 @@ import CategoryModel from '@modules/category/category.model';
 import OrderModel from '@modules/order/order.model';
 import OrderItemModel from '@modules/order-item/order.item.model';
 import ProductModel from '@modules/product/product.model';
-import ProductCategoryModel from '@modules/product_category/product.category.model';
+import ProductCategoryModel from '@modules/product-category/product.category.model';
 import ProductMetaModel from '@modules/product-meta/product.meta.model';
 import ProductReviewModel from '@modules/product-review/product.review.model';
 import ProductTagModel from '@modules/product-tag/product.tag.model';
