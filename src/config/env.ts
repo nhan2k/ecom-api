@@ -26,4 +26,6 @@ export const {
   REDIS_PORT,
   REDIS_DB,
   REDIS_USERNAME,
+  TOKEN_BOT,
+  CHAT_ID,
 } = process.env;
