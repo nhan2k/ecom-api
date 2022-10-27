@@ -14,6 +14,7 @@ class AuthRoute {
 
   private initializeRoutes() {
     this.router.post(`${this.path}/logout`, new PassportAuthen().authenRequest, this.authController.logOut);
+    this.router.post(`${this.path}/reset-password`, new PassportAuthen().authenRequest, this.authController.resetPassword);
   }
 }
 

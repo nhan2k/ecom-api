@@ -40,7 +40,7 @@ class IndexRoute {
       res.status(200).json({ message: 'App is running' });
     });
     this.router.post('/signup', signup, this.authController.signUp);
-    this.router.post(`${this.path}`, passport.authenticate('local', { failureRedirect: '/login' }), this.authController.logIn);
+    this.router.post(`${this.path}`, passport.authenticate('local', { failureRedirect: '/login' }), this.authController.signIn);
     this.router.get('/login', this.authController.signInFail);
     this.router.use(`${this.path}`, this.passportAuthen.authenRequest, this.moduleRoute.router);
   }
