@@ -11,6 +11,13 @@ module.exports = {
       },
       productId: {
         type: Sequelize.BIGINT(20),
+        unique: true,
+        references: {
+          model: 'product',
+          key: 'id',
+        },
+        onUpdate: 'NO ACTION',
+        onDelete: 'NO ACTION',
       },
       key: {
         type: Sequelize.STRING(50),

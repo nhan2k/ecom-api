@@ -11,9 +11,21 @@ module.exports = {
       },
       productId: {
         type: Sequelize.BIGINT(20),
+        references: {
+          model: 'product',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       categoryId: {
         type: Sequelize.BIGINT(20),
+        references: {
+          model: 'category',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       createdAt: {
         type: Sequelize.DATE,

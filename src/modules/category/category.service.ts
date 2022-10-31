@@ -1,6 +1,7 @@
 import CategoryModel from './category.model';
 import { logger } from '@utils/logger';
-
+import { ICategoryData } from './type';
+import slugify from 'slugify';
 class CategoryService {
   public logFile = __filename;
 
@@ -24,10 +25,14 @@ class CategoryService {
     }
   }
 
-  public async createCategory(CategoryData: any): Promise<{ message: string }> {
+  public async createCategory(categoryData: ICategoryData): Promise<{ message: string }> {
     try {
-      console.log(CategoryData);
-      await CategoryModel.create({ ...CategoryData });
+      const { title, slug, ...rest } = categoryData;
+      let newSlug = '';
+      if (title) {
+        newSlug = slugify(title);
+      }
+      await CategoryModel.create({ title, slug: newSlug, ...rest });
       return { message: 'Success' };
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
@@ -35,7 +40,7 @@ class CategoryService {
     }
   }
 
-  public async updateCategory(CategoryId: number, CategoryData: any): Promise<{ message: string }> {
+  public async updateCategory(CategoryId: number, CategoryData: ICategoryData): Promise<{ message: string }> {
     try {
       const findCategory: CategoryModel | null = await CategoryModel.findByPk(CategoryId);
       if (!findCategory) {

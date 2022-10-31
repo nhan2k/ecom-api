@@ -1,6 +1,8 @@
 import ProductCategoryModel from './product.category.model';
 import { logger } from '@utils/logger';
-
+import ProductModel from '@modules/product/product.model';
+import CategoryModel from '@modules/category/category.model';
+import { IProductCategoryData } from './type';
 class ProductCategoryService {
   public logFile = __filename;
 
@@ -24,14 +26,23 @@ class ProductCategoryService {
     }
   }
 
-  public async createProductCategory(ProductCategoryData: any): Promise<{ message: string }> {
+  public async createProductCategory(ProductCategoryData: IProductCategoryData): Promise<{ isSuccess?: boolean; message: string }> {
     try {
-      console.log(ProductCategoryData);
+      const { categoryId, productId } = ProductCategoryData;
+      const product = await ProductModel.findByPk(productId);
+      if (!product) {
+        return { isSuccess: false, message: 'Not Found Product' };
+      }
+      const category = await CategoryModel.findByPk(categoryId);
+      if (!category) {
+        return { isSuccess: false, message: 'Not Found Category' };
+      }
+
       await ProductCategoryModel.create({ ...ProductCategoryData });
-      return { message: 'Success' };
+      return { isSuccess: true, message: 'Success' };
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message };
     }
   }
 
@@ -45,7 +56,7 @@ class ProductCategoryService {
       return { message: 'Success' };
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message };
     }
   }
 
@@ -60,7 +71,7 @@ class ProductCategoryService {
       return { message: 'Success' };
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message };
     }
   }
 }

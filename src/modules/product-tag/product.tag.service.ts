@@ -1,5 +1,7 @@
 import ProductTagModel from './product.tag.model';
 import { logger } from '@utils/logger';
+import ProductModel from '@modules/product/product.model';
+import TagModel from '@modules/tag/tag.model';
 
 class ProductTagService {
   public logFile = __filename;
@@ -24,9 +26,17 @@ class ProductTagService {
     }
   }
 
-  public async createProductTag(ProductTagData: any): Promise<{ message: string }> {
+  public async createProductTag(ProductTagData: any): Promise<{ isSuccess?: boolean; message: string }> {
     try {
-      console.log(ProductTagData);
+      const { tagId, productId } = ProductTagData;
+      const product = await ProductModel.findByPk(productId);
+      if (!product) {
+        return { isSuccess: false, message: 'Not Found Product' };
+      }
+      const tag = await TagModel.findByPk(tagId);
+      if (!tag) {
+        return { isSuccess: false, message: 'Not Found Tag' };
+      }
       await ProductTagModel.create({ ...ProductTagData });
       return { message: 'Success' };
     } catch (error) {

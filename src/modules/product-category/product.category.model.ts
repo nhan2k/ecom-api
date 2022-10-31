@@ -1,5 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '@connections/databases';
+import ProductModel from '@modules/product/product.model';
+import CategoryModel from '@modules/category/category.model';
 export class ProductCategoryModel extends Model {
   declare productId: number;
   declare categoryId: number;
@@ -19,10 +21,18 @@ ProductCategoryModel.init(
     productId: {
       type: DataTypes.BIGINT,
       allowNull: false,
+      references: {
+        model: ProductModel,
+        key: 'id',
+      },
     },
     categoryId: {
       type: DataTypes.BIGINT,
       allowNull: false,
+      references: {
+        model: CategoryModel,
+        key: 'id',
+      },
     },
     createdAt: {
       type: DataTypes.DATE,

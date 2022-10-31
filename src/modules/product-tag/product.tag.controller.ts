@@ -15,7 +15,7 @@ class ProductTagController {
       return new HttpResponse(HttpStatus.Created, findAllProductCategoriesData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
     }
   };
 
@@ -27,19 +27,21 @@ class ProductTagController {
       return new HttpResponse(HttpStatus.Created, findOneProductTagData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
     }
   };
 
   public createProductTag = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductTagData: any = req.body;
-      const createProductTagData: { message: string } = await this.ProductTagService.createProductTag(ProductTagData);
-
+      const createProductTagData: { isSuccess?: boolean; message: string } = await this.ProductTagService.createProductTag(ProductTagData);
+      if (!createProductTagData.isSuccess) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: createProductTagData.message }).sendResponse(res);
+      }
       return new HttpResponse(HttpStatus.Created, createProductTagData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
     }
   };
 
@@ -52,7 +54,7 @@ class ProductTagController {
       return new HttpResponse(HttpStatus.Created, updateProductTagData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
     }
   };
 
@@ -64,7 +66,7 @@ class ProductTagController {
       return new HttpResponse(HttpStatus.Created, deleteProductTagData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
     }
   };
 }

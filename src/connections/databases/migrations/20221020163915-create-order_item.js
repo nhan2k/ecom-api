@@ -11,9 +11,21 @@ module.exports = {
       },
       productId: {
         type: Sequelize.BIGINT(20),
+        references: {
+          model: 'category',
+          key: 'id',
+        },
+        onUpdate: 'NO ACTION',
+        onDelete: 'NO ACTION',
       },
       orderId: {
         type: Sequelize.BIGINT(20),
+        references: {
+          model: 'category',
+          key: 'id',
+        },
+        onUpdate: 'NO ACTION',
+        onDelete: 'NO ACTION',
       },
       sku: {
         type: Sequelize.STRING(100),

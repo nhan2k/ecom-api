@@ -20,9 +20,11 @@ module.exports = {
       },
       mobile: {
         type: Sequelize.STRING(15),
+        unique: true,
       },
       email: {
         type: Sequelize.STRING(50),
+        unique: true,
       },
       passwordHash: {
         type: Sequelize.STRING(150),

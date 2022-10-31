@@ -34,8 +34,12 @@ class ProductCategoryController {
   public createProductCategory = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductCategoryData: any = req.body;
-      const createProductCategoryData: { message: string } = await this.ProductCategoryService.createProductCategory(ProductCategoryData);
-
+      const createProductCategoryData: { isSuccess?: boolean; message: string } = await this.ProductCategoryService.createProductCategory(
+        ProductCategoryData,
+      );
+      if (!createProductCategoryData.isSuccess) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: createProductCategoryData.message }).sendResponse(res);
+      }
       return new HttpResponse(HttpStatus.Created, createProductCategoryData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);

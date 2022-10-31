@@ -11,6 +11,12 @@ module.exports = {
       },
       userId: {
         type: Sequelize.BIGINT(20),
+        references: {
+          model: 'user',
+          key: 'id',
+        },
+        onUpdate: 'NO ACTION',
+        onDelete: 'NO ACTION',
       },
       title: {
         type: Sequelize.STRING(75),
@@ -20,9 +26,10 @@ module.exports = {
       },
       slug: {
         type: Sequelize.STRING(100),
+        unique: true,
       },
       summary: {
-        type: Sequelize.TEXT,
+        type: Sequelize.JSON,
       },
       type: {
         type: Sequelize.SMALLINT,
@@ -58,7 +65,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
       content: {
-        type: Sequelize.TEXT,
+        type: Sequelize.JSON,
       },
       deletedAt: {
         type: Sequelize.DATE,

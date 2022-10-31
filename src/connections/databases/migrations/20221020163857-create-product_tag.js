@@ -11,9 +11,21 @@ module.exports = {
       },
       productId: {
         type: Sequelize.BIGINT(20),
+        references: {
+          model: 'product',
+          key: 'id',
+        },
+        onUpdate: 'NO ACTION',
+        onDelete: 'NO ACTION',
       },
       tagId: {
         type: Sequelize.BIGINT(20),
+        references: {
+          model: 'tag',
+          key: 'id',
+        },
+        onUpdate: 'NO ACTION',
+        onDelete: 'NO ACTION',
       },
       createdAt: {
         type: Sequelize.DATE,

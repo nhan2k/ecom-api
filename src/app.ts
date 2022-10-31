@@ -72,8 +72,8 @@ class App {
   private async connectToDatabase() {
     try {
       await sequelize.authenticate();
-      // new Associations().associations();
-      logger.info(`${this.logFile} Connection has been established successfully.`);
+      new Associations().associations();
+      logger.info(`${this.logFile} Connection DB & associations has been established successfully.`);
     } catch (error: any) {
       logger.error(`${this.logFile} Unable to connect to the database: ${error.message}`);
     }

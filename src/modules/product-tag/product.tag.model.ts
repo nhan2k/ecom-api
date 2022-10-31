@@ -1,5 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '@connections/databases';
+import ProductModel from '@modules/product/product.model';
+import TagModel from '@modules/tag/tag.model';
 export class ProductTagModel extends Model {
   declare productId: number;
   declare tagId: number;
@@ -19,10 +21,18 @@ ProductTagModel.init(
     productId: {
       type: DataTypes.BIGINT,
       allowNull: false,
+      references: {
+        model: ProductModel,
+        key: 'id',
+      },
     },
     tagId: {
       type: DataTypes.BIGINT,
       allowNull: false,
+      references: {
+        model: TagModel,
+        key: 'id',
+      },
     },
     createdAt: {
       type: DataTypes.DATE,

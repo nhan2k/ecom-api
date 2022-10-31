@@ -11,6 +11,12 @@ module.exports = {
       },
       parentId: {
         type: Sequelize.BIGINT(20),
+        references: {
+          model: 'category',
+          key: 'id',
+        },
+        onUpdate: 'NO ACTION',
+        onDelete: 'NO ACTION',
       },
       title: {
         type: Sequelize.STRING(75),

@@ -6,7 +6,7 @@ export class ProductModel extends Model {
   declare title: string;
   declare metaTitle: string;
   declare slug: string;
-  declare summary: string;
+  declare summary: JSON;
   declare type: number;
   declare sku: string;
   declare price: number;
@@ -16,7 +16,7 @@ export class ProductModel extends Model {
   declare publishedAt: Date;
   declare startsAt: Date;
   declare endsAt: Date;
-  declare content: string;
+  declare content: JSON;
   declare createdAt: Date;
   declare updatedAt: Date;
   declare deletedAt: Date;
@@ -44,9 +44,10 @@ ProductModel.init(
     slug: {
       type: DataTypes.STRING(100),
       allowNull: false,
+      unique: true,
     },
     summary: {
-      type: DataTypes.TEXT,
+      type: DataTypes.JSON,
     },
     type: {
       type: DataTypes.SMALLINT,
@@ -93,7 +94,7 @@ ProductModel.init(
       type: DataTypes.DATE,
     },
     content: {
-      type: DataTypes.TEXT,
+      type: DataTypes.JSON,
     },
     deletedAt: {
       type: DataTypes.DATE,
