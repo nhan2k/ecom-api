@@ -26,7 +26,6 @@ class OrderItemService {
 
   public async createOrderItem(OrderItemData: any): Promise<{ message: string }> {
     try {
-      console.log(OrderItemData);
       await OrderItemModel.create({ ...OrderItemData });
       return { message: 'Success' };
     } catch (error) {

@@ -26,7 +26,6 @@ class ProductReviewService {
 
   public async createProductReview(ProductReviewData: any): Promise<{ message: string }> {
     try {
-      console.log(ProductReviewData);
       await ProductReviewModel.create({ ...ProductReviewData });
       return { message: 'Success' };
     } catch (error) {

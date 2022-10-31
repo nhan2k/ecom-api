@@ -9,9 +9,15 @@ module.exports = {
         autoIncrementIdentity: true,
         type: Sequelize.BIGINT(20),
       },
-      userId: {
-        type: Sequelize.BIGINT(20),
-      },
+      // userId: {
+      //   type: Sequelize.BIGINT(20),
+      //   references: {
+      //     model: 'user',
+      //     key: 'id',
+      //   },
+      //   onUpdate: 'NO ACTION',
+      //   onDelete: 'NO ACTION',
+      // },
       sessionId: {
         type: Sequelize.STRING(100),
       },

@@ -26,7 +26,6 @@ class ProductMetaService {
 
   public async createProductMeta(ProductMetaData: any): Promise<{ message: string }> {
     try {
-      console.log(ProductMetaData);
       await ProductMetaModel.create({ ...ProductMetaData });
       return { message: 'Success' };
     } catch (error) {

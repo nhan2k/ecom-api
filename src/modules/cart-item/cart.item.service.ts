@@ -26,7 +26,6 @@ class CartItemService {
 
   public async createCartItem(CartItemData: any): Promise<{ message: string }> {
     try {
-      console.log(CartItemData);
       await CartItemModel.create({ ...CartItemData });
       return { message: 'Success' };
     } catch (error) {

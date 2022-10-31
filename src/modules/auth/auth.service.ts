@@ -1,6 +1,7 @@
 import { hash } from 'bcryptjs';
 import AuthUtil from './auth.util';
-import UserModel from '@/modules/user/user.model';
+import UserModel from '@modules/user/user.model';
+import UserService from '@modules/user/user.service';
 import { logger } from '@utils/logger';
 import { SALT } from '@config/env';
 import { UpdateOptions } from 'sequelize';
@@ -23,13 +24,13 @@ class AuthService {
 
   public async signIn(email: string): Promise<{ message: string } | { accessToken: string; refreshToken: string }> {
     try {
-      const findUser: UserModel | null = await UserModel.findOne({ where: { email: email }, attributes: ['vendor', 'admin'] });
+      const findUser: UserModel | null = await UserModel.findOne({ where: { email: email }, attributes: ['vendor', 'admin', 'id'] });
       if (!findUser) {
         return { message: 'Not found user' };
       }
       const { vendor, admin } = findUser;
       const { accessToken, refreshToken } = new AuthUtil().createToken({ vendor, admin });
-
+      await new UserService().updateUser(findUser.id, { lastLogin: new Date() });
       return { accessToken, refreshToken };
     } catch (error) {
       logger.error(`${this.logFile} ${error}`);

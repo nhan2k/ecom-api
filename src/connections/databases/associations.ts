@@ -30,7 +30,7 @@ class Associations {
       // ProductCategoryModel.belongsTo(ProductModel, { foreignKey: 'productId' });
 
       ProductModel.belongsToMany(CategoryModel, { through: ProductCategoryModel, foreignKey: 'productId' });
-      CategoryModel.belongsToMany(ProductModel, { through: ProductCategoryModel, foreignKey: 'tagId' });
+      CategoryModel.belongsToMany(ProductModel, { through: ProductCategoryModel, foreignKey: 'categoryId' });
 
       ProductModel.hasMany(ProductReviewModel, { foreignKey: 'productId' });
       ProductReviewModel.belongsTo(ProductModel, { foreignKey: 'productId' });

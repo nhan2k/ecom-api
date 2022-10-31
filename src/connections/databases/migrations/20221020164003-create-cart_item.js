@@ -9,12 +9,24 @@ module.exports = {
         autoIncrementIdentity: true,
         type: Sequelize.BIGINT(20),
       },
-      productId: {
-        type: Sequelize.BIGINT(20),
-      },
-      cartId: {
-        type: Sequelize.BIGINT(20),
-      },
+      // productId: {
+      //   type: Sequelize.BIGINT(20),
+      //   references: {
+      //     model: 'product',
+      //     key: 'id',
+      //   },
+      //   onUpdate: 'NO ACTION',
+      //   onDelete: 'NO ACTION',
+      // },
+      // cartId: {
+      //   type: Sequelize.BIGINT(20),
+      //   references: {
+      //     model: 'cart',
+      //     key: 'id',
+      //   },
+      //   onUpdate: 'NO ACTION',
+      //   onDelete: 'NO ACTION',
+      // },
       sku: {
         type: Sequelize.STRING(100),
       },

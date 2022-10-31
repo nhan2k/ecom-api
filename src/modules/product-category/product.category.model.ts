@@ -21,18 +21,10 @@ ProductCategoryModel.init(
     productId: {
       type: DataTypes.BIGINT,
       allowNull: false,
-      references: {
-        model: ProductModel,
-        key: 'id',
-      },
     },
     categoryId: {
       type: DataTypes.BIGINT,
       allowNull: false,
-      references: {
-        model: CategoryModel,
-        key: 'id',
-      },
     },
     createdAt: {
       type: DataTypes.DATE,

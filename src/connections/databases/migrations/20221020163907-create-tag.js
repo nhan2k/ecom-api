@@ -17,6 +17,7 @@ module.exports = {
       },
       slug: {
         type: Sequelize.STRING(100),
+        unique: true,
       },
       content: {
         type: Sequelize.TEXT,

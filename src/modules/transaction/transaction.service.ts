@@ -26,7 +26,6 @@ class TransactionService {
 
   public async createTransaction(TransactionData: any): Promise<{ message: string }> {
     try {
-      console.log(TransactionData);
       await TransactionModel.create({ ...TransactionData });
       return { message: 'Success' };
     } catch (error) {

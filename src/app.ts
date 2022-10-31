@@ -36,6 +36,8 @@ import UserModel from '@modules/user/user.model';
 import passportJWT from 'passport-jwt';
 import passportLocal from 'passport-local/lib';
 import { compare } from 'bcryptjs';
+import BotTelegram from '@utils/telegramBotApi';
+import axios from 'axios';
 
 class App {
   public app: express.Application;
