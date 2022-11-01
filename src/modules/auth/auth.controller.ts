@@ -12,7 +12,7 @@ class AuthController {
       const userData = req.body;
       const { email } = userData;
       const result = await new AuthService().signUp(userData);
-      BotTelegram.botSendMessage(`${email} signIn`);
+      BotTelegram.botSendMessage(`${email} signUp`);
 
       return new HttpResponse(HttpStatus.Created, result).sendResponse(res);
     } catch (error) {
