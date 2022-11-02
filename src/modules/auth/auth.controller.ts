@@ -66,6 +66,19 @@ class AuthController {
       return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
     }
   }
+
+  public async sendLinkReset(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    try {
+      const { email } = req.params;
+      const response = await new AuthService().sendLinkReset(email);
+      // BotTelegram.botSendMessage(`${email} reset password`);
+
+      return new HttpResponse(HttpStatus.OK, response).sendResponse(res);
+    } catch (error) {
+      logger.error(`${this.logFile} ${error}`);
+      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
+    }
+  }
 }
 
 export default AuthController;

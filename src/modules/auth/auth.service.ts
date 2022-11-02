@@ -38,6 +38,21 @@ class AuthService {
     }
   }
 
+  public async sendLinkReset(emailName: string): Promise<{ message: string }> {
+    try {
+      const findUser: UserModel | null = await UserModel.findOne({ where: { email: emailName }, attributes: ['email'] });
+      if (!findUser) {
+        return { message: 'Not found user' };
+      }
+      // await new AuthUtil().sendMail(findUser.email);
+      await new AuthUtil().sendMail(findUser.email);
+      return { message: 'Send link to gmail, please check!' };
+    } catch (error) {
+      logger.error(`${this.logFile} ${error}`);
+      return error;
+    }
+  }
+
   public async resetPassword(emailName: string, newPassword: string): Promise<{ message: string }> {
     try {
       const findUser: UserModel | null = await UserModel.findOne({ where: { email: emailName }, attributes: ['email'] });

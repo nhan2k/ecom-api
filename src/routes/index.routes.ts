@@ -2,9 +2,7 @@ import { Request, Response, Router } from 'express';
 import ModuleRoute from '@/modules/index.routes';
 import { signup } from '@modules/auth/auth.middleware';
 import passport from 'passport';
-import { Identifier } from 'sequelize';
 import UserModel from '@modules/user/user.model';
-import { logger } from '@utils/logger';
 import AuthController from '@modules/auth/auth.controller';
 import PassportAuthen from '@middlewares/passport.middleware';
 
@@ -41,6 +39,7 @@ class IndexRoute {
     });
 
     this.router.post('/signup', signup, this.authController.signUp);
+    this.router.get('/link-reset/:email', this.authController.sendLinkReset);
     this.router.post(`${this.path}`, passport.authenticate('local', { failureRedirect: '/login' }), this.authController.signIn);
     this.router.get('/login', this.authController.signInFail);
     this.router.use(`${this.path}`, this.passportAuthen.authenRequest, this.moduleRoute.router);
