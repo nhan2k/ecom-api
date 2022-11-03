@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import AuthService from './auth.service';
 import { HttpResponse, HttpStatus } from '@config/Http';
 import { logger } from '@utils/logger';
-import BotTelegram from '@utils/telegramBotApi';
+// import BotTelegram from '@utils/telegramBotApi';
 
 class AuthController {
   public logFile = __filename;
@@ -12,7 +12,7 @@ class AuthController {
       const userData = req.body;
       const { email } = userData;
       const result = await new AuthService().signUp(userData);
-      BotTelegram.botSendMessage(`${email} signUp`);
+      // BotTelegram.botSendMessage(`${email} signUp`);
 
       return new HttpResponse(HttpStatus.Created, result).sendResponse(res);
     } catch (error) {
@@ -25,7 +25,7 @@ class AuthController {
     try {
       const { email } = req.body;
       const data = await new AuthService().signIn(email);
-      BotTelegram.botSendMessage(`${email} signIn`);
+      // BotTelegram.botSendMessage(`${email} signIn`);
       return new HttpResponse(HttpStatus.OK, data).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error}`);
@@ -57,7 +57,7 @@ class AuthController {
     try {
       const { email, password } = req.body;
       const response = await new AuthService().resetPassword(email, password);
-      BotTelegram.botSendMessage(`${email} reset password`);
+      // BotTelegram.botSendMessage(`${email} reset password`);
 
       res.clearCookie('connect.sid');
       return new HttpResponse(HttpStatus.OK, response).sendResponse(res);

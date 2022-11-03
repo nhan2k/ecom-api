@@ -4,14 +4,27 @@ import nodemailer from 'nodemailer';
 
 class AuthUtil {
   public createToken({ vendor, admin }: { vendor: number; admin: number }): { accessToken: string; refreshToken: string } {
-    const payload: { vendor: number; admin: number } = { vendor, admin };
+    const user = 1;
+    const role = [
+      {
+        role: vendor === 1 ? 'VENDOR' : null,
+      },
+      {
+        role: admin === 1 ? 'ADMIN' : null,
+      },
+      {
+        role: vendor === 0 && admin === 0 ? 'USER' : null,
+      },
+    ];
+    const payload = role.filter((element: { role: string | null }) => element.role !== null);
+
     const optionsAccess: SignOptions = { issuer: ISSUER, audience: AUDIENCE, expiresIn: ACCESS_EXPIRESIN };
     const optionsRefresh: SignOptions = { issuer: ISSUER, audience: AUDIENCE, expiresIn: REFRESH_EXPIRESIN };
     const secretKey: string = String(SECRET_KEY);
 
     return {
-      accessToken: sign(payload, secretKey, optionsAccess),
-      refreshToken: sign(payload, secretKey, optionsRefresh),
+      accessToken: sign(payload[0], secretKey, optionsAccess),
+      refreshToken: sign(payload[0], secretKey, optionsRefresh),
     };
   }
 
