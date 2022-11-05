@@ -22,7 +22,7 @@ class AuthService {
     }
   }
 
-  public async signIn(email: string): Promise<{ message: string } | { accessToken: string; refreshToken: string }> {
+  public async signIn(email: string): Promise<{ message: string } | { accessToken: string; refreshToken: string; role: string }> {
     try {
       const findUser: UserModel | null = await UserModel.findOne({ where: { email: email }, attributes: ['vendor', 'admin', 'id'] });
       if (!findUser) {
@@ -31,7 +31,9 @@ class AuthService {
       const { vendor, admin } = findUser;
       const { accessToken, refreshToken } = new AuthUtil().createToken({ vendor, admin });
       await new UserService().updateUser(findUser.id, { lastLogin: new Date() });
-      return { accessToken, refreshToken };
+
+      let role = findUser.vendor === 1 ? 'VENDOR' : findUser.admin === 1 ? 'ADMIN' : 'USER';
+      return { accessToken, refreshToken, role };
     } catch (error) {
       logger.error(`${this.logFile} ${error}`);
       return error;

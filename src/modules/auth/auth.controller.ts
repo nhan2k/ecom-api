@@ -10,7 +10,6 @@ class AuthController {
   public async signUp(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
     try {
       const userData = req.body;
-      const { email } = userData;
       const result = await new AuthService().signUp(userData);
       // BotTelegram.botSendMessage(`${email} signUp`);
 
