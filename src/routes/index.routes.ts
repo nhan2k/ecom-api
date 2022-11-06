@@ -42,7 +42,7 @@ class IndexRoute {
     this.router.get('/link-reset/:email', this.authController.sendLinkReset);
     this.router.post(`${this.path}`, passport.authenticate('local', { failureRedirect: '/login' }), this.authController.signIn);
     this.router.get('/login', this.authController.signInFail);
-    this.router.use(`${this.path}`, this.passportAuthen.authenRequest, this.moduleRoute.router);
+    this.router.use(`${this.path}`, passport.authenticate('jwt', { session: false }), this.moduleRoute.router);
   }
 }
 

@@ -41,10 +41,9 @@ class AuthController {
       req.session.destroy(function (error) {
         if (error) {
           return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
-        } else {
-          res.clearCookie('connect.sid');
         }
       });
+      res.clearCookie('connect.sid');
       return new HttpResponse(HttpStatus.OK, { message: 'LogOut success' }).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error}`);

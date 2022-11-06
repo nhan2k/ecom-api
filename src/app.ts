@@ -81,7 +81,7 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use(morgan(String(LOG_FORMAT), { stream }));
-    this.app.use(cors({ origin: ORIGIN, credentials: CREDENTIALS }));
+    this.app.use(cors({ origin: ORIGIN, credentials: Boolean(CREDENTIALS) }));
     this.app.use(hpp());
     this.app.use(helmet());
     this.app.use(compression());
@@ -100,8 +100,8 @@ class App {
     });
     this.app.use(
       session({
-        saveUninitialized: false,
-        resave: true,
+        saveUninitialized: true,
+        resave: false,
         secret: String(SESSION_SECRET),
         cookie: {
           secure: false,
@@ -124,7 +124,7 @@ class App {
     passport.use(
       new this.JwtStrategy(opts, async function (jwt_payload, done) {
         try {
-          const user: UserModel | null = await UserModel.findOne({ where: { id: jwt_payload.id }, attributes: ['id'] });
+          const user: UserModel | null = await UserModel.findOne({ where: { id: jwt_payload.jti }, attributes: ['id'] });
           if (user) {
             return done(null, user);
           } else {

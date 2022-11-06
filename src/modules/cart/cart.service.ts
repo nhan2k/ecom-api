@@ -1,5 +1,6 @@
 import CartModel from '@modules/cart/cart.model';
 import { logger } from '@utils/logger';
+import { cartStatusMap } from './enum';
 
 class CartService {
   public logFile = __filename;
@@ -7,6 +8,7 @@ class CartService {
   public async findAllCart(): Promise<CartModel[]> {
     try {
       const allCart: CartModel[] = await CartModel.findAll();
+
       return allCart;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);

@@ -28,8 +28,8 @@ class AuthService {
       if (!findUser) {
         return { message: 'Not found user' };
       }
-      const { vendor, admin } = findUser;
-      const { accessToken, refreshToken } = new AuthUtil().createToken({ vendor, admin });
+      const { vendor, admin, id } = findUser;
+      const { accessToken, refreshToken } = new AuthUtil().createToken({ vendor, admin, id });
       await new UserService().updateUser(findUser.id, { lastLogin: new Date() });
 
       let role = findUser.vendor === 1 ? 'VENDOR' : findUser.admin === 1 ? 'ADMIN' : 'USER';

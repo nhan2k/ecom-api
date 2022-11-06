@@ -3,8 +3,7 @@ import { sign, SignOptions } from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 
 class AuthUtil {
-  public createToken({ vendor, admin }: { vendor: number; admin: number }): { accessToken: string; refreshToken: string } {
-    const user = 1;
+  public createToken({ vendor, admin, id }: { vendor: number; admin: number; id: number }): { accessToken: string; refreshToken: string } {
     const role = [
       {
         role: vendor === 1 ? 'VENDOR' : null,
@@ -18,8 +17,8 @@ class AuthUtil {
     ];
     const payload = role.filter((element: { role: string | null }) => element.role !== null);
 
-    const optionsAccess: SignOptions = { issuer: ISSUER, audience: AUDIENCE, expiresIn: ACCESS_EXPIRESIN };
-    const optionsRefresh: SignOptions = { issuer: ISSUER, audience: AUDIENCE, expiresIn: REFRESH_EXPIRESIN };
+    const optionsAccess: SignOptions = { issuer: ISSUER, audience: AUDIENCE, expiresIn: ACCESS_EXPIRESIN, jwtid: String(id) };
+    const optionsRefresh: SignOptions = { issuer: ISSUER, audience: AUDIENCE, expiresIn: REFRESH_EXPIRESIN, jwtid: String(id) };
     const secretKey: string = String(SECRET_KEY);
 
     return {
