@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import CartService from './cart.service';
 import { HttpResponse, HttpStatus } from '@config/Http';
 import { logger } from '@utils/logger';
-import { TCart } from './cart.interface';
+import _ from 'lodash';
 
 class CartController {
   private logFile = __filename;
@@ -10,49 +10,58 @@ class CartController {
 
   public getCarts = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const findAllCartsData: TCart[] = await this.CartService.findAllCart();
-
+      const findAllCartsData = await this.CartService.findAllCart();
+      if (!Array.isArray(findAllCartsData)) {
+        return new HttpResponse(HttpStatus.BadRequest, findAllCartsData).sendResponse(res);
+      }
       return new HttpResponse(HttpStatus.OK, findAllCartsData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
     }
   };
 
   public getCartById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CartId = Number(req.params.id);
-      const findOneCartData: TCart | null = await this.CartService.findCartById(CartId);
+      const findOneCartData = await this.CartService.findCartById(CartId);
+      if (_.findKey(findOneCartData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, findOneCartData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, findOneCartData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
     }
   };
 
   public createCart = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const CartData: any = req.body;
-      const createCartData: any = await this.CartService.createCart(CartData);
-
+      const CartData = req.body;
+      const createCartData = await this.CartService.createCart(CartData);
+      if (_.findKey(createCartData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, createCartData).sendResponse(res);
+      }
       return new HttpResponse(HttpStatus.Created, createCartData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
     }
   };
 
   public updateCart = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CartId = Number(req.params.id);
-      const CartData: any = req.body;
-      const updateCartData: any = await this.CartService.updateCart(CartId, CartData);
-
+      const CartData = req.body;
+      const updateCartData = await this.CartService.updateCart(CartId, CartData);
+      if (_.findKey(updateCartData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, updateCartData).sendResponse(res);
+      }
       return new HttpResponse(HttpStatus.Created, updateCartData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
     }
   };
 
@@ -60,11 +69,13 @@ class CartController {
     try {
       const CartId = Number(req.params.id);
       const deleteCartData: any = await this.CartService.deleteCart(CartId);
-
-      return new HttpResponse(HttpStatus.Created, deleteCartData).sendResponse(res);
+      if (_.findKey(deleteCartData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, deleteCartData).sendResponse(res);
+      }
+      return new HttpResponse(HttpStatus.OK, deleteCartData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
     }
   };
 }
