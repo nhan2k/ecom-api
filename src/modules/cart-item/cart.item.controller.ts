@@ -12,7 +12,7 @@ class CartItemController {
     try {
       const findAllCartItemsData: TCartItem[] = await this.CartItemService.findAllCartItems();
 
-      return new HttpResponse(HttpStatus.Created, findAllCartItemsData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findAllCartItemsData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -24,7 +24,7 @@ class CartItemController {
       const CartItemId = Number(req.params.id);
       const findOneCartItemData: TCartItem | null = await this.CartItemService.findCartItemById(CartItemId);
 
-      return new HttpResponse(HttpStatus.Created, findOneCartItemData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findOneCartItemData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -61,7 +61,7 @@ class CartItemController {
       const CartItemId = Number(req.params.id);
       const deleteCartItemData: any = await this.CartItemService.deleteCartItem(CartItemId);
 
-      return new HttpResponse(HttpStatus.Created, deleteCartItemData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, deleteCartItemData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);

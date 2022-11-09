@@ -12,7 +12,7 @@ class ProductTagController {
     try {
       const findAllProductCategoriesData: TProductTag[] = await this.ProductTagService.findAllProductCategories();
 
-      return new HttpResponse(HttpStatus.Created, findAllProductCategoriesData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findAllProductCategoriesData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
@@ -24,7 +24,7 @@ class ProductTagController {
       const ProductTagId = Number(req.params.id);
       const findOneProductTagData: TProductTag | null = await this.ProductTagService.findProductTagById(ProductTagId);
 
-      return new HttpResponse(HttpStatus.Created, findOneProductTagData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findOneProductTagData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
@@ -63,7 +63,7 @@ class ProductTagController {
       const ProductTagId = Number(req.params.id);
       const deleteProductTagData: any = await this.ProductTagService.deleteProductTag(ProductTagId);
 
-      return new HttpResponse(HttpStatus.Created, deleteProductTagData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, deleteProductTagData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);

@@ -12,7 +12,7 @@ class ProductReviewController {
     try {
       const findAllProductCategoriesData: TProductReview[] = await this.ProductReviewService.findAllProductCategories();
 
-      return new HttpResponse(HttpStatus.Created, findAllProductCategoriesData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findAllProductCategoriesData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -24,7 +24,7 @@ class ProductReviewController {
       const ProductReviewId = Number(req.params.id);
       const findOneProductReviewData: TProductReview | null = await this.ProductReviewService.findProductReviewById(ProductReviewId);
 
-      return new HttpResponse(HttpStatus.Created, findOneProductReviewData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findOneProductReviewData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -61,7 +61,7 @@ class ProductReviewController {
       const ProductReviewId = Number(req.params.id);
       const deleteProductReviewData: any = await this.ProductReviewService.deleteProductReview(ProductReviewId);
 
-      return new HttpResponse(HttpStatus.Created, deleteProductReviewData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, deleteProductReviewData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);

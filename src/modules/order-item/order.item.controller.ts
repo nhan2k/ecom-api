@@ -12,7 +12,7 @@ class OrderItemController {
     try {
       const findAllOrderItemsData: TOrderItem[] = await this.OrderItemService.findAllOrderItems();
 
-      return new HttpResponse(HttpStatus.Created, findAllOrderItemsData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findAllOrderItemsData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -24,7 +24,7 @@ class OrderItemController {
       const OrderItemId = Number(req.params.id);
       const findOneOrderItemData: TOrderItem | null = await this.OrderItemService.findOrderItemById(OrderItemId);
 
-      return new HttpResponse(HttpStatus.Created, findOneOrderItemData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findOneOrderItemData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -61,7 +61,7 @@ class OrderItemController {
       const OrderItemId = Number(req.params.id);
       const deleteOrderItemData: any = await this.OrderItemService.deleteOrderItem(OrderItemId);
 
-      return new HttpResponse(HttpStatus.Created, deleteOrderItemData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, deleteOrderItemData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);

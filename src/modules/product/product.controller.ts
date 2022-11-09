@@ -12,7 +12,7 @@ class ProductController {
     try {
       const findAllProductsData: TProduct[] = await this.ProductService.findAllProducts();
 
-      return new HttpResponse(HttpStatus.Created, findAllProductsData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findAllProductsData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -24,7 +24,7 @@ class ProductController {
       const ProductId = Number(req.params.id);
       const findOneProductData: TProduct | null = await this.ProductService.findProductById(ProductId);
 
-      return new HttpResponse(HttpStatus.Created, findOneProductData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findOneProductData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -61,7 +61,7 @@ class ProductController {
       const ProductId = Number(req.params.id);
       const deleteProductData: any = await this.ProductService.deleteProduct(ProductId);
 
-      return new HttpResponse(HttpStatus.Created, deleteProductData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, deleteProductData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);

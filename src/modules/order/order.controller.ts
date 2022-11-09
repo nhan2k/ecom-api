@@ -12,7 +12,7 @@ class OrderController {
     try {
       const findAllOrdersData: TOrder[] = await this.OrderService.findAllOrders();
 
-      return new HttpResponse(HttpStatus.Created, findAllOrdersData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findAllOrdersData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -24,7 +24,7 @@ class OrderController {
       const OrderId = Number(req.params.id);
       const findOneOrderData: TOrder | null = await this.OrderService.findOrderById(OrderId);
 
-      return new HttpResponse(HttpStatus.Created, findOneOrderData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findOneOrderData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -61,7 +61,7 @@ class OrderController {
       const OrderId = Number(req.params.id);
       const deleteOrderData: any = await this.OrderService.deleteOrder(OrderId);
 
-      return new HttpResponse(HttpStatus.Created, deleteOrderData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, deleteOrderData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);

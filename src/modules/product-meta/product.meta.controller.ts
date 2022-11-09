@@ -12,7 +12,7 @@ class ProductMetaController {
     try {
       const findAllProductCategoriesData: TProductMeta[] = await this.ProductMetaService.findAllProductCategories();
 
-      return new HttpResponse(HttpStatus.Created, findAllProductCategoriesData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findAllProductCategoriesData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -24,7 +24,7 @@ class ProductMetaController {
       const ProductMetaId = Number(req.params.id);
       const findOneProductMetaData: TProductMeta | null = await this.ProductMetaService.findProductMetaById(ProductMetaId);
 
-      return new HttpResponse(HttpStatus.Created, findOneProductMetaData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findOneProductMetaData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -61,7 +61,7 @@ class ProductMetaController {
       const ProductMetaId = Number(req.params.id);
       const deleteProductMetaData: any = await this.ProductMetaService.deleteProductMeta(ProductMetaId);
 
-      return new HttpResponse(HttpStatus.Created, deleteProductMetaData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, deleteProductMetaData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);

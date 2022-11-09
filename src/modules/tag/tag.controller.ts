@@ -12,7 +12,7 @@ class TagController {
     try {
       const findAllTagsData: TTag[] = await this.TagService.findAllTags();
 
-      return new HttpResponse(HttpStatus.Created, findAllTagsData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findAllTagsData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -24,7 +24,7 @@ class TagController {
       const TagId = Number(req.params.id);
       const findOneTagData: TTag | null = await this.TagService.findTagById(TagId);
 
-      return new HttpResponse(HttpStatus.Created, findOneTagData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findOneTagData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -61,7 +61,7 @@ class TagController {
       const TagId = Number(req.params.id);
       const deleteTagData: any = await this.TagService.deleteTag(TagId);
 
-      return new HttpResponse(HttpStatus.Created, deleteTagData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, deleteTagData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);

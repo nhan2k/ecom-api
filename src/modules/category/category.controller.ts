@@ -12,7 +12,7 @@ class CategoryController {
     try {
       const findAllCategoriesData: TCategory[] = await this.categoryService.findAllCategories();
 
-      return new HttpResponse(HttpStatus.Created, findAllCategoriesData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findAllCategoriesData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -24,7 +24,7 @@ class CategoryController {
       const CategoryId = Number(req.params.id);
       const findOneCategoryData: TCategory | null = await this.categoryService.findCategoryById(CategoryId);
 
-      return new HttpResponse(HttpStatus.Created, findOneCategoryData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findOneCategoryData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -61,7 +61,7 @@ class CategoryController {
       const CategoryId = Number(req.params.id);
       const deleteCategoryData: any = await this.categoryService.deleteCategory(CategoryId);
 
-      return new HttpResponse(HttpStatus.Created, deleteCategoryData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, deleteCategoryData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);

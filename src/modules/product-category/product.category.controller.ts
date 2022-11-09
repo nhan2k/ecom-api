@@ -12,7 +12,7 @@ class ProductCategoryController {
     try {
       const findAllProductCategoriesData: TProductCategory[] = await this.ProductCategoryService.findAllProductCategories();
 
-      return new HttpResponse(HttpStatus.Created, findAllProductCategoriesData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findAllProductCategoriesData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -24,7 +24,7 @@ class ProductCategoryController {
       const ProductCategoryId = Number(req.params.id);
       const findOneProductCategoryData: TProductCategory | null = await this.ProductCategoryService.findProductCategoryById(ProductCategoryId);
 
-      return new HttpResponse(HttpStatus.Created, findOneProductCategoryData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findOneProductCategoryData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -61,7 +61,7 @@ class ProductCategoryController {
       const ProductCategoryId = Number(req.params.id);
       const deleteProductCategoryData: any = await this.ProductCategoryService.deleteProductCategory(ProductCategoryId);
 
-      return new HttpResponse(HttpStatus.Created, deleteProductCategoryData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, deleteProductCategoryData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);

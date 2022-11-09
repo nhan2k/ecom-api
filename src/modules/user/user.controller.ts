@@ -12,7 +12,7 @@ class UserController {
     try {
       const findAllUsersData: TUser[] = await this.userService.findAllUser();
 
-      return new HttpResponse(HttpStatus.Created, findAllUsersData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findAllUsersData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -24,7 +24,7 @@ class UserController {
       const userId = Number(req.params.id);
       const findOneUserData: TUser | null = await this.userService.findUserById(userId);
 
-      return new HttpResponse(HttpStatus.Created, findOneUserData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findOneUserData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -61,7 +61,7 @@ class UserController {
       const userId = Number(req.params.id);
       const deleteUserData: any = await this.userService.deleteUser(userId);
 
-      return new HttpResponse(HttpStatus.Created, deleteUserData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, deleteUserData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);

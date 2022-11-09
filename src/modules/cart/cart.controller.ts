@@ -12,7 +12,7 @@ class CartController {
     try {
       const findAllCartsData: TCart[] = await this.CartService.findAllCart();
 
-      return new HttpResponse(HttpStatus.Created, findAllCartsData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findAllCartsData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -24,7 +24,7 @@ class CartController {
       const CartId = Number(req.params.id);
       const findOneCartData: TCart | null = await this.CartService.findCartById(CartId);
 
-      return new HttpResponse(HttpStatus.Created, findOneCartData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findOneCartData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);

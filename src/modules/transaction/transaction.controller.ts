@@ -12,7 +12,7 @@ class TransactionController {
     try {
       const findAllTransactionsData: TTransaction[] = await this.TransactionService.findAllTransactions();
 
-      return new HttpResponse(HttpStatus.Created, findAllTransactionsData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findAllTransactionsData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -24,7 +24,7 @@ class TransactionController {
       const TransactionId = Number(req.params.id);
       const findOneTransactionData: TTransaction | null = await this.TransactionService.findTransactionById(TransactionId);
 
-      return new HttpResponse(HttpStatus.Created, findOneTransactionData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findOneTransactionData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
@@ -61,7 +61,7 @@ class TransactionController {
       const TransactionId = Number(req.params.id);
       const deleteTransactionData: any = await this.TransactionService.deleteTransaction(TransactionId);
 
-      return new HttpResponse(HttpStatus.Created, deleteTransactionData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, deleteTransactionData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
