@@ -124,7 +124,7 @@ class App {
     passport.use(
       new this.JwtStrategy(opts, async function (jwt_payload, done) {
         try {
-          const user: UserModel | null = await UserModel.findOne({ where: { id: jwt_payload.jti }, attributes: ['id'] });
+          const user = await UserModel.findOne({ where: { id: jwt_payload.jti }, attributes: ['id'] });
           if (user) {
             return done(null, user);
           } else {

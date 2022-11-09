@@ -1,7 +1,7 @@
 import { hash } from 'bcryptjs';
 import UserModel from '@modules/user/user.model';
 import { logger } from '@utils/logger';
-
+import { SALT } from '@config/env';
 class UserService {
   public logFile = __filename;
 
@@ -31,7 +31,7 @@ class UserService {
   public async createUser(userData: any): Promise<UserModel | { message: string }> {
     try {
       const { password, ...rest } = userData;
-      const hashedPassword = await hash(password, 10);
+      const hashedPassword = await hash(password, Number(SALT));
       const res = await UserModel.create({ ...rest, passwordHash: hashedPassword });
       return res;
     } catch (error) {

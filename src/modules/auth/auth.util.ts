@@ -41,7 +41,6 @@ class AuthUtil {
       subject: 'Reset Password',
       text: `This is the link to reset password `,
     };
-    // send mail with defined transport object
     transporter.sendMail(mailOptions, function (err, data) {
       if (err) {
         console.log('Error ' + err);

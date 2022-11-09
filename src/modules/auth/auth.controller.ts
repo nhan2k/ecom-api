@@ -3,6 +3,7 @@ import AuthService from './auth.service';
 import { HttpResponse, HttpStatus } from '@config/Http';
 import { logger } from '@utils/logger';
 // import BotTelegram from '@utils/telegramBotApi';
+import _ from 'lodash';
 
 class AuthController {
   public logFile = __filename;
@@ -12,7 +13,9 @@ class AuthController {
       const userData = req.body;
       const result = await new AuthService().signUp(userData);
       // BotTelegram.botSendMessage(`${email} signUp`);
-
+      if (_.findKey(result, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, result).sendResponse(res);
+      }
       return new HttpResponse(HttpStatus.Created, result).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error}`);
@@ -25,6 +28,9 @@ class AuthController {
       const { email } = req.body;
       const data = await new AuthService().signIn(email);
       // BotTelegram.botSendMessage(`${email} signIn`);
+      if (_.findKey(data, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, data).sendResponse(res);
+      }
       return new HttpResponse(HttpStatus.OK, data).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error}`);
@@ -56,7 +62,9 @@ class AuthController {
       const { email, password } = req.body;
       const response = await new AuthService().resetPassword(email, password);
       // BotTelegram.botSendMessage(`${email} reset password`);
-
+      if (_.findKey(response, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, response).sendResponse(res);
+      }
       res.clearCookie('connect.sid');
       return new HttpResponse(HttpStatus.OK, response).sendResponse(res);
     } catch (error) {
@@ -70,7 +78,9 @@ class AuthController {
       const { email } = req.params;
       const response = await new AuthService().sendLinkReset(email);
       // BotTelegram.botSendMessage(`${email} reset password`);
-
+      if (_.findKey(response, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, response).sendResponse(res);
+      }
       return new HttpResponse(HttpStatus.OK, response).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error}`);

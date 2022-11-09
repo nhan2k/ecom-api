@@ -9,22 +9,22 @@ import { UpdateOptions } from 'sequelize';
 class AuthService {
   public logFile = __filename;
 
-  public async signUp(userData: any): Promise<{ message: string }> {
+  public async signUp(userData: any): Promise<any | { message: string }> {
     try {
       const { email, password } = userData;
       const hashedPassword = await hash(password, Number(SALT));
-      await UserModel.create({ email, passwordHash: hashedPassword });
-
-      return { message: 'SignUp success' };
+      const res = await UserModel.create({ email, passwordHash: hashedPassword });
+      const { passwordHash, ...rest } = res;
+      return rest;
     } catch (error) {
-      logger.error(error.message);
-      return { message: error.message };
+      logger.error({ message: error.message || 'Error' });
+      return { message: { message: error.message || 'Error' } };
     }
   }
 
   public async signIn(email: string): Promise<{ message: string } | { accessToken: string; refreshToken: string; role: string }> {
     try {
-      const findUser: UserModel | null = await UserModel.findOne({ where: { email: email }, attributes: ['vendor', 'admin', 'id'] });
+      const findUser = await UserModel.findOne({ where: { email: email }, attributes: ['vendor', 'admin', 'id'] });
       if (!findUser) {
         return { message: 'Not found user' };
       }
@@ -36,28 +36,27 @@ class AuthService {
       return { accessToken, refreshToken, role };
     } catch (error) {
       logger.error(`${this.logFile} ${error}`);
-      return error;
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async sendLinkReset(emailName: string): Promise<{ message: string }> {
+  public async sendLinkReset(emailName: string): Promise<{ data: string } | { message: string }> {
     try {
-      const findUser: UserModel | null = await UserModel.findOne({ where: { email: emailName }, attributes: ['email'] });
+      const findUser = await UserModel.findOne({ where: { email: emailName }, attributes: ['email'] });
       if (!findUser) {
         return { message: 'Not found user' };
       }
-      // await new AuthUtil().sendMail(findUser.email);
       await new AuthUtil().sendMail(findUser.email);
-      return { message: 'Send link to gmail, please check!' };
+      return { data: 'Send link to gmail, please check!' };
     } catch (error) {
       logger.error(`${this.logFile} ${error}`);
-      return error;
+      return { message: error.message || 'Error' };
     }
   }
 
   public async resetPassword(emailName: string, newPassword: string): Promise<{ message: string }> {
     try {
-      const findUser: UserModel | null = await UserModel.findOne({ where: { email: emailName }, attributes: ['email'] });
+      const findUser = await UserModel.findOne({ where: { email: emailName }, attributes: ['email'] });
       if (!findUser) {
         return { message: 'Not found user' };
       }
@@ -72,7 +71,7 @@ class AuthService {
       return { message: 'Password reset successful, please login again' };
     } catch (error) {
       logger.error(`${this.logFile} ${error}`);
-      return error;
+      return { message: error.message || 'Error' };
     }
   }
 }
