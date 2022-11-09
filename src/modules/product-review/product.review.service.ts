@@ -4,51 +4,55 @@ import { logger } from '@utils/logger';
 class ProductReviewService {
   public logFile = __filename;
 
-  public async findAllProductCategories(): Promise<ProductReviewModel[]> {
+  public async findAllProductCategories(): Promise<ProductReviewModel[] | { message: string }> {
     try {
-      const allProductReview: ProductReviewModel[] = await ProductReviewModel.findAll();
+      const allProductReview = await ProductReviewModel.findAll();
       return allProductReview;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return [];
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async findProductReviewById(ProductReviewId: number): Promise<ProductReviewModel | null> {
+  public async findProductReviewById(ProductReviewId: number): Promise<{ message: string } | ProductReviewModel | null> {
     try {
-      const findProductReview: ProductReviewModel | null = await ProductReviewModel.findByPk(ProductReviewId);
+      const findProductReview = await ProductReviewModel.findByPk(ProductReviewId);
+      if (!findProductReview) {
+        return { message: "Cart Item doesn't exist" };
+      }
       return findProductReview;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return null;
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async createProductReview(ProductReviewData: any): Promise<{ message: string }> {
+  public async createProductReview(ProductReviewData: any): Promise<ProductReviewModel | { message: string }> {
     try {
-      await ProductReviewModel.create({ ...ProductReviewData });
-      return { message: 'Success' };
+      const res = await ProductReviewModel.create({ ...ProductReviewData });
+      return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async updateProductReview(ProductReviewId: number, ProductReviewData: any): Promise<{ message: string }> {
+  public async updateProductReview(ProductReviewId: number, ProductReviewData: any): Promise<ProductReviewModel | null | { message: string }> {
     try {
       const findProductReview: ProductReviewModel | null = await ProductReviewModel.findByPk(ProductReviewId);
       if (!findProductReview) {
         return { message: "ProductReview doesn't exist" };
       }
       await ProductReviewModel.update({ ...ProductReviewData }, { where: { id: ProductReviewId } });
-      return { message: 'Success' };
+      const res = ProductReviewModel.findByPk(ProductReviewId);
+      return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async deleteProductReview(ProductReviewId: number): Promise<any> {
+  public async deleteProductReview(ProductReviewId: number): Promise<{ message: string } | any> {
     try {
       const findProductReview: any = await ProductReviewModel.findByPk(ProductReviewId);
       if (!findProductReview) {
@@ -56,10 +60,10 @@ class ProductReviewService {
       }
       await ProductReviewModel.destroy({ where: { id: ProductReviewId } });
 
-      return { message: 'Success' };
+      return { id: ProductReviewId };
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 }

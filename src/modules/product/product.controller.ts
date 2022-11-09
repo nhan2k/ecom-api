@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import ProductService from './product.service';
 import { HttpResponse, HttpStatus } from '@config/Http';
 import { logger } from '@utils/logger';
-import { TProduct } from './product.interface';
+import _ from 'lodash';
 
 class ProductController {
   private logFile = __filename;
@@ -10,7 +10,10 @@ class ProductController {
 
   public getProducts = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const findAllProductsData: TProduct[] = await this.ProductService.findAllProducts();
+      const findAllProductsData = await this.ProductService.findAllProducts();
+      if (!Array.isArray(findAllProductsData)) {
+        return new HttpResponse(HttpStatus.BadRequest, findAllProductsData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, findAllProductsData).sendResponse(res);
     } catch (error) {
@@ -22,7 +25,10 @@ class ProductController {
   public getProductById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductId = Number(req.params.id);
-      const findOneProductData: TProduct | null = await this.ProductService.findProductById(ProductId);
+      const findOneProductData = await this.ProductService.findProductById(ProductId);
+      if (_.findKey(findOneProductData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, findOneProductData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, findOneProductData).sendResponse(res);
     } catch (error) {
@@ -33,8 +39,11 @@ class ProductController {
 
   public createProduct = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const ProductData: any = req.body;
-      const createProductData: { message: string } = await this.ProductService.createProduct(ProductData);
+      const ProductData = req.body;
+      const createProductData = await this.ProductService.createProduct(ProductData);
+      if (_.findKey(createProductData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, createProductData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.Created, createProductData).sendResponse(res);
     } catch (error) {
@@ -46,8 +55,11 @@ class ProductController {
   public updateProduct = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductId = Number(req.params.id);
-      const ProductData: any = req.body;
-      const updateProductData: any = await this.ProductService.updateProduct(ProductId, ProductData);
+      const ProductData = req.body;
+      const updateProductData = await this.ProductService.updateProduct(ProductId, ProductData);
+      if (_.findKey(updateProductData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, updateProductData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.Created, updateProductData).sendResponse(res);
     } catch (error) {
@@ -59,7 +71,10 @@ class ProductController {
   public deleteProduct = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductId = Number(req.params.id);
-      const deleteProductData: any = await this.ProductService.deleteProduct(ProductId);
+      const deleteProductData = await this.ProductService.deleteProduct(ProductId);
+      if (_.findKey(deleteProductData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, deleteProductData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, deleteProductData).sendResponse(res);
     } catch (error) {

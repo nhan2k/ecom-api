@@ -5,61 +5,61 @@ import { logger } from '@utils/logger';
 class UserService {
   public logFile = __filename;
 
-  public async findAllUser(): Promise<UserModel[]> {
+  public async findAllUser(): Promise<UserModel[] | { message: string }> {
     try {
-      const allUser: UserModel[] = await UserModel.findAll();
+      const allUser = await UserModel.findAll();
       return allUser;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return [];
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async findUserById(userId: number): Promise<UserModel | null> {
+  public async findUserById(userId: number): Promise<UserModel | null | { message: string }> {
     try {
-      const findUser: UserModel | null = await UserModel.findByPk(userId);
-      return findUser;
-    } catch (error) {
-      logger.error(`${this.logFile} ${error.message}`);
-      return null;
-    }
-  }
-
-  public async createUser(userData: any): Promise<{ message: string }> {
-    try {
-      const findUser: UserModel | null = await UserModel.findOne({ where: { email: userData.email } });
-      if (findUser) {
-        return { message: `This email ${userData.email} already exists` };
-      }
-      const hashedPassword = await hash(userData.password, 10);
-      await UserModel.create({ ...userData, passwordHash: hashedPassword });
-      return { message: 'Success' };
-    } catch (error) {
-      logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
-    }
-  }
-
-  public async updateUser(userId: number, userData: any): Promise<{ message: string }> {
-    try {
-      const findUser: UserModel | null = await UserModel.findByPk(userId);
+      const findUser = await UserModel.findByPk(userId);
       if (!findUser) {
         return { message: "User doesn't exist" };
       }
-      if (userData.password) {
-        const hashedPassword = await hash(userData.password, 10);
-        await UserModel.update({ ...userData, password: hashedPassword }, { where: { id: userId } });
-        return { message: 'Success' };
-      }
-      await UserModel.update({ ...userData }, { where: { id: userId } });
-      return { message: 'Success' };
+      return findUser;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async deleteUser(userId: number): Promise<any> {
+  public async createUser(userData: any): Promise<UserModel | { message: string }> {
+    try {
+      const { password, ...rest } = userData;
+      const hashedPassword = await hash(password, 10);
+      const res = await UserModel.create({ ...rest, passwordHash: hashedPassword });
+      return res;
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return { message: error.message || 'Error' };
+    }
+  }
+
+  public async updateUser(userId: number, userData: any): Promise<UserModel | null | { message: string }> {
+    try {
+      const { password, ...rest } = userData;
+
+      if (password) {
+        const hashedPassword = await hash(password, 10);
+        await UserModel.update({ ...rest, password: hashedPassword }, { where: { id: userId } });
+        const res = UserModel.findByPk(userId);
+        return res;
+      }
+      await UserModel.update({ ...rest }, { where: { id: userId } });
+      const res = UserModel.findByPk(userId);
+      return res;
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return { message: error.message || 'Error' };
+    }
+  }
+
+  public async deleteUser(userId: number): Promise<{ id: number } | { message: string }> {
     try {
       const findUser: any = await UserModel.findByPk(userId);
       if (!findUser) {
@@ -67,10 +67,10 @@ class UserService {
       }
       await UserModel.destroy({ where: { id: userId } });
 
-      return { message: 'Success' };
+      return { id: userId };
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 }

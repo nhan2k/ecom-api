@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import userService from './user.service';
 import { HttpResponse, HttpStatus } from '@config/Http';
 import { logger } from '@utils/logger';
-import { TUser } from './user.interface';
+import _ from 'lodash';
 
 class UserController {
   private logFile = __filename;
@@ -10,7 +10,10 @@ class UserController {
 
   public getUsers = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const findAllUsersData: TUser[] = await this.userService.findAllUser();
+      const findAllUsersData = await this.userService.findAllUser();
+      if (!Array.isArray(findAllUsersData)) {
+        return new HttpResponse(HttpStatus.BadRequest, findAllUsersData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, findAllUsersData).sendResponse(res);
     } catch (error) {
@@ -22,7 +25,10 @@ class UserController {
   public getUserById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const userId = Number(req.params.id);
-      const findOneUserData: TUser | null = await this.userService.findUserById(userId);
+      const findOneUserData = await this.userService.findUserById(userId);
+      if (_.findKey(findOneUserData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, findOneUserData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, findOneUserData).sendResponse(res);
     } catch (error) {
@@ -33,8 +39,11 @@ class UserController {
 
   public createUser = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const userData: any = req.body;
-      const createUserData: any = await this.userService.createUser(userData);
+      const userData = req.body;
+      const createUserData = await this.userService.createUser(userData);
+      if (_.findKey(createUserData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, createUserData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.Created, createUserData).sendResponse(res);
     } catch (error) {
@@ -46,8 +55,11 @@ class UserController {
   public updateUser = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const userId = Number(req.params.id);
-      const userData: any = req.body;
-      const updateUserData: any = await this.userService.updateUser(userId, userData);
+      const userData = req.body;
+      const updateUserData = await this.userService.updateUser(userId, userData);
+      if (_.findKey(updateUserData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, updateUserData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.Created, updateUserData).sendResponse(res);
     } catch (error) {
@@ -59,7 +71,10 @@ class UserController {
   public deleteUser = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const userId = Number(req.params.id);
-      const deleteUserData: any = await this.userService.deleteUser(userId);
+      const deleteUserData = await this.userService.deleteUser(userId);
+      if (_.findKey(deleteUserData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, deleteUserData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, deleteUserData).sendResponse(res);
     } catch (error) {

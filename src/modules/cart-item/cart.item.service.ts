@@ -4,62 +4,66 @@ import { logger } from '@utils/logger';
 class CartItemService {
   public logFile = __filename;
 
-  public async findAllCartItems(): Promise<CartItemModel[]> {
+  public async findAllCartItems(): Promise<CartItemModel[] | { message: string }> {
     try {
-      const allCartItem: CartItemModel[] = await CartItemModel.findAll();
+      const allCartItem = await CartItemModel.findAll();
       return allCartItem;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return [];
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async findCartItemById(CartItemId: number): Promise<CartItemModel | null> {
+  public async findCartItemById(CartItemId: number): Promise<CartItemModel | null | { message: string }> {
     try {
-      const findCartItem: CartItemModel | null = await CartItemModel.findByPk(CartItemId);
+      const findCartItem = await CartItemModel.findByPk(CartItemId);
+      if (!findCartItem) {
+        return { message: "Cart Item doesn't exist" };
+      }
       return findCartItem;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return null;
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async createCartItem(CartItemData: any): Promise<{ message: string }> {
+  public async createCartItem(CartItemData: any): Promise<CartItemModel | { message: string }> {
     try {
-      await CartItemModel.create({ ...CartItemData });
-      return { message: 'Success' };
+      const res = await CartItemModel.create({ ...CartItemData });
+      return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async updateCartItem(CartItemId: number, CartItemData: any): Promise<{ message: string }> {
+  public async updateCartItem(CartItemId: number, CartItemData: any): Promise<CartItemModel | null | { message: string }> {
     try {
-      const findCartItem: CartItemModel | null = await CartItemModel.findByPk(CartItemId);
+      const findCartItem = await CartItemModel.findByPk(CartItemId);
       if (!findCartItem) {
-        return { message: "CartItem doesn't exist" };
+        return { message: "Cart Item doesn't exist" };
       }
       await CartItemModel.update({ ...CartItemData }, { where: { id: CartItemId } });
-      return { message: 'Success' };
+      const res = CartItemModel.findByPk(CartItemId);
+      return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async deleteCartItem(CartItemId: number): Promise<any> {
+  public async deleteCartItem(CartItemId: number): Promise<{ id: number } | { message: string }> {
     try {
-      const findCartItem: any = await CartItemModel.findByPk(CartItemId);
+      const findCartItem = await CartItemModel.findByPk(CartItemId);
       if (!findCartItem) {
-        return { message: "CartItem doesn't exist" };
+        return { message: "Cart Item doesn't exist" };
       }
       await CartItemModel.destroy({ where: { id: CartItemId } });
 
-      return { message: 'Success' };
+      return { id: CartItemId };
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 }

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import CartItemService from './cart.item.service';
 import { HttpResponse, HttpStatus } from '@config/Http';
 import { logger } from '@utils/logger';
-import { TCartItem } from './cart.item.interface';
+import _ from 'lodash';
 
 class CartItemController {
   private logFile = __filename;
@@ -10,8 +10,10 @@ class CartItemController {
 
   public getCartItems = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const findAllCartItemsData: TCartItem[] = await this.CartItemService.findAllCartItems();
-
+      const findAllCartItemsData = await this.CartItemService.findAllCartItems();
+      if (!Array.isArray(findAllCartItemsData)) {
+        return new HttpResponse(HttpStatus.BadRequest, findAllCartItemsData).sendResponse(res);
+      }
       return new HttpResponse(HttpStatus.OK, findAllCartItemsData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
@@ -22,7 +24,10 @@ class CartItemController {
   public getCartItemById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CartItemId = Number(req.params.id);
-      const findOneCartItemData: TCartItem | null = await this.CartItemService.findCartItemById(CartItemId);
+      const findOneCartItemData = await this.CartItemService.findCartItemById(CartItemId);
+      if (_.findKey(findOneCartItemData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, findOneCartItemData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, findOneCartItemData).sendResponse(res);
     } catch (error) {
@@ -33,8 +38,11 @@ class CartItemController {
 
   public createCartItem = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const CartItemData: any = req.body;
-      const createCartItemData: { message: string } = await this.CartItemService.createCartItem(CartItemData);
+      const CartItemData = req.body;
+      const createCartItemData = await this.CartItemService.createCartItem(CartItemData);
+      if (_.findKey(createCartItemData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, createCartItemData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.Created, createCartItemData).sendResponse(res);
     } catch (error) {
@@ -46,8 +54,11 @@ class CartItemController {
   public updateCartItem = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CartItemId = Number(req.params.id);
-      const CartItemData: any = req.body;
-      const updateCartItemData: any = await this.CartItemService.updateCartItem(CartItemId, CartItemData);
+      const CartItemData = req.body;
+      const updateCartItemData = await this.CartItemService.updateCartItem(CartItemId, CartItemData);
+      if (_.findKey(updateCartItemData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, updateCartItemData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.Created, updateCartItemData).sendResponse(res);
     } catch (error) {
@@ -59,7 +70,10 @@ class CartItemController {
   public deleteCartItem = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CartItemId = Number(req.params.id);
-      const deleteCartItemData: any = await this.CartItemService.deleteCartItem(CartItemId);
+      const deleteCartItemData = await this.CartItemService.deleteCartItem(CartItemId);
+      if (_.findKey(deleteCartItemData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, deleteCartItemData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, deleteCartItemData).sendResponse(res);
     } catch (error) {

@@ -3,6 +3,7 @@ import OrderItemService from './order.item.service';
 import { HttpResponse, HttpStatus } from '@config/Http';
 import { logger } from '@utils/logger';
 import { TOrderItem } from './order.item.interface';
+import _ from 'lodash';
 
 class OrderItemController {
   private logFile = __filename;
@@ -10,8 +11,10 @@ class OrderItemController {
 
   public getOrderItems = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const findAllOrderItemsData: TOrderItem[] = await this.OrderItemService.findAllOrderItems();
-
+      const findAllOrderItemsData = await this.OrderItemService.findAllOrderItems();
+      if (!Array.isArray(findAllOrderItemsData)) {
+        return new HttpResponse(HttpStatus.BadRequest, findAllOrderItemsData).sendResponse(res);
+      }
       return new HttpResponse(HttpStatus.OK, findAllOrderItemsData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
@@ -22,7 +25,10 @@ class OrderItemController {
   public getOrderItemById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const OrderItemId = Number(req.params.id);
-      const findOneOrderItemData: TOrderItem | null = await this.OrderItemService.findOrderItemById(OrderItemId);
+      const findOneOrderItemData = await this.OrderItemService.findOrderItemById(OrderItemId);
+      if (_.findKey(findOneOrderItemData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, findOneOrderItemData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, findOneOrderItemData).sendResponse(res);
     } catch (error) {
@@ -34,7 +40,10 @@ class OrderItemController {
   public createOrderItem = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const OrderItemData: any = req.body;
-      const createOrderItemData: { message: string } = await this.OrderItemService.createOrderItem(OrderItemData);
+      const createOrderItemData = await this.OrderItemService.createOrderItem(OrderItemData);
+      if (_.findKey(createOrderItemData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, createOrderItemData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.Created, createOrderItemData).sendResponse(res);
     } catch (error) {
@@ -46,8 +55,11 @@ class OrderItemController {
   public updateOrderItem = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const OrderItemId = Number(req.params.id);
-      const OrderItemData: any = req.body;
-      const updateOrderItemData: any = await this.OrderItemService.updateOrderItem(OrderItemId, OrderItemData);
+      const OrderItemData = req.body;
+      const updateOrderItemData = await this.OrderItemService.updateOrderItem(OrderItemId, OrderItemData);
+      if (_.findKey(updateOrderItemData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, updateOrderItemData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.Created, updateOrderItemData).sendResponse(res);
     } catch (error) {
@@ -60,6 +72,9 @@ class OrderItemController {
     try {
       const OrderItemId = Number(req.params.id);
       const deleteOrderItemData: any = await this.OrderItemService.deleteOrderItem(OrderItemId);
+      if (_.findKey(deleteOrderItemData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, deleteOrderItemData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, deleteOrderItemData).sendResponse(res);
     } catch (error) {

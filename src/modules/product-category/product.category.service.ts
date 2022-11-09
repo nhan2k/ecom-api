@@ -4,63 +4,70 @@ import { IProductCategoryData } from './type';
 class ProductCategoryService {
   public logFile = __filename;
 
-  public async findAllProductCategories(): Promise<ProductCategoryModel[]> {
+  public async findAllProductCategories(): Promise<ProductCategoryModel[] | { message: string }> {
     try {
-      const allProductCategory: ProductCategoryModel[] = await ProductCategoryModel.findAll();
+      const allProductCategory = await ProductCategoryModel.findAll();
       return allProductCategory;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return [];
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async findProductCategoryById(ProductCategoryId: number): Promise<ProductCategoryModel | null> {
+  public async findProductCategoryById(ProductCategoryId: number): Promise<ProductCategoryModel | null | { message: string }> {
     try {
-      const findProductCategory: ProductCategoryModel | null = await ProductCategoryModel.findByPk(ProductCategoryId);
+      const findProductCategory = await ProductCategoryModel.findByPk(ProductCategoryId);
+      if (!findProductCategory) {
+        return { message: "Cart Item doesn't exist" };
+      }
       return findProductCategory;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return null;
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async createProductCategory(ProductCategoryData: IProductCategoryData): Promise<{ message: string }> {
+  public async createProductCategory(ProductCategoryData: IProductCategoryData): Promise<ProductCategoryModel | { message: string }> {
     try {
       const { categoryId, productId } = ProductCategoryData;
-      await ProductCategoryModel.create({ categoryId, productId });
-      return { message: 'Success' };
+      const res = await ProductCategoryModel.create({ categoryId, productId });
+      return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: error.message };
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async updateProductCategory(ProductCategoryId: number, ProductCategoryData: any): Promise<{ message: string }> {
+  public async updateProductCategory(
+    ProductCategoryId: number,
+    ProductCategoryData: any,
+  ): Promise<ProductCategoryModel | null | { message: string }> {
     try {
-      const findProductCategory: ProductCategoryModel | null = await ProductCategoryModel.findByPk(ProductCategoryId);
+      const findProductCategory = await ProductCategoryModel.findByPk(ProductCategoryId);
       if (!findProductCategory) {
         return { message: "ProductCategory doesn't exist" };
       }
       await ProductCategoryModel.update({ ...ProductCategoryData }, { where: { id: ProductCategoryId } });
-      return { message: 'Success' };
+      const res = await ProductCategoryModel.findByPk(ProductCategoryId);
+      return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: error.message };
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async deleteProductCategory(ProductCategoryId: number): Promise<any> {
+  public async deleteProductCategory(ProductCategoryId: number): Promise<{ id: number } | { message: string }> {
     try {
-      const findProductCategory: any = await ProductCategoryModel.findByPk(ProductCategoryId);
+      const findProductCategory = await ProductCategoryModel.findByPk(ProductCategoryId);
       if (!findProductCategory) {
         return { message: "ProductCategory doesn't exist" };
       }
       await ProductCategoryModel.destroy({ where: { id: ProductCategoryId } });
 
-      return { message: 'Success' };
+      return { id: ProductCategoryId };
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: error.message };
+      return { message: error.message || 'Error' };
     }
   }
 }

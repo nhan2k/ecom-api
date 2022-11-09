@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import TransactionService from './transaction.service';
 import { HttpResponse, HttpStatus } from '@config/Http';
 import { logger } from '@utils/logger';
-import { TTransaction } from './transaction.interface';
+import _ from 'lodash';
 
 class TransactionController {
   private logFile = __filename;
@@ -10,7 +10,10 @@ class TransactionController {
 
   public getTransactions = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const findAllTransactionsData: TTransaction[] = await this.TransactionService.findAllTransactions();
+      const findAllTransactionsData = await this.TransactionService.findAllTransactions();
+      if (!Array.isArray(findAllTransactionsData)) {
+        return new HttpResponse(HttpStatus.BadRequest, findAllTransactionsData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, findAllTransactionsData).sendResponse(res);
     } catch (error) {
@@ -22,7 +25,10 @@ class TransactionController {
   public getTransactionById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const TransactionId = Number(req.params.id);
-      const findOneTransactionData: TTransaction | null = await this.TransactionService.findTransactionById(TransactionId);
+      const findOneTransactionData = await this.TransactionService.findTransactionById(TransactionId);
+      if (_.findKey(findOneTransactionData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, findOneTransactionData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, findOneTransactionData).sendResponse(res);
     } catch (error) {
@@ -34,7 +40,10 @@ class TransactionController {
   public createTransaction = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const TransactionData: any = req.body;
-      const createTransactionData: { message: string } = await this.TransactionService.createTransaction(TransactionData);
+      const createTransactionData = await this.TransactionService.createTransaction(TransactionData);
+      if (_.findKey(createTransactionData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, createTransactionData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.Created, createTransactionData).sendResponse(res);
     } catch (error) {
@@ -46,8 +55,11 @@ class TransactionController {
   public updateTransaction = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const TransactionId = Number(req.params.id);
-      const TransactionData: any = req.body;
-      const updateTransactionData: any = await this.TransactionService.updateTransaction(TransactionId, TransactionData);
+      const TransactionData = req.body;
+      const updateTransactionData = await this.TransactionService.updateTransaction(TransactionId, TransactionData);
+      if (_.findKey(updateTransactionData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, updateTransactionData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.Created, updateTransactionData).sendResponse(res);
     } catch (error) {
@@ -59,7 +71,10 @@ class TransactionController {
   public deleteTransaction = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const TransactionId = Number(req.params.id);
-      const deleteTransactionData: any = await this.TransactionService.deleteTransaction(TransactionId);
+      const deleteTransactionData = await this.TransactionService.deleteTransaction(TransactionId);
+      if (_.findKey(deleteTransactionData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, deleteTransactionData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, deleteTransactionData).sendResponse(res);
     } catch (error) {

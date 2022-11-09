@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import TagService from './tag.service';
 import { HttpResponse, HttpStatus } from '@config/Http';
 import { logger } from '@utils/logger';
-import { TTag } from './tag.interface';
+import _ from 'lodash';
 
 class TagController {
   private logFile = __filename;
@@ -10,7 +10,10 @@ class TagController {
 
   public getTags = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const findAllTagsData: TTag[] = await this.TagService.findAllTags();
+      const findAllTagsData = await this.TagService.findAllTags();
+      if (!Array.isArray(findAllTagsData)) {
+        return new HttpResponse(HttpStatus.BadRequest, findAllTagsData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, findAllTagsData).sendResponse(res);
     } catch (error) {
@@ -22,7 +25,10 @@ class TagController {
   public getTagById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const TagId = Number(req.params.id);
-      const findOneTagData: TTag | null = await this.TagService.findTagById(TagId);
+      const findOneTagData = await this.TagService.findTagById(TagId);
+      if (_.findKey(findOneTagData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, findOneTagData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, findOneTagData).sendResponse(res);
     } catch (error) {
@@ -34,7 +40,10 @@ class TagController {
   public createTag = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const TagData: any = req.body;
-      const createTagData: { message: string } = await this.TagService.createTag(TagData);
+      const createTagData = await this.TagService.createTag(TagData);
+      if (_.findKey(createTagData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, createTagData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.Created, createTagData).sendResponse(res);
     } catch (error) {
@@ -48,6 +57,9 @@ class TagController {
       const TagId = Number(req.params.id);
       const TagData: any = req.body;
       const updateTagData: any = await this.TagService.updateTag(TagId, TagData);
+      if (_.findKey(updateTagData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, updateTagData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.Created, updateTagData).sendResponse(res);
     } catch (error) {
@@ -59,7 +71,10 @@ class TagController {
   public deleteTag = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const TagId = Number(req.params.id);
-      const deleteTagData: any = await this.TagService.deleteTag(TagId);
+      const deleteTagData = await this.TagService.deleteTag(TagId);
+      if (_.findKey(deleteTagData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, deleteTagData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, deleteTagData).sendResponse(res);
     } catch (error) {

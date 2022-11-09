@@ -63,7 +63,7 @@ class CartService {
 
   public async updateCart(CartId: number, CartData: any): Promise<CartModel | null | { message: string }> {
     try {
-      const findCart: CartModel | null = await CartModel.findByPk(CartId);
+      const findCart = await CartModel.findByPk(CartId);
       if (!findCart) {
         return { message: "Cart doesn't exist" };
       }

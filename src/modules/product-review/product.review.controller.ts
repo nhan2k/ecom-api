@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import ProductReviewService from './product.review.service';
 import { HttpResponse, HttpStatus } from '@config/Http';
 import { logger } from '@utils/logger';
-import { TProductReview } from './product.review.interface';
+import _ from 'lodash';
 
 class ProductReviewController {
   private logFile = __filename;
@@ -10,7 +10,10 @@ class ProductReviewController {
 
   public getProductCategories = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const findAllProductCategoriesData: TProductReview[] = await this.ProductReviewService.findAllProductCategories();
+      const findAllProductCategoriesData = await this.ProductReviewService.findAllProductCategories();
+      if (!Array.isArray(findAllProductCategoriesData)) {
+        return new HttpResponse(HttpStatus.BadRequest, findAllProductCategoriesData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, findAllProductCategoriesData).sendResponse(res);
     } catch (error) {
@@ -22,7 +25,10 @@ class ProductReviewController {
   public getProductReviewById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductReviewId = Number(req.params.id);
-      const findOneProductReviewData: TProductReview | null = await this.ProductReviewService.findProductReviewById(ProductReviewId);
+      const findOneProductReviewData = await this.ProductReviewService.findProductReviewById(ProductReviewId);
+      if (_.findKey(findOneProductReviewData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, findOneProductReviewData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, findOneProductReviewData).sendResponse(res);
     } catch (error) {
@@ -33,8 +39,11 @@ class ProductReviewController {
 
   public createProductReview = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const ProductReviewData: any = req.body;
-      const createProductReviewData: { message: string } = await this.ProductReviewService.createProductReview(ProductReviewData);
+      const ProductReviewData = req.body;
+      const createProductReviewData = await this.ProductReviewService.createProductReview(ProductReviewData);
+      if (_.findKey(createProductReviewData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, createProductReviewData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.Created, createProductReviewData).sendResponse(res);
     } catch (error) {
@@ -46,8 +55,11 @@ class ProductReviewController {
   public updateProductReview = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductReviewId = Number(req.params.id);
-      const ProductReviewData: any = req.body;
-      const updateProductReviewData: any = await this.ProductReviewService.updateProductReview(ProductReviewId, ProductReviewData);
+      const ProductReviewData = req.body;
+      const updateProductReviewData = await this.ProductReviewService.updateProductReview(ProductReviewId, ProductReviewData);
+      if (_.findKey(updateProductReviewData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, updateProductReviewData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.Created, updateProductReviewData).sendResponse(res);
     } catch (error) {
@@ -59,7 +71,10 @@ class ProductReviewController {
   public deleteProductReview = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductReviewId = Number(req.params.id);
-      const deleteProductReviewData: any = await this.ProductReviewService.deleteProductReview(ProductReviewId);
+      const deleteProductReviewData = await this.ProductReviewService.deleteProductReview(ProductReviewId);
+      if (_.findKey(deleteProductReviewData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, deleteProductReviewData).sendResponse(res);
+      }
 
       return new HttpResponse(HttpStatus.OK, deleteProductReviewData).sendResponse(res);
     } catch (error) {

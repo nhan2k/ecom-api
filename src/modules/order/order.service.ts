@@ -4,51 +4,55 @@ import { logger } from '@utils/logger';
 class OrderService {
   public logFile = __filename;
 
-  public async findAllOrders(): Promise<OrderModel[]> {
+  public async findAllOrders(): Promise<OrderModel[] | { message: string }> {
     try {
       const allOrder: OrderModel[] = await OrderModel.findAll();
       return allOrder;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return [];
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async findOrderById(OrderId: number): Promise<OrderModel | null> {
+  public async findOrderById(OrderId: number): Promise<OrderModel | null | { message: string }> {
     try {
-      const findOrder: OrderModel | null = await OrderModel.findByPk(OrderId);
+      const findOrder = await OrderModel.findByPk(OrderId);
+      if (!findOrder) {
+        return { message: "Order doesn't exist" };
+      }
       return findOrder;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return null;
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async createOrder(OrderData: any): Promise<{ message: string }> {
+  public async createOrder(OrderData: any): Promise<OrderModel | { message: string }> {
     try {
-      await OrderModel.create({ ...OrderData });
-      return { message: 'Success' };
+      const res = await OrderModel.create({ ...OrderData });
+      return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async updateOrder(OrderId: number, OrderData: any): Promise<{ message: string }> {
+  public async updateOrder(OrderId: number, OrderData: any): Promise<OrderModel | null | { message: string }> {
     try {
-      const findOrder: OrderModel | null = await OrderModel.findByPk(OrderId);
+      const findOrder = await OrderModel.findByPk(OrderId);
       if (!findOrder) {
         return { message: "Order doesn't exist" };
       }
       await OrderModel.update({ ...OrderData }, { where: { id: OrderId } });
-      return { message: 'Success' };
+      const res = OrderModel.findByPk(OrderId);
+      return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async deleteOrder(OrderId: number): Promise<any> {
+  public async deleteOrder(OrderId: number): Promise<{ id: number } | { message: string }> {
     try {
       const findOrder: any = await OrderModel.findByPk(OrderId);
       if (!findOrder) {
@@ -56,10 +60,10 @@ class OrderService {
       }
       await OrderModel.destroy({ where: { id: OrderId } });
 
-      return { message: 'Success' };
+      return { id: OrderId };
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 }

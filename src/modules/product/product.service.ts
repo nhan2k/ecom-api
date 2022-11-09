@@ -6,27 +6,30 @@ import slugify from 'slugify';
 class ProductService {
   public logFile = __filename;
 
-  public async findAllProducts(): Promise<ProductModel[]> {
+  public async findAllProducts(): Promise<ProductModel[] | { message: string }> {
     try {
       const allProduct: ProductModel[] = await ProductModel.findAll();
       return allProduct;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return [];
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async findProductById(ProductId: number): Promise<ProductModel | null> {
+  public async findProductById(ProductId: number): Promise<ProductModel | null | { message: string }> {
     try {
-      const findProduct: ProductModel | null = await ProductModel.findByPk(ProductId);
+      const findProduct = await ProductModel.findByPk(ProductId);
+      if (!findProduct) {
+        return { message: "Cart Item doesn't exist" };
+      }
       return findProduct;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return null;
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async createProduct(ProductData: IProductData): Promise<{ message: string }> {
+  public async createProduct(ProductData: IProductData): Promise<ProductModel | { message: string }> {
     try {
       const { slug, sku, title, summary, ...rest } = ProductData;
       let newSlug = '';
@@ -44,40 +47,41 @@ class ProductService {
         }
         newSku = arrSummary.join('-').toLowerCase();
       }
-      await ProductModel.create({ slug: newSlug, sku: newSku, title, summary, ...rest });
-      return { message: 'Success' };
+      const res = await ProductModel.create({ slug: newSlug, sku: newSku, title, summary, ...rest });
+      return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async updateProduct(ProductId: number, ProductData: IProductData): Promise<{ message: string }> {
+  public async updateProduct(ProductId: number, ProductData: IProductData): Promise<ProductModel | null | { message: string }> {
     try {
       const findProduct: ProductModel | null = await ProductModel.findByPk(ProductId);
       if (!findProduct) {
         return { message: "Product doesn't exist" };
       }
       await ProductModel.update({ ...ProductData }, { where: { id: ProductId } });
-      return { message: 'Success' };
+      const res = ProductModel.findByPk(ProductId);
+      return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async deleteProduct(ProductId: number): Promise<any> {
+  public async deleteProduct(ProductId: number): Promise<{ id: number } | { message: string }> {
     try {
-      const findProduct: any = await ProductModel.findByPk(ProductId);
+      const findProduct = await ProductModel.findByPk(ProductId);
       if (!findProduct) {
         return { message: "Product doesn't exist" };
       }
       await ProductModel.destroy({ where: { id: ProductId } });
 
-      return { message: 'Success' };
+      return { id: ProductId };
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 }

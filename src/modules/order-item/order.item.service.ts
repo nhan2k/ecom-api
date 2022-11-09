@@ -4,62 +4,66 @@ import { logger } from '@utils/logger';
 class OrderItemService {
   public logFile = __filename;
 
-  public async findAllOrderItems(): Promise<OrderItemModel[]> {
+  public async findAllOrderItems(): Promise<OrderItemModel[] | { message: string }> {
     try {
-      const allOrderItem: OrderItemModel[] = await OrderItemModel.findAll();
+      const allOrderItem = await OrderItemModel.findAll();
       return allOrderItem;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return [];
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async findOrderItemById(OrderItemId: number): Promise<OrderItemModel | null> {
+  public async findOrderItemById(OrderItemId: number): Promise<OrderItemModel | null | { message: string }> {
     try {
-      const findOrderItem: OrderItemModel | null = await OrderItemModel.findByPk(OrderItemId);
+      const findOrderItem = await OrderItemModel.findByPk(OrderItemId);
+      if (!findOrderItem) {
+        return { message: "Order Item doesn't exist" };
+      }
       return findOrderItem;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return null;
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async createOrderItem(OrderItemData: any): Promise<{ message: string }> {
+  public async createOrderItem(OrderItemData: any): Promise<OrderItemModel | { message: string }> {
     try {
-      await OrderItemModel.create({ ...OrderItemData });
-      return { message: 'Success' };
+      const res = await OrderItemModel.create({ ...OrderItemData });
+      return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async updateOrderItem(OrderItemId: number, OrderItemData: any): Promise<{ message: string }> {
+  public async updateOrderItem(OrderItemId: number, OrderItemData: any): Promise<OrderItemModel | null | { message: string }> {
     try {
-      const findOrderItem: OrderItemModel | null = await OrderItemModel.findByPk(OrderItemId);
+      const findOrderItem = await OrderItemModel.findByPk(OrderItemId);
       if (!findOrderItem) {
         return { message: "OrderItem doesn't exist" };
       }
       await OrderItemModel.update({ ...OrderItemData }, { where: { id: OrderItemId } });
-      return { message: 'Success' };
+      const res = OrderItemModel.findByPk(OrderItemId);
+      return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 
-  public async deleteOrderItem(OrderItemId: number): Promise<any> {
+  public async deleteOrderItem(OrderItemId: number): Promise<{ id: number } | { message: string }> {
     try {
-      const findOrderItem: any = await OrderItemModel.findByPk(OrderItemId);
+      const findOrderItem = await OrderItemModel.findByPk(OrderItemId);
       if (!findOrderItem) {
         return { message: "OrderItem doesn't exist" };
       }
       await OrderItemModel.destroy({ where: { id: OrderItemId } });
 
-      return { message: 'Success' };
+      return { id: OrderItemId };
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
-      return { message: 'Failure' };
+      return { message: error.message || 'Error' };
     }
   }
 }
