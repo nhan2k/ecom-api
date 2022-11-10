@@ -31,6 +31,10 @@ class CategoryService {
   public async createCategory(categoryData: ICategoryData): Promise<CategoryModel | { message: string }> {
     try {
       const { title, slug, ...rest } = categoryData;
+      const record = await CategoryModel.findOne({ where: { title: title } });
+      if (record) {
+        return { message: 'Record already exists' };
+      }
       let newSlug = '';
       if (title) {
         newSlug = slugify(title);

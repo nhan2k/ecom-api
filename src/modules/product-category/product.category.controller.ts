@@ -26,7 +26,7 @@ class ProductCategoryController {
     try {
       const ProductCategoryId = Number(req.params.id);
       const findOneProductCategoryData = await this.ProductCategoryService.findProductCategoryById(ProductCategoryId);
-      if (_.findKey(findOneProductCategoryData, 'message')) {
+      if (_.get(findOneProductCategoryData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, findOneProductCategoryData).sendResponse(res);
       }
 
@@ -41,7 +41,7 @@ class ProductCategoryController {
     try {
       const ProductCategoryData = req.body;
       const createProductCategoryData = await this.ProductCategoryService.createProductCategory(ProductCategoryData);
-      if (_.findKey(createProductCategoryData, 'message')) {
+      if (_.get(createProductCategoryData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createProductCategoryData).sendResponse(res);
       }
 
@@ -57,7 +57,7 @@ class ProductCategoryController {
       const ProductCategoryId = Number(req.params.id);
       const ProductCategoryData: any = req.body;
       const updateProductCategoryData = await this.ProductCategoryService.updateProductCategory(ProductCategoryId, ProductCategoryData);
-      if (_.findKey(updateProductCategoryData, 'message')) {
+      if (_.get(updateProductCategoryData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateProductCategoryData).sendResponse(res);
       }
 
@@ -72,7 +72,7 @@ class ProductCategoryController {
     try {
       const ProductCategoryId = Number(req.params.id);
       const deleteProductCategoryData: any = await this.ProductCategoryService.deleteProductCategory(ProductCategoryId);
-      if (_.findKey(deleteProductCategoryData, 'message')) {
+      if (_.get(deleteProductCategoryData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, deleteProductCategoryData).sendResponse(res);
       }
 

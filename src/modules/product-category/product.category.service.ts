@@ -30,6 +30,10 @@ class ProductCategoryService {
   public async createProductCategory(ProductCategoryData: IProductCategoryData): Promise<ProductCategoryModel | { message: string }> {
     try {
       const { categoryId, productId } = ProductCategoryData;
+      const record = await ProductCategoryModel.findOne({ where: { categoryId: categoryId, productId: productId } });
+      if (record) {
+        return { message: 'Record already exists' };
+      }
       const res = await ProductCategoryModel.create({ categoryId, productId });
       return res;
     } catch (error) {

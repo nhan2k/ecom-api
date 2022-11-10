@@ -1,7 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '@connections/databases';
 export class CategoryModel extends Model {
-  declare id: number;
   declare parentId: number;
   declare title: string;
   declare metaTitle: string;
@@ -33,6 +32,7 @@ CategoryModel.init(
     slug: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     content: {
       type: DataTypes.TEXT,

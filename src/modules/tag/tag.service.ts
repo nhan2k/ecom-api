@@ -51,7 +51,12 @@ class TagService {
       if (!findTag) {
         return { message: "Tag doesn't exist" };
       }
-      await TagModel.update({ ...TagData }, { where: { id: TagId } });
+      const { title, slug, ...rest } = TagData;
+      let newSlug = '';
+      if (title) {
+        newSlug = slugify(title);
+      }
+      await TagModel.update({ title, slug: newSlug, ...rest }, { where: { id: TagId } });
       const res = TagModel.findByPk(TagId);
       return res;
     } catch (error) {

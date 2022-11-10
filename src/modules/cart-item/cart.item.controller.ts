@@ -25,7 +25,7 @@ class CartItemController {
     try {
       const CartItemId = Number(req.params.id);
       const findOneCartItemData = await this.CartItemService.findCartItemById(CartItemId);
-      if (_.findKey(findOneCartItemData, 'message')) {
+      if (_.get(findOneCartItemData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, findOneCartItemData).sendResponse(res);
       }
 
@@ -40,7 +40,7 @@ class CartItemController {
     try {
       const CartItemData = req.body;
       const createCartItemData = await this.CartItemService.createCartItem(CartItemData);
-      if (_.findKey(createCartItemData, 'message')) {
+      if (_.get(createCartItemData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createCartItemData).sendResponse(res);
       }
 
@@ -56,7 +56,7 @@ class CartItemController {
       const CartItemId = Number(req.params.id);
       const CartItemData = req.body;
       const updateCartItemData = await this.CartItemService.updateCartItem(CartItemId, CartItemData);
-      if (_.findKey(updateCartItemData, 'message')) {
+      if (_.get(updateCartItemData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateCartItemData).sendResponse(res);
       }
 
@@ -71,7 +71,7 @@ class CartItemController {
     try {
       const CartItemId = Number(req.params.id);
       const deleteCartItemData = await this.CartItemService.deleteCartItem(CartItemId);
-      if (_.findKey(deleteCartItemData, 'message')) {
+      if (_.get(deleteCartItemData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, deleteCartItemData).sendResponse(res);
       }
 

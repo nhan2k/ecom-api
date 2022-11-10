@@ -37,8 +37,12 @@ class OrderController {
 
   public createOrder = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
       const OrderData: any = req.body;
-      const createOrderData = await this.OrderService.createOrder(OrderData);
+      const createOrderData = await this.OrderService.createOrder(OrderData, id);
       if (_.findKey(createOrderData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createOrderData).sendResponse(res);
       }

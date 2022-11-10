@@ -26,7 +26,7 @@ class ProductController {
     try {
       const ProductId = Number(req.params.id);
       const findOneProductData = await this.ProductService.findProductById(ProductId);
-      if (_.findKey(findOneProductData, 'message')) {
+      if (_.get(findOneProductData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, findOneProductData).sendResponse(res);
       }
 
@@ -39,9 +39,14 @@ class ProductController {
 
   public createProduct = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
       const ProductData = req.body;
-      const createProductData = await this.ProductService.createProduct(ProductData);
-      if (_.findKey(createProductData, 'message')) {
+
+      const createProductData = await this.ProductService.createProduct(ProductData, id);
+      if (_.get(createProductData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createProductData).sendResponse(res);
       }
 
@@ -57,7 +62,7 @@ class ProductController {
       const ProductId = Number(req.params.id);
       const ProductData = req.body;
       const updateProductData = await this.ProductService.updateProduct(ProductId, ProductData);
-      if (_.findKey(updateProductData, 'message')) {
+      if (_.get(updateProductData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateProductData).sendResponse(res);
       }
 
@@ -72,7 +77,7 @@ class ProductController {
     try {
       const ProductId = Number(req.params.id);
       const deleteProductData = await this.ProductService.deleteProduct(ProductId);
-      if (_.findKey(deleteProductData, 'message')) {
+      if (_.get(deleteProductData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, deleteProductData).sendResponse(res);
       }
 

@@ -8,7 +8,29 @@ class ProductService {
 
   public async findAllProducts(): Promise<ProductModel[] | { message: string }> {
     try {
-      const allProduct: ProductModel[] = await ProductModel.findAll();
+      const allProduct: ProductModel[] = await ProductModel.findAll({
+        attributes: [
+          'id',
+          'userId',
+          'title',
+          'metaTitle',
+          'slug',
+          'summary',
+          'type',
+          'sku',
+          'price',
+          'discount',
+          'quantity',
+          'shop',
+          'publishedAt',
+          'startsAt',
+          'endsAt',
+          'content',
+          'createdAt',
+          'updatedAt',
+          'deletedAt',
+        ],
+      });
       return allProduct;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
@@ -29,9 +51,13 @@ class ProductService {
     }
   }
 
-  public async createProduct(ProductData: IProductData): Promise<ProductModel | { message: string }> {
+  public async createProduct(ProductData: IProductData, id: number): Promise<ProductModel | { message: string }> {
     try {
-      const { slug, sku, title, summary, ...rest } = ProductData;
+      const { slug, sku, title, summary, userId, ...rest } = ProductData;
+      const record = await ProductModel.findOne({ where: { title: title } });
+      if (record) {
+        return { message: 'Record already exists' };
+      }
       let newSlug = '';
       let newSku = '';
       if (title) {
@@ -47,7 +73,7 @@ class ProductService {
         }
         newSku = arrSummary.join('-').toLowerCase();
       }
-      const res = await ProductModel.create({ slug: newSlug, sku: newSku, title, summary, ...rest });
+      const res = await ProductModel.create({ slug: newSlug, sku: newSku, title, summary, userId: id, ...rest });
       return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
@@ -61,7 +87,23 @@ class ProductService {
       if (!findProduct) {
         return { message: "Product doesn't exist" };
       }
-      await ProductModel.update({ ...ProductData }, { where: { id: ProductId } });
+      const { slug, sku, title, summary, userId, ...rest } = ProductData;
+      let newSlug = '';
+      let newSku = '';
+      if (title) {
+        newSlug = slugify(title);
+      }
+      if (summary) {
+        let arrSummary: Array<string | number> = [];
+        for (const key in summary) {
+          if (Object.prototype.hasOwnProperty.call(summary, key)) {
+            let element = summary[key];
+            arrSummary.push(element);
+          }
+        }
+        newSku = arrSummary.join('-').toLowerCase();
+      }
+      await ProductModel.update({ slug: newSlug, sku: newSku, title, summary, ...rest }, { where: { id: ProductId } });
       const res = ProductModel.findByPk(ProductId);
       return res;
     } catch (error) {

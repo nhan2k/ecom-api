@@ -26,7 +26,7 @@ class TagController {
     try {
       const TagId = Number(req.params.id);
       const findOneTagData = await this.TagService.findTagById(TagId);
-      if (_.findKey(findOneTagData, 'message')) {
+      if (_.get(findOneTagData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, findOneTagData).sendResponse(res);
       }
 
@@ -41,7 +41,7 @@ class TagController {
     try {
       const TagData: any = req.body;
       const createTagData = await this.TagService.createTag(TagData);
-      if (_.findKey(createTagData, 'message')) {
+      if (_.get(createTagData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createTagData).sendResponse(res);
       }
 
@@ -57,7 +57,7 @@ class TagController {
       const TagId = Number(req.params.id);
       const TagData: any = req.body;
       const updateTagData: any = await this.TagService.updateTag(TagId, TagData);
-      if (_.findKey(updateTagData, 'message')) {
+      if (_.get(updateTagData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateTagData).sendResponse(res);
       }
 
@@ -72,7 +72,7 @@ class TagController {
     try {
       const TagId = Number(req.params.id);
       const deleteTagData = await this.TagService.deleteTag(TagId);
-      if (_.findKey(deleteTagData, 'message')) {
+      if (_.get(deleteTagData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, deleteTagData).sendResponse(res);
       }
 

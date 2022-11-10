@@ -27,9 +27,9 @@ class OrderService {
     }
   }
 
-  public async createOrder(OrderData: any): Promise<OrderModel | { message: string }> {
+  public async createOrder(OrderData: any, id: number): Promise<OrderModel | { message: string }> {
     try {
-      const res = await OrderModel.create({ ...OrderData });
+      const res = await OrderModel.create({ ...OrderData, userId: id });
       return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
