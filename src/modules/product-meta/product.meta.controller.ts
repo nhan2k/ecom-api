@@ -25,7 +25,7 @@ class ProductMetaController {
     try {
       const ProductMetaId = Number(req.params.id);
       const findOneProductMetaData = await this.ProductMetaService.findProductMetaById(ProductMetaId);
-      if (_.findKey(findOneProductMetaData, 'message')) {
+      if (_.get(findOneProductMetaData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, findOneProductMetaData).sendResponse(res);
       }
       return new HttpResponse(HttpStatus.OK, findOneProductMetaData).sendResponse(res);
@@ -39,7 +39,7 @@ class ProductMetaController {
     try {
       const ProductMetaData: any = req.body;
       const createProductMetaData = await this.ProductMetaService.createProductMeta(ProductMetaData);
-      if (_.findKey(createProductMetaData, 'message')) {
+      if (_.get(createProductMetaData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createProductMetaData).sendResponse(res);
       }
       return new HttpResponse(HttpStatus.Created, createProductMetaData).sendResponse(res);
@@ -54,7 +54,7 @@ class ProductMetaController {
       const ProductMetaId = Number(req.params.id);
       const ProductMetaData: any = req.body;
       const updateProductMetaData: any = await this.ProductMetaService.updateProductMeta(ProductMetaId, ProductMetaData);
-      if (_.findKey(updateProductMetaData, 'message')) {
+      if (_.get(updateProductMetaData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateProductMetaData).sendResponse(res);
       }
 
@@ -69,7 +69,7 @@ class ProductMetaController {
     try {
       const ProductMetaId = Number(req.params.id);
       const deleteProductMetaData: any = await this.ProductMetaService.deleteProductMeta(ProductMetaId);
-      if (_.findKey(deleteProductMetaData, 'message')) {
+      if (_.get(deleteProductMetaData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, deleteProductMetaData).sendResponse(res);
       }
 

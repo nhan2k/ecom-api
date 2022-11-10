@@ -26,7 +26,7 @@ class ProductReviewController {
     try {
       const ProductReviewId = Number(req.params.id);
       const findOneProductReviewData = await this.ProductReviewService.findProductReviewById(ProductReviewId);
-      if (_.findKey(findOneProductReviewData, 'message')) {
+      if (_.get(findOneProductReviewData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, findOneProductReviewData).sendResponse(res);
       }
 
@@ -41,7 +41,7 @@ class ProductReviewController {
     try {
       const ProductReviewData = req.body;
       const createProductReviewData = await this.ProductReviewService.createProductReview(ProductReviewData);
-      if (_.findKey(createProductReviewData, 'message')) {
+      if (_.get(createProductReviewData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createProductReviewData).sendResponse(res);
       }
 
@@ -57,7 +57,7 @@ class ProductReviewController {
       const ProductReviewId = Number(req.params.id);
       const ProductReviewData = req.body;
       const updateProductReviewData = await this.ProductReviewService.updateProductReview(ProductReviewId, ProductReviewData);
-      if (_.findKey(updateProductReviewData, 'message')) {
+      if (_.get(updateProductReviewData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateProductReviewData).sendResponse(res);
       }
 
@@ -72,7 +72,7 @@ class ProductReviewController {
     try {
       const ProductReviewId = Number(req.params.id);
       const deleteProductReviewData = await this.ProductReviewService.deleteProductReview(ProductReviewId);
-      if (_.findKey(deleteProductReviewData, 'message')) {
+      if (_.get(deleteProductReviewData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, deleteProductReviewData).sendResponse(res);
       }
 

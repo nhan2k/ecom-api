@@ -3,6 +3,7 @@ import { sequelize } from '@connections/databases';
 import ProductModel from '@modules/product/product.model';
 import TagModel from '@modules/tag/tag.model';
 export class ProductTagModel extends Model {
+  declare id: number;
   declare productId: number;
   declare tagId: number;
   declare createdAt: Date;

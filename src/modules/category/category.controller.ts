@@ -25,7 +25,7 @@ class CategoryController {
     try {
       const CategoryId = Number(req.params.id);
       const findOneCategoryData = await this.categoryService.findCategoryById(CategoryId);
-      if (_.findKey(findOneCategoryData, 'message')) {
+      if (_.get(findOneCategoryData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, findOneCategoryData).sendResponse(res);
       }
       return new HttpResponse(HttpStatus.OK, findOneCategoryData).sendResponse(res);
@@ -39,7 +39,7 @@ class CategoryController {
     try {
       const CategoryData = req.body;
       const createCategoryData = await this.categoryService.createCategory(CategoryData);
-      if (_.findKey(createCategoryData, 'message')) {
+      if (_.get(createCategoryData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createCategoryData).sendResponse(res);
       }
       return new HttpResponse(HttpStatus.Created, createCategoryData).sendResponse(res);
@@ -54,7 +54,7 @@ class CategoryController {
       const CategoryId = Number(req.params.id);
       const CategoryData = req.body;
       const updateCategoryData = await this.categoryService.updateCategory(CategoryId, CategoryData);
-      if (_.findKey(updateCategoryData, 'message')) {
+      if (_.get(updateCategoryData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateCategoryData).sendResponse(res);
       }
 
@@ -69,7 +69,7 @@ class CategoryController {
     try {
       const CategoryId = Number(req.params.id);
       const deleteCategoryData = await this.categoryService.deleteCategory(CategoryId);
-      if (_.findKey(deleteCategoryData, 'message')) {
+      if (_.get(deleteCategoryData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, deleteCategoryData).sendResponse(res);
       }
 

@@ -2,12 +2,12 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '@connections/databases';
 export class ProductReviewModel extends Model {
   declare id: number;
-  declare productId: string;
-  declare parentId: string;
+  declare productId: number;
+  declare parentId: number;
   declare title: string;
-  declare rating: string;
-  declare published: string;
-  declare publishedAt: string;
+  declare rating: number;
+  declare published: number;
+  declare publishedAt: Date;
   declare content: number;
   declare createdAt: Date;
   declare updatedAt: Date;

@@ -26,7 +26,7 @@ class OrderItemController {
     try {
       const OrderItemId = Number(req.params.id);
       const findOneOrderItemData = await this.OrderItemService.findOrderItemById(OrderItemId);
-      if (_.findKey(findOneOrderItemData, 'message')) {
+      if (_.get(findOneOrderItemData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, findOneOrderItemData).sendResponse(res);
       }
 
@@ -41,7 +41,7 @@ class OrderItemController {
     try {
       const OrderItemData: any = req.body;
       const createOrderItemData = await this.OrderItemService.createOrderItem(OrderItemData);
-      if (_.findKey(createOrderItemData, 'message')) {
+      if (_.get(createOrderItemData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createOrderItemData).sendResponse(res);
       }
 
@@ -57,7 +57,7 @@ class OrderItemController {
       const OrderItemId = Number(req.params.id);
       const OrderItemData = req.body;
       const updateOrderItemData = await this.OrderItemService.updateOrderItem(OrderItemId, OrderItemData);
-      if (_.findKey(updateOrderItemData, 'message')) {
+      if (_.get(updateOrderItemData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateOrderItemData).sendResponse(res);
       }
 
@@ -72,7 +72,7 @@ class OrderItemController {
     try {
       const OrderItemId = Number(req.params.id);
       const deleteOrderItemData: any = await this.OrderItemService.deleteOrderItem(OrderItemId);
-      if (_.findKey(deleteOrderItemData, 'message')) {
+      if (_.get(deleteOrderItemData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, deleteOrderItemData).sendResponse(res);
       }
 

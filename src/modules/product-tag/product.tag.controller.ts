@@ -27,7 +27,7 @@ class ProductTagController {
     try {
       const ProductTagId = Number(req.params.id);
       const findOneProductTagData = await this.ProductTagService.findProductTagById(ProductTagId);
-      if (_.findKey(findOneProductTagData, 'message')) {
+      if (_.get(findOneProductTagData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, findOneProductTagData).sendResponse(res);
       }
 
@@ -42,7 +42,7 @@ class ProductTagController {
     try {
       const ProductTagData = req.body;
       const createProductTagData = await this.ProductTagService.createProductTag(ProductTagData);
-      if (_.findKey(createProductTagData, 'message')) {
+      if (_.get(createProductTagData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createProductTagData).sendResponse(res);
       }
 
@@ -58,7 +58,7 @@ class ProductTagController {
       const ProductTagId = Number(req.params.id);
       const ProductTagData = req.body;
       const updateProductTagData = await this.ProductTagService.updateProductTag(ProductTagId, ProductTagData);
-      if (_.findKey(updateProductTagData, 'message')) {
+      if (_.get(updateProductTagData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateProductTagData).sendResponse(res);
       }
 
@@ -73,7 +73,7 @@ class ProductTagController {
     try {
       const ProductTagId = Number(req.params.id);
       const deleteProductTagData: any = await this.ProductTagService.deleteProductTag(ProductTagId);
-      if (_.findKey(deleteProductTagData, 'message')) {
+      if (_.get(deleteProductTagData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, deleteProductTagData).sendResponse(res);
       }
 

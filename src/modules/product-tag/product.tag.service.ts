@@ -31,6 +31,16 @@ class ProductTagService {
 
   public async createProductTag(ProductTagData: any): Promise<ProductTagModel | { message: string }> {
     try {
+      const { productId, tagId } = ProductTagData;
+      const findProductTag = await ProductTagModel.findOne({
+        where: {
+          productId,
+          tagId,
+        },
+      });
+      if (findProductTag) {
+        return { message: 'Record is exists' };
+      }
       const res = await ProductTagModel.create({ ...ProductTagData });
       return res;
     } catch (error) {

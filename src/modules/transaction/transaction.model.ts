@@ -2,7 +2,7 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '@connections/databases';
 export class TransactionModel extends Model {
   declare id: number;
-  declare productId: number;
+  declare userId: number;
   declare orderId: number;
   declare code: string;
   declare type: number;
@@ -22,7 +22,7 @@ TransactionModel.init(
       autoIncrementIdentity: true,
       type: DataTypes.BIGINT,
     },
-    productId: {
+    userId: {
       type: DataTypes.BIGINT,
       allowNull: false,
     },

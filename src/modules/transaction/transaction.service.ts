@@ -27,9 +27,9 @@ class TransactionService {
     }
   }
 
-  public async createTransaction(TransactionData: any): Promise<TransactionModel | { message: string }> {
+  public async createTransaction(TransactionData: any, id: number): Promise<TransactionModel | { message: string }> {
     try {
-      const res = await TransactionModel.create({ ...TransactionData });
+      const res = await TransactionModel.create({ ...TransactionData, userId: id });
       return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);

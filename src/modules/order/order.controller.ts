@@ -25,7 +25,7 @@ class OrderController {
     try {
       const OrderId = Number(req.params.id);
       const findOneOrderData = await this.OrderService.findOrderById(OrderId);
-      if (_.findKey(findOneOrderData, 'message')) {
+      if (_.get(findOneOrderData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, findOneOrderData).sendResponse(res);
       }
       return new HttpResponse(HttpStatus.OK, findOneOrderData).sendResponse(res);
@@ -43,7 +43,7 @@ class OrderController {
       }
       const OrderData: any = req.body;
       const createOrderData = await this.OrderService.createOrder(OrderData, id);
-      if (_.findKey(createOrderData, 'message')) {
+      if (_.get(createOrderData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createOrderData).sendResponse(res);
       }
 
@@ -59,7 +59,7 @@ class OrderController {
       const OrderId = Number(req.params.id);
       const OrderData: any = req.body;
       const updateOrderData = await this.OrderService.updateOrder(OrderId, OrderData);
-      if (_.findKey(updateOrderData, 'message')) {
+      if (_.get(updateOrderData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateOrderData).sendResponse(res);
       }
 
@@ -74,7 +74,7 @@ class OrderController {
     try {
       const OrderId = Number(req.params.id);
       const deleteOrderData = await this.OrderService.deleteOrder(OrderId);
-      if (_.findKey(deleteOrderData, 'message')) {
+      if (_.get(deleteOrderData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, deleteOrderData).sendResponse(res);
       }
       return new HttpResponse(HttpStatus.OK, deleteOrderData).sendResponse(res);

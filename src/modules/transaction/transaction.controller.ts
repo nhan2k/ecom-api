@@ -26,7 +26,7 @@ class TransactionController {
     try {
       const TransactionId = Number(req.params.id);
       const findOneTransactionData = await this.TransactionService.findTransactionById(TransactionId);
-      if (_.findKey(findOneTransactionData, 'message')) {
+      if (_.get(findOneTransactionData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, findOneTransactionData).sendResponse(res);
       }
 
@@ -39,9 +39,13 @@ class TransactionController {
 
   public createTransaction = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
       const TransactionData: any = req.body;
-      const createTransactionData = await this.TransactionService.createTransaction(TransactionData);
-      if (_.findKey(createTransactionData, 'message')) {
+      const createTransactionData = await this.TransactionService.createTransaction(TransactionData, id);
+      if (_.get(createTransactionData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createTransactionData).sendResponse(res);
       }
 
@@ -57,7 +61,7 @@ class TransactionController {
       const TransactionId = Number(req.params.id);
       const TransactionData = req.body;
       const updateTransactionData = await this.TransactionService.updateTransaction(TransactionId, TransactionData);
-      if (_.findKey(updateTransactionData, 'message')) {
+      if (_.get(updateTransactionData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateTransactionData).sendResponse(res);
       }
 
@@ -72,7 +76,7 @@ class TransactionController {
     try {
       const TransactionId = Number(req.params.id);
       const deleteTransactionData = await this.TransactionService.deleteTransaction(TransactionId);
-      if (_.findKey(deleteTransactionData, 'message')) {
+      if (_.get(deleteTransactionData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, deleteTransactionData).sendResponse(res);
       }
 

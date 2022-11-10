@@ -26,7 +26,7 @@ class UserController {
     try {
       const userId = Number(req.params.id);
       const findOneUserData = await this.userService.findUserById(userId);
-      if (_.findKey(findOneUserData, 'message')) {
+      if (_.get(findOneUserData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, findOneUserData).sendResponse(res);
       }
 
@@ -41,7 +41,7 @@ class UserController {
     try {
       const userData = req.body;
       const createUserData = await this.userService.createUser(userData);
-      if (_.findKey(createUserData, 'message')) {
+      if (_.get(createUserData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createUserData).sendResponse(res);
       }
 
@@ -57,7 +57,7 @@ class UserController {
       const userId = Number(req.params.id);
       const userData = req.body;
       const updateUserData = await this.userService.updateUser(userId, userData);
-      if (_.findKey(updateUserData, 'message')) {
+      if (_.get(updateUserData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateUserData).sendResponse(res);
       }
 
@@ -72,7 +72,7 @@ class UserController {
     try {
       const userId = Number(req.params.id);
       const deleteUserData = await this.userService.deleteUser(userId);
-      if (_.findKey(deleteUserData, 'message')) {
+      if (_.get(deleteUserData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, deleteUserData).sendResponse(res);
       }
 
