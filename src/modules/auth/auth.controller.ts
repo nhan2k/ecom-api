@@ -13,7 +13,23 @@ class AuthController {
       const userData = req.body;
       const result = await new AuthService().signUp(userData);
       // BotTelegram.botSendMessage(`${email} signUp`);
-      if (_.findKey(result, 'message')) {
+      if (_.get(result, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, result).sendResponse(res);
+      }
+      return new HttpResponse(HttpStatus.Created, result).sendResponse(res);
+    } catch (error) {
+      logger.error(`${this.logFile} ${error}`);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+    }
+  }
+
+  public async signUpVendor(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    try {
+      const userData = req.body;
+      let isVendor = true;
+      const result = await new AuthService().signUp(userData, isVendor);
+      // BotTelegram.botSendMessage(`${email} signUp`);
+      if (_.get(result, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, result).sendResponse(res);
       }
       return new HttpResponse(HttpStatus.Created, result).sendResponse(res);
@@ -28,7 +44,7 @@ class AuthController {
       const { email } = req.body;
       const data = await new AuthService().signIn(email);
       // BotTelegram.botSendMessage(`${email} signIn`);
-      if (_.findKey(data, 'message')) {
+      if (_.get(data, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, data).sendResponse(res);
       }
       return new HttpResponse(HttpStatus.OK, data).sendResponse(res);
@@ -62,7 +78,7 @@ class AuthController {
       const { email, password } = req.body;
       const response = await new AuthService().resetPassword(email, password);
       // BotTelegram.botSendMessage(`${email} reset password`);
-      if (_.findKey(response, 'message')) {
+      if (_.get(response, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, response).sendResponse(res);
       }
       res.clearCookie('connect.sid');
@@ -78,7 +94,7 @@ class AuthController {
       const { email } = req.params;
       const response = await new AuthService().sendLinkReset(email);
       // BotTelegram.botSendMessage(`${email} reset password`);
-      if (_.findKey(response, 'message')) {
+      if (_.get(response, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, response).sendResponse(res);
       }
       return new HttpResponse(HttpStatus.OK, response).sendResponse(res);

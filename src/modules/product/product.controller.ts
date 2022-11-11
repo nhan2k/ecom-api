@@ -87,6 +87,24 @@ class ProductController {
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
     }
   };
+
+  public countProducts = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+    try {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
+      const countProductData = await this.ProductService.countProduct(id);
+      if (_.get(countProductData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, countProductData).sendResponse(res);
+      }
+
+      return new HttpResponse(HttpStatus.OK, countProductData).sendResponse(res);
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+    }
+  };
 }
 
 export default ProductController;

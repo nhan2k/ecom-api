@@ -39,6 +39,7 @@ class IndexRoute {
     });
 
     this.router.post('/signup', signup, this.authController.signUp);
+    this.router.post('/signup/vendor', signup, this.authController.signUpVendor);
     this.router.get('/link-reset/:email', this.authController.sendLinkReset);
     this.router.post(`${this.path}`, passport.authenticate('local', { failureRedirect: '/login' }), this.authController.signIn);
     this.router.get('/login', this.authController.signInFail);

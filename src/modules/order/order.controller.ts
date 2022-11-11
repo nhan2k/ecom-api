@@ -83,6 +83,23 @@ class OrderController {
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
     }
   };
+
+  public countOrder = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+    try {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
+      const countOrderData = await this.OrderService.countOrder(id);
+      if (_.get(countOrderData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, countOrderData).sendResponse(res);
+      }
+      return new HttpResponse(HttpStatus.OK, countOrderData).sendResponse(res);
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+    }
+  };
 }
 
 export default OrderController;

@@ -16,6 +16,7 @@ class ProductRoute {
     this.router.post(`${this.path}`, this.ProductController.createProduct);
     this.router.put(`${this.path}/:id(\\d+)`, this.ProductController.updateProduct);
     this.router.delete(`${this.path}/:id(\\d+)`, this.ProductController.deleteProduct);
+    this.router.get(`${this.path}/count`, this.ProductController.countProducts);
   }
 }
 

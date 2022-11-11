@@ -126,6 +126,17 @@ class ProductService {
       return { message: error.message || 'Error' };
     }
   }
+
+  public async countProduct(id: number): Promise<number | { message: string }> {
+    try {
+      const count = await ProductModel.count({ where: { userId: id } });
+
+      return count;
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return { message: error.message || 'Error' };
+    }
+  }
 }
 
 export default ProductService;

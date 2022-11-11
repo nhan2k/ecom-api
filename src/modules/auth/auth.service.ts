@@ -9,10 +9,15 @@ import { UpdateOptions } from 'sequelize';
 class AuthService {
   public logFile = __filename;
 
-  public async signUp(userData: any): Promise<any | { message: string }> {
+  public async signUp(userData: any, isVendor?: boolean): Promise<any | { message: string }> {
     try {
       const { email, password } = userData;
       const hashedPassword = await hash(password, Number(SALT));
+      if (isVendor) {
+        const res = await UserModel.create({ email, passwordHash: hashedPassword, vendor: 1 });
+        const { passwordHash, ...rest } = res;
+        return rest;
+      }
       const res = await UserModel.create({ email, passwordHash: hashedPassword });
       const { passwordHash, ...rest } = res;
       return rest;

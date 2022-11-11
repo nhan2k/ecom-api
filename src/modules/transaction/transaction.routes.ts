@@ -16,6 +16,7 @@ class TransactionRoute {
     this.router.post(`${this.path}`, this.TransactionController.createTransaction);
     this.router.put(`${this.path}/:id(\\d+)`, this.TransactionController.updateTransaction);
     this.router.delete(`${this.path}/:id(\\d+)`, this.TransactionController.deleteTransaction);
+    this.router.get(`${this.path}/count`, this.TransactionController.countTransaction);
   }
 }
 

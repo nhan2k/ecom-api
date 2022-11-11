@@ -16,6 +16,7 @@ class CartRoute {
     this.router.post(`${this.path}`, this.CartController.createCart);
     this.router.put(`${this.path}/:id(\\d+)`, this.CartController.updateCart);
     this.router.delete(`${this.path}/:id(\\d+)`, this.CartController.deleteCart);
+    this.router.get(`${this.path}/count`, this.CartController.countCart);
   }
 }
 

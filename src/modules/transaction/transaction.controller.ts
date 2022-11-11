@@ -86,6 +86,24 @@ class TransactionController {
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
     }
   };
+
+  public countTransaction = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+    try {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
+      const countTransactionData = await this.TransactionService.countTransaction(id);
+      if (_.get(countTransactionData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, countTransactionData).sendResponse(res);
+      }
+
+      return new HttpResponse(HttpStatus.OK, countTransactionData).sendResponse(res);
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+    }
+  };
 }
 
 export default TransactionController;

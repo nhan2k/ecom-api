@@ -66,6 +66,17 @@ class OrderService {
       return { message: error.message || 'Error' };
     }
   }
+
+  public async countOrder(id: number): Promise<number | { message: string }> {
+    try {
+      const count = await OrderModel.count({ where: { userId: id } });
+
+      return count;
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return { message: error.message || 'Error' };
+    }
+  }
 }
 
 export default OrderService;

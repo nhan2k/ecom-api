@@ -66,6 +66,17 @@ class TransactionService {
       return { message: error.message || 'Error' };
     }
   }
+
+  public async countTransaction(id: number): Promise<number | { message: string }> {
+    try {
+      const count = await TransactionModel.count({ where: { userId: id } });
+
+      return count;
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return { message: error.message || 'Error' };
+    }
+  }
 }
 
 export default TransactionService;
