@@ -38,12 +38,11 @@ class CategoryController {
 
   public createCategory = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const CategoryData = req.body;
-      const categoryData: CategoryModel = req.body;
+      const categoryData = req.body;
 
       let content: string = `{"img": "${String(req.file?.filename)}"}`;
       categoryData.content = JSON.parse(content);
-      const createCategoryData = await this.categoryService.createCategory(CategoryData);
+      const createCategoryData = await this.categoryService.createCategory(categoryData);
       if (_.get(createCategoryData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createCategoryData).sendResponse(res);
       }
@@ -57,9 +56,12 @@ class CategoryController {
 
   public updateCategory = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const CategoryId = Number(req.params.id);
-      const CategoryData = req.body;
-      const updateCategoryData = await this.categoryService.updateCategory(CategoryId, CategoryData);
+      const categoryId = Number(req.params.id);
+      const categoryData = req.body;
+
+      let content: string = `{"img": "${String(req.file?.filename)}"}`;
+      categoryData.content = JSON.parse(content);
+      const updateCategoryData = await this.categoryService.updateCategory(categoryId, categoryData);
       if (_.get(updateCategoryData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateCategoryData).sendResponse(res);
       }
