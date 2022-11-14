@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.STRING(50),
       },
       content: {
-        type: Sequelize.TEXT,
+        type: Sequelize.JSON,
       },
       createdAt: {
         type: Sequelize.DATE,

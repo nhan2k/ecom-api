@@ -3,6 +3,7 @@ import CategoryService from './category.service';
 import { HttpResponse, HttpStatus } from '@config/Http';
 import { logger } from '@utils/logger';
 import _ from 'lodash';
+import CategoryModel from './category.model';
 
 class CategoryController {
   private logFile = __filename;
@@ -38,10 +39,15 @@ class CategoryController {
   public createCategory = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const CategoryData = req.body;
+      const categoryData: CategoryModel = req.body;
+
+      let content: string = `{"img": "${String(req.file?.filename)}"}`;
+      categoryData.content = JSON.parse(content);
       const createCategoryData = await this.categoryService.createCategory(CategoryData);
       if (_.get(createCategoryData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createCategoryData).sendResponse(res);
       }
+
       return new HttpResponse(HttpStatus.Created, createCategoryData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);

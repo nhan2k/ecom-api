@@ -88,7 +88,7 @@ class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
-    this.app.use(express.static(path.join(__dirname, 'public')));
+    this.app.use('/public', express.static('public'));
     this.app.use(passport.initialize());
     const RedisStore = connectRedis(session);
     const redisClient = new Ioredis({

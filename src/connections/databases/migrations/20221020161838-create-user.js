@@ -45,7 +45,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       profile: {
-        type: Sequelize.TEXT,
+        type: Sequelize.JSON,
       },
       updatedAt: {
         type: Sequelize.DATE,

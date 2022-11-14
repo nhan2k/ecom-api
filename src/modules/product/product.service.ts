@@ -2,6 +2,11 @@ import ProductModel from './product.model';
 import { logger } from '@utils/logger';
 import { IProductData } from './type';
 import slugify from 'slugify';
+import ProductTagModel from '../product-tag/product.tag.model';
+import ProductReviewModel from '../product-review/product.review.model';
+import ProductMetaModel from '../product-meta/product.meta.model';
+import TagModel from '../tag/tag.model';
+import { sequelize } from '@connections/databases';
 
 class ProductService {
   public logFile = __filename;
@@ -38,13 +43,28 @@ class ProductService {
     }
   }
 
-  public async findProductById(ProductId: number): Promise<ProductModel | null | { message: string }> {
+  public async findProductById(ProductId: number): Promise<{ findProduct: ProductModel | null; rating: number } | { message: string }> {
     try {
-      const findProduct = await ProductModel.findByPk(ProductId);
+      const findProduct = await ProductModel.findByPk(ProductId, {
+        include: [
+          {
+            model: ProductReviewModel,
+          },
+          {
+            model: ProductMetaModel,
+          },
+          {
+            model: TagModel,
+          },
+        ],
+      });
+      const count = await ProductReviewModel.count({ where: { productId: ProductId } });
+      const sum = await ProductReviewModel.sum('rating');
+      const rating = Math.fround(sum / count);
       if (!findProduct) {
         return { message: "Cart Item doesn't exist" };
       }
-      return findProduct;
+      return { findProduct, rating };
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return { message: error.message || 'Error' };

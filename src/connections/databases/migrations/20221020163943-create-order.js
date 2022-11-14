@@ -79,7 +79,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
       content: {
-        type: Sequelize.TEXT,
+        type: Sequelize.JSON,
       },
       deletedAt: {
         type: Sequelize.DATE,

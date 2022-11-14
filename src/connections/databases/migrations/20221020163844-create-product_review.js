@@ -9,24 +9,6 @@ module.exports = {
         autoIncrementIdentity: true,
         type: Sequelize.BIGINT(20),
       },
-      // productId: {
-      //   type: Sequelize.BIGINT(20),
-      //   references: {
-      //     model: 'product',
-      //     key: 'id',
-      //   },
-      //   onUpdate: 'NO ACTION',
-      //   onDelete: 'NO ACTION',
-      // },
-      // parentId: {
-      //   type: Sequelize.BIGINT(20),
-      //   references: {
-      //     model: 'product_review',
-      //     key: 'id',
-      //   },
-      //   onUpdate: 'NO ACTION',
-      //   onDelete: 'NO ACTION',
-      // },
       title: {
         type: Sequelize.STRING(100),
       },
@@ -43,7 +25,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
       content: {
-        type: Sequelize.TEXT,
+        type: Sequelize.JSON,
       },
       updatedAt: {
         type: Sequelize.DATE,

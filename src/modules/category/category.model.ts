@@ -5,7 +5,7 @@ export class CategoryModel extends Model {
   declare title: string;
   declare metaTitle: string;
   declare slug: string;
-  declare content: string;
+  declare content: JSON;
   declare createdAt: Date;
   declare updatedAt: Date;
   declare deletedAt: Date;
@@ -35,7 +35,7 @@ CategoryModel.init(
       unique: true,
     },
     content: {
-      type: DataTypes.TEXT,
+      type: DataTypes.JSON,
     },
     createdAt: {
       type: DataTypes.DATE,

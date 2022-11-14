@@ -3,6 +3,7 @@ import ProductService from './product.service';
 import { HttpResponse, HttpStatus } from '@config/Http';
 import { logger } from '@utils/logger';
 import _ from 'lodash';
+import ProductModel from './product.model';
 
 class ProductController {
   private logFile = __filename;
@@ -43,9 +44,11 @@ class ProductController {
       if (!id) {
         return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
       }
-      const ProductData = req.body;
+      const productData: ProductModel = req.body;
 
-      const createProductData = await this.ProductService.createProduct(ProductData, id);
+      let content: string = `{"img": "${String(req.file?.filename)}"}`;
+      productData.content = JSON.parse(content);
+      const createProductData = await this.ProductService.createProduct(productData, id);
       if (_.get(createProductData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createProductData).sendResponse(res);
       }

@@ -23,12 +23,6 @@ class Associations {
       CategoryModel.hasMany(CartItemModel, { foreignKey: 'parentId' });
       CategoryModel.belongsTo(CartItemModel, { foreignKey: 'parentId' });
 
-      // CategoryModel.hasMany(ProductCategoryModel, { foreignKey: 'categoryId' });
-      // ProductCategoryModel.belongsTo(CategoryModel, { foreignKey: 'categoryId' });
-
-      // ProductModel.hasMany(ProductCategoryModel, { foreignKey: 'productId' });
-      // ProductCategoryModel.belongsTo(ProductModel, { foreignKey: 'productId' });
-
       ProductModel.belongsToMany(CategoryModel, { through: ProductCategoryModel, foreignKey: 'productId' });
       CategoryModel.belongsToMany(ProductModel, { through: ProductCategoryModel, foreignKey: 'categoryId' });
 
@@ -40,12 +34,6 @@ class Associations {
 
       ProductModel.hasMany(ProductMetaModel, { foreignKey: 'productId' });
       ProductMetaModel.belongsTo(ProductReviewModel, { foreignKey: 'productId' });
-
-      // ProductModel.hasMany(ProductTagModel, { foreignKey: 'productId' });
-      // ProductTagModel.belongsTo(ProductModel, { foreignKey: 'productId' });
-
-      // TagModel.hasMany(ProductTagModel, { foreignKey: 'tagId' });
-      // ProductTagModel.belongsTo(TagModel, { foreignKey: 'tagId' });
 
       ProductModel.belongsToMany(TagModel, { through: ProductTagModel, foreignKey: 'productId' });
       TagModel.belongsToMany(ProductModel, { through: ProductTagModel, foreignKey: 'tagId' });

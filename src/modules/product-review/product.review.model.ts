@@ -36,6 +36,10 @@ ProductReviewModel.init(
       type: DataTypes.SMALLINT,
       allowNull: false,
       defaultValue: 0,
+      validate: {
+        min: 1,
+        max: 5,
+      },
     },
     published: {
       type: DataTypes.SMALLINT,
