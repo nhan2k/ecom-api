@@ -16,6 +16,7 @@ class CartItemRoute {
     this.router.post(`${this.path}`, this.CartItemController.createCartItem);
     this.router.put(`${this.path}/:id(\\d+)`, this.CartItemController.updateCartItem);
     this.router.delete(`${this.path}/:id(\\d+)`, this.CartItemController.deleteCartItem);
+    this.router.put(`${this.path}/update/:id(\\d+)`, this.CartItemController.updateQtyCartItem);
   }
 }
 

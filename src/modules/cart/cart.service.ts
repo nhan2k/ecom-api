@@ -1,7 +1,9 @@
 import CartModel from '@modules/cart/cart.model';
 import { logger } from '@utils/logger';
 import { FindOptions } from 'sequelize';
-import { cartStatusMap } from './enum';
+import CartItemModel from '../cart-item/cart.item.model';
+import ProductModel from '../product/product.model';
+import UserModel from '../user/user.model';
 
 class CartService {
   public logFile = __filename;
@@ -92,9 +94,47 @@ class CartService {
   }
   public async countCart(id: number): Promise<number | { message: string }> {
     try {
-      const count = await CartModel.count({ where: { userId: id } });
+      const cart = await CartModel.findOne({ where: { userId: id }, attributes: ['id'] });
+      if (!cart) {
+        return { message: "Cart doesn't exist" };
+      }
+      const count = await CartItemModel.count({ where: { cartId: cart.id } });
 
       return count;
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return { message: error.message || 'Error' };
+    }
+  }
+
+  public async getPersonCart(userId: number): Promise<CartModel | null | { message: string }> {
+    try {
+      const cart = await CartModel.findOne({
+        where: { userId: userId },
+        attributes: ['sessionId', 'token', 'userId', 'id'],
+        include: [
+          {
+            model: CartItemModel,
+            attributes: ['id', 'productId', 'cartId', 'price', 'discount', 'quantity'],
+            include: [
+              {
+                model: ProductModel,
+                attributes: ['title', 'metaTitle', 'summary', 'type', 'price', 'discount', 'quantity', 'shop', 'content'],
+                include: [
+                  {
+                    model: UserModel,
+                    attributes: ['firstName', 'lastName'],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      if (!cart) {
+        return { message: "Cart doesn't exist" };
+      }
+      return cart;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return { message: error.message || 'Error' };

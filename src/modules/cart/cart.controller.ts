@@ -95,6 +95,23 @@ class CartController {
       return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
     }
   };
+
+  public getPersonCart = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+    try {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
+      const personCartData: any = await this.CartService.getPersonCart(id);
+      if (_.get(personCartData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, personCartData).sendResponse(res);
+      }
+      return new HttpResponse(HttpStatus.OK, personCartData).sendResponse(res);
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
+    }
+  };
 }
 
 export default CartController;

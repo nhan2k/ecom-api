@@ -54,6 +54,22 @@ class AuthController {
     }
   }
 
+  public async signInVendor(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+    try {
+      const { email } = req.body;
+      let isVendor = true;
+      const data = await new AuthService().signInVendor(email);
+      // BotTelegram.botSendMessage(`${email} signIn`);
+      if (_.get(data, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, data).sendResponse(res);
+      }
+      return new HttpResponse(HttpStatus.OK, data).sendResponse(res);
+    } catch (error) {
+      logger.error(`${this.logFile} ${error}`);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+    }
+  }
+
   public signInFail(req: Request, res: Response): Response<any, Record<string, any>> {
     return new HttpResponse(HttpStatus.BadRequest, { message: 'Login failed, please check your email or password' }).sendResponse(res);
   }

@@ -73,8 +73,9 @@ class ProductService {
 
   public async createProduct(ProductData: IProductData, id: number): Promise<ProductModel | { message: string }> {
     try {
+      console.log('🚀 ~ file: product.service.ts ~ line 75 ~ ProductService ~ createProduct ~ ProductData', ProductData);
       const { slug, sku, title, summary, userId, ...rest } = ProductData;
-      const record = await ProductModel.findOne({ where: { title: title } });
+      const record = await ProductModel.findOne({ where: { title: title, deletedAt: null } });
       if (record) {
         return { message: 'Record already exists' };
       }

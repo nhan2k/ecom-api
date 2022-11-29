@@ -10,8 +10,13 @@ class CartItemController {
 
   public getCartItems = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const findAllCartItemsData = await this.CartItemService.findAllCartItems();
-      if (!Array.isArray(findAllCartItemsData)) {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
+      const findAllCartItemsData = await this.CartItemService.findAllCartItems(id);
+
+      if (_.get(findAllCartItemsData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, findAllCartItemsData).sendResponse(res);
       }
       return new HttpResponse(HttpStatus.OK, findAllCartItemsData).sendResponse(res);
@@ -38,8 +43,12 @@ class CartItemController {
 
   public createCartItem = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
       const CartItemData = req.body;
-      const createCartItemData = await this.CartItemService.createCartItem(CartItemData);
+      const createCartItemData = await this.CartItemService.createCartItem(CartItemData, id);
       if (_.get(createCartItemData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createCartItemData).sendResponse(res);
       }
@@ -53,6 +62,10 @@ class CartItemController {
 
   public updateCartItem = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
       const CartItemId = Number(req.params.id);
       const CartItemData = req.body;
       const updateCartItemData = await this.CartItemService.updateCartItem(CartItemId, CartItemData);
@@ -76,6 +89,22 @@ class CartItemController {
       }
 
       return new HttpResponse(HttpStatus.OK, deleteCartItemData).sendResponse(res);
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+    }
+  };
+
+  public updateQtyCartItem = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+    try {
+      const CartItemId = Number(req.params.id);
+      const CartItemData = req.body;
+      const updateCartItemData = await this.CartItemService.updateCartItem(CartItemId, CartItemData);
+      if (_.get(updateCartItemData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, updateCartItemData).sendResponse(res);
+      }
+
+      return new HttpResponse(HttpStatus.Created, updateCartItemData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);

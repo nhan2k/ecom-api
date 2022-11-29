@@ -20,9 +20,6 @@ class Associations {
 
   associations() {
     try {
-      CategoryModel.hasMany(CartItemModel, { foreignKey: 'parentId' });
-      CategoryModel.belongsTo(CartItemModel, { foreignKey: 'parentId' });
-
       ProductModel.belongsToMany(CategoryModel, { through: ProductCategoryModel, foreignKey: 'productId' });
       CategoryModel.belongsToMany(ProductModel, { through: ProductCategoryModel, foreignKey: 'categoryId' });
 
