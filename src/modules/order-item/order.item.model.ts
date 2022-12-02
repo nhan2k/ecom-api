@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '@connections/databases';
+
 export class OrderItemModel extends Model {
   declare id: number;
   declare productId: number;

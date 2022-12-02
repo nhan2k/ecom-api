@@ -4,11 +4,12 @@ import CartModel from '../cart/cart.model';
 import ProductModel from '../product/product.model';
 import UserModel from '../user/user.model';
 import _ from 'lodash';
+import { actived } from './enum';
 
 class CartItemService {
   public logFile = __filename;
 
-  public async findAllCartItems(id: number): Promise<any | { message: string }> {
+  public async findAllCartItemsForShop(id: number): Promise<any | { message: string }> {
     try {
       const findCart = await CartModel.findOne({ where: { userId: id }, attributes: ['id'] });
       if (!findCart) {
@@ -24,17 +25,42 @@ class CartItemService {
             include: [
               {
                 model: UserModel,
-                attributes: ['email'],
+                attributes: ['intro'],
               },
             ],
           },
         ],
       });
       return _.chain(allCartItem)
-        .groupBy(x => x.ProductModel.UserModel.email)
+        .groupBy(x => x.ProductModel.UserModel.intro)
         .value();
     } catch (error) {
       logger.error(`${this.logFile} ${error}`);
+      return { message: error.message || 'Error' };
+    }
+  }
+
+  public async findAllCartItemsForReviews(CartItemId: number): Promise<CartItemModel[] | null | { message: string }> {
+    try {
+      const findCart = await CartModel.findOne({ where: { userId: CartItemId }, attributes: ['id'] });
+      if (!findCart) {
+        return { message: "Cart doesn't exist" };
+      }
+
+      const findCartItem = await CartItemModel.findAll({
+        where: { cartId: findCart.id },
+        attributes: ['price', 'quantity'],
+        include: [
+          {
+            model: ProductModel,
+            attributes: ['title', 'price', 'discount'],
+          },
+        ],
+      });
+
+      return findCartItem;
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
       return { message: error.message || 'Error' };
     }
   }
@@ -57,7 +83,7 @@ class CartItemService {
       const { productId } = CartItemData;
       const sku = `${productId}-${userId}`;
       const quantity = 1;
-      const active = 1;
+      const active = actived.Added;
 
       const cart = await CartModel.findOne({ where: { userId }, attributes: ['id'] });
       if (!cart) {

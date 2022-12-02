@@ -3,15 +3,15 @@ import { sequelize } from '@connections/databases';
 
 export class CartItemModel extends Model {
   declare id: number;
-  declare productId: number;
-  declare cartId: number;
   declare sku: string;
   declare price: number;
   declare discount: number;
   declare quantity: number;
+  declare productId: number;
+  declare cartId: number;
   declare active: number;
+  declare content: JSON;
   declare createdAt: Date;
-  declare content: string;
   declare updatedAt: Date;
   declare deletedAt: Date;
 }
@@ -59,7 +59,7 @@ CartItemModel.init(
       type: DataTypes.DATE,
     },
     content: {
-      type: DataTypes.TEXT,
+      type: DataTypes.JSON,
     },
     updatedAt: {
       type: DataTypes.DATE,
@@ -71,7 +71,6 @@ CartItemModel.init(
   {
     tableName: 'cart_item',
     sequelize,
-    paranoid: true,
   },
 );
 

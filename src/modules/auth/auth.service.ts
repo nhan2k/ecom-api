@@ -17,12 +17,12 @@ class AuthService {
       const hashedPassword = await hash(password, Number(SALT));
       if (isVendor) {
         const res = await UserModel.create({ email, passwordHash: hashedPassword, vendor: 1 });
-        const { passwordHash, ...rest } = res;
-        return rest;
+        const vendor = await UserModel.findByPk(res.id, { attributes: ['email', 'firstName', 'lastName', 'mobile'] });
+        return vendor;
       }
       const res = await UserModel.create({ email, passwordHash: hashedPassword });
 
-      const newUser = await UserModel.findOne({ where: { email: res.email } });
+      const newUser = await UserModel.findOne({ where: { email: res.email }, attributes: ['id', 'email', 'firstName', 'lastName', 'mobile'] });
       if (newUser) {
         await CartModel.create({
           sessionId: uuidv4(),
@@ -31,8 +31,7 @@ class AuthService {
         });
       }
 
-      const { passwordHash, ...rest } = res;
-      return rest;
+      return newUser;
     } catch (error) {
       logger.error({ message: error.message || 'Error' });
       return { message: { message: error.message || 'Error' } };
@@ -112,6 +111,24 @@ class AuthService {
       return { message: 'Password reset successful, please login again' };
     } catch (error) {
       logger.error(`${this.logFile} ${error}`);
+      return { message: error.message || 'Error' };
+    }
+  }
+  public async updateUser(userId: number, userData: any): Promise<UserModel | null | { message: string }> {
+    try {
+      const { password, ...rest } = userData;
+
+      if (password) {
+        const hashedPassword = await hash(password, 10);
+        await UserModel.update({ ...rest, password: hashedPassword }, { where: { id: userId } });
+        const res = UserModel.findByPk(userId, { attributes: ['firstName', 'lastName', 'mobile', 'email', 'intro', 'content'] });
+        return res;
+      }
+      await UserModel.update({ ...rest }, { where: { id: userId } });
+      const res = UserModel.findByPk(userId, { attributes: ['firstName', 'lastName', 'mobile', 'email', 'intro', 'content'] });
+      return res;
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
       return { message: error.message || 'Error' };
     }
   }

@@ -92,17 +92,18 @@ class CartService {
       return { message: error.message || 'Error' };
     }
   }
-  public async countCart(id: number): Promise<number | { message: string }> {
+  public async countCart(id: number): Promise<number | any | { message: string }> {
     try {
       const cart = await CartModel.findOne({ where: { userId: id }, attributes: ['id'] });
       if (!cart) {
         return { message: "Cart doesn't exist" };
       }
+
       const count = await CartItemModel.count({ where: { cartId: cart.id } });
 
       return count;
     } catch (error) {
-      logger.error(`${this.logFile} ${error.message}`);
+      logger.error(`${this.logFile} ${error}`);
       return { message: error.message || 'Error' };
     }
   }
@@ -136,7 +137,7 @@ class CartService {
       }
       return cart;
     } catch (error) {
-      logger.error(`${this.logFile} ${error.message}`);
+      logger.error(`${this.logFile} ${error}`);
       return { message: error.message || 'Error' };
     }
   }

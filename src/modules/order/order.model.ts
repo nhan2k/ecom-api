@@ -15,12 +15,10 @@ export class OrderModel extends Model {
   declare discount: number;
   declare grandTotal: number;
   declare firstName: string;
-  declare middleName: string;
   declare lastName: string;
   declare mobile: string;
   declare email: string;
   declare line1: string;
-  declare line2: string;
   declare city: string;
   declare province: string;
   declare country: string;
@@ -96,9 +94,6 @@ OrderModel.init(
     firstName: {
       type: DataTypes.STRING(50),
     },
-    middleName: {
-      type: DataTypes.STRING(50),
-    },
     lastName: {
       type: DataTypes.STRING(50),
     },
@@ -109,9 +104,6 @@ OrderModel.init(
       type: DataTypes.STRING(50),
     },
     line1: {
-      type: DataTypes.STRING(50),
-    },
-    line2: {
       type: DataTypes.STRING(50),
     },
     city: {

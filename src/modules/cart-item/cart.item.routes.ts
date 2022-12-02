@@ -11,7 +11,8 @@ class CartItemRoute {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, this.CartItemController.getCartItems);
+    this.router.get(`${this.path}`, this.CartItemController.getCartItemsForShop);
+    this.router.get(`${this.path}/reviews`, this.CartItemController.getCartItemsForReviews);
     this.router.get(`${this.path}/:id(\\d+)`, this.CartItemController.getCartItemById);
     this.router.post(`${this.path}`, this.CartItemController.createCartItem);
     this.router.put(`${this.path}/:id(\\d+)`, this.CartItemController.updateCartItem);

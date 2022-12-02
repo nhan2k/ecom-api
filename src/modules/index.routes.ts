@@ -13,6 +13,7 @@ import ProductReviewRoute from './product-review/product.review.routes';
 import ProductTagRoute from './product-tag/product.tag.routes';
 import TagRoute from './tag/tag.routes';
 import TransactionRoute from './transaction/transaction.routes';
+import CheckoutRoute from './checkout/checkout.routes';
 
 class ModuleRoute {
   public router: Router = Router();
@@ -30,6 +31,7 @@ class ModuleRoute {
   public productTagRoute: ProductTagRoute = new ProductTagRoute();
   public tagRoute: TagRoute = new TagRoute();
   public transactionRoute: TransactionRoute = new TransactionRoute();
+  public checkoutRoute: CheckoutRoute = new CheckoutRoute();
 
   constructor() {
     this.initializeRoutes();
@@ -50,6 +52,7 @@ class ModuleRoute {
     this.router.use(this.productTagRoute.router);
     this.router.use(this.tagRoute.router);
     this.router.use(this.transactionRoute.router);
+    this.router.use(this.checkoutRoute.router);
   }
 }
 

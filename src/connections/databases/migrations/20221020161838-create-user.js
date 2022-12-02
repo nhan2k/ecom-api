@@ -12,9 +12,6 @@ module.exports = {
       firstName: {
         type: Sequelize.STRING(50),
       },
-      middleName: {
-        type: Sequelize.STRING(50),
-      },
       lastName: {
         type: Sequelize.STRING(50),
       },
@@ -35,9 +32,6 @@ module.exports = {
       vendor: {
         type: Sequelize.SMALLINT,
       },
-      registeredAt: {
-        type: Sequelize.DATE,
-      },
       lastLogin: {
         type: Sequelize.DATE,
       },
@@ -45,7 +39,13 @@ module.exports = {
         type: Sequelize.STRING,
       },
       profile: {
+        type: Sequelize.TEXT,
+      },
+      content: {
         type: Sequelize.JSON,
+      },
+      createdAt: {
+        type: Sequelize.DATE,
       },
       updatedAt: {
         type: Sequelize.DATE,

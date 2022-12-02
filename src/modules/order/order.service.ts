@@ -1,5 +1,10 @@
 import OrderModel from './order.model';
 import { logger } from '@utils/logger';
+import { statusEnum } from './enum';
+import CartModel from '../cart/cart.model';
+export { statusEnum } from './enum';
+import { actived } from '@modules/cart-item/enum';
+import CartItemModel from '../cart-item/cart.item.model';
 
 class OrderService {
   public logFile = __filename;
@@ -7,6 +12,7 @@ class OrderService {
   public async findAllOrders(): Promise<OrderModel[] | { message: string }> {
     try {
       const allOrder: OrderModel[] = await OrderModel.findAll();
+
       return allOrder;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
@@ -29,7 +35,16 @@ class OrderService {
 
   public async createOrder(OrderData: any, id: number): Promise<OrderModel | { message: string }> {
     try {
-      const res = await OrderModel.create({ ...OrderData, userId: id });
+      const status = statusEnum.Ordered;
+      const findCart = await CartModel.findOne({ where: { userId: id }, attributes: ['sessionId', 'token', 'id'] });
+      if (!findCart) {
+        return { message: "Cart doesn't exist" };
+      }
+
+      const res = await OrderModel.create({ sessionId: findCart.sessionId, token: findCart.token, userId: id });
+
+      await CartItemModel.update({ active: actived.Ordered }, { where: { active: actived.Added } });
+
       return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);

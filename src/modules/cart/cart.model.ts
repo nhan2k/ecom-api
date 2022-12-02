@@ -7,12 +7,10 @@ export class CartModel extends Model {
   declare token: string;
   declare status: number;
   declare firstName: string;
-  declare middleName: string;
   declare lastName: string;
   declare mobile: string;
   declare email: string;
   declare line1: string;
-  declare line2: string;
   declare city: string;
   declare province: string;
   declare country: string;
@@ -48,9 +46,6 @@ CartModel.init(
     firstName: {
       type: DataTypes.STRING(50),
     },
-    middleName: {
-      type: DataTypes.STRING(50),
-    },
     lastName: {
       type: DataTypes.STRING(50),
     },
@@ -61,9 +56,6 @@ CartModel.init(
       type: DataTypes.STRING,
     },
     line1: {
-      type: DataTypes.STRING,
-    },
-    line2: {
       type: DataTypes.STRING,
     },
     city: {

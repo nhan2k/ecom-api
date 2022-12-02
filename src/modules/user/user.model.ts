@@ -3,17 +3,17 @@ import { sequelize } from '@connections/databases';
 export class UserModel extends Model {
   declare id: number;
   declare firstName: string;
-  declare middleName: string;
   declare lastName: string;
   declare mobile: string;
   declare email: string;
   declare passwordHash: string;
   declare admin: number;
   declare vendor: number;
-  declare registeredAt: Date;
   declare lastLogin: Date;
   declare intro: string;
   declare profile: string;
+  declare content: JSON;
+  declare createdAt: Date;
   declare updatedAt: Date;
   declare deletedAt: Date;
 }
@@ -27,9 +27,6 @@ UserModel.init(
       type: DataTypes.BIGINT,
     },
     firstName: {
-      type: DataTypes.STRING(50),
-    },
-    middleName: {
       type: DataTypes.STRING(50),
     },
     lastName: {
@@ -55,17 +52,21 @@ UserModel.init(
       allowNull: false,
       defaultValue: 0,
     },
-    registeredAt: {
-      type: DataTypes.DATE,
-    },
     lastLogin: {
       type: DataTypes.DATE,
     },
     intro: {
       type: DataTypes.STRING,
+      unique: true,
     },
     profile: {
       type: DataTypes.TEXT,
+    },
+    content: {
+      type: DataTypes.JSON,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
     },
     updatedAt: {
       type: DataTypes.DATE,
@@ -78,7 +79,6 @@ UserModel.init(
     tableName: 'user',
     sequelize,
     paranoid: true,
-    createdAt: 'registeredAt',
   },
 );
 

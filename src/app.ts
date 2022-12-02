@@ -30,7 +30,6 @@ import passport from 'passport';
 import connectRedis from 'connect-redis';
 import session from 'express-session';
 import Ioredis from 'ioredis';
-import path from 'path';
 import Associations from '@connections/databases/associations';
 import UserModel from '@modules/user/user.model';
 import passportJWT from 'passport-jwt';

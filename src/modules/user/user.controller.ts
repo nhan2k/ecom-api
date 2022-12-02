@@ -24,8 +24,11 @@ class UserController {
 
   public getUserById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const userId = Number(req.params.id);
-      const findOneUserData = await this.userService.findUserById(userId);
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
+      const findOneUserData = await this.userService.findUserById(id);
       if (_.get(findOneUserData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, findOneUserData).sendResponse(res);
       }

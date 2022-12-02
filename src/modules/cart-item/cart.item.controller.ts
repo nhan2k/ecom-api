@@ -8,13 +8,31 @@ class CartItemController {
   private logFile = __filename;
   public CartItemService = new CartItemService();
 
-  public getCartItems = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+  public getCartItemsForShop = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       let id = req.user ? req.user['id'] : null;
       if (!id) {
         return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
       }
-      const findAllCartItemsData = await this.CartItemService.findAllCartItems(id);
+      const findAllCartItemsData = await this.CartItemService.findAllCartItemsForShop(id);
+
+      if (_.get(findAllCartItemsData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, findAllCartItemsData).sendResponse(res);
+      }
+      return new HttpResponse(HttpStatus.OK, findAllCartItemsData).sendResponse(res);
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+    }
+  };
+
+  public getCartItemsForReviews = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+    try {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
+      const findAllCartItemsData = await this.CartItemService.findAllCartItemsForReviews(id);
 
       if (_.get(findAllCartItemsData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, findAllCartItemsData).sendResponse(res);

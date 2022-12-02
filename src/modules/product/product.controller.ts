@@ -47,7 +47,9 @@ class ProductController {
       const productData: ProductModel = req.body;
 
       let content: string = `{"img": "${String(req.file?.filename)}"}`;
-      productData.content = JSON.parse(content);
+      if (!content.includes('undefined')) {
+        productData.content = JSON.parse(content);
+      }
       const createProductData = await this.ProductService.createProduct(productData, id);
       if (_.get(createProductData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createProductData).sendResponse(res);
@@ -63,8 +65,12 @@ class ProductController {
   public updateProduct = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductId = Number(req.params.id);
-      const ProductData = req.body;
-      const updateProductData = await this.ProductService.updateProduct(ProductId, ProductData);
+      const productData = req.body;
+      let content: string = `{"img": "${String(req.file?.filename)}"}`;
+      if (!content.includes('undefined')) {
+        productData.content = JSON.parse(content);
+      }
+      const updateProductData = await this.ProductService.updateProduct(ProductId, productData);
       if (_.get(updateProductData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateProductData).sendResponse(res);
       }

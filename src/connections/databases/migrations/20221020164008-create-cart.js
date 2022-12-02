@@ -24,9 +24,6 @@ module.exports = {
       firstName: {
         type: Sequelize.STRING(50),
       },
-      middleName: {
-        type: Sequelize.STRING(50),
-      },
       lastName: {
         type: Sequelize.STRING(50),
       },
@@ -37,9 +34,6 @@ module.exports = {
         type: Sequelize.STRING(50),
       },
       line1: {
-        type: Sequelize.STRING(50),
-      },
-      line2: {
         type: Sequelize.STRING(50),
       },
       city: {

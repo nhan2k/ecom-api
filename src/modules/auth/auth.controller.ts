@@ -119,6 +119,29 @@ class AuthController {
       return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
     }
   }
+
+  public updateUser = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+    try {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
+      const userData = req.body;
+      let content: string = `{"img": "${String(req.file?.filename)}"}`;
+      if (!content.includes('undefined')) {
+        userData.content = JSON.parse(content);
+      }
+      const updateUserData = await new AuthService().updateUser(id, userData);
+      if (_.get(updateUserData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, updateUserData).sendResponse(res);
+      }
+
+      return new HttpResponse(HttpStatus.Created, updateUserData).sendResponse(res);
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+    }
+  };
 }
 
 export default AuthController;

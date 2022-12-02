@@ -17,7 +17,7 @@ class UserService {
 
   public async findUserById(userId: number): Promise<UserModel | null | { message: string }> {
     try {
-      const findUser = await UserModel.findByPk(userId);
+      const findUser = await UserModel.findByPk(userId, { attributes: ['firstName', 'lastName', 'mobile', 'email', 'profile', 'content', 'intro'] });
       if (!findUser) {
         return { message: "User doesn't exist" };
       }
