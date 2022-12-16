@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.BIGINT(20),
       },
       title: {
-        type: Sequelize.STRING(100),
+        type: Sequelize.STRING,
       },
       rating: {
         type: Sequelize.SMALLINT,
@@ -18,19 +18,16 @@ module.exports = {
       published: {
         type: Sequelize.SMALLINT,
       },
-      createdAt: {
-        type: Sequelize.DATE,
-      },
       publishedAt: {
         type: Sequelize.DATE,
       },
       content: {
-        type: Sequelize.JSON,
+        type: Sequelize.TEXT,
       },
-      updatedAt: {
+      createdAt: {
         type: Sequelize.DATE,
       },
-      deletedAt: {
+      updatedAt: {
         type: Sequelize.DATE,
       },
     });

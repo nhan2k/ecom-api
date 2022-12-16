@@ -1,14 +1,14 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '@connections/databases';
 export class CategoryModel extends Model {
-  declare parentId: number;
+  declare id: number;
   declare title: string;
   declare metaTitle: string;
   declare slug: string;
-  declare content: JSON;
+  declare content: string;
   declare createdAt: Date;
   declare updatedAt: Date;
-  declare deletedAt: Date;
+  declare parentId: number;
 }
 
 CategoryModel.init(
@@ -17,9 +17,6 @@ CategoryModel.init(
       autoIncrement: true,
       autoIncrementIdentity: true,
       primaryKey: true,
-      type: DataTypes.BIGINT,
-    },
-    parentId: {
       type: DataTypes.BIGINT,
     },
     title: {
@@ -35,7 +32,7 @@ CategoryModel.init(
       unique: true,
     },
     content: {
-      type: DataTypes.JSON,
+      type: DataTypes.TEXT,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -43,14 +40,15 @@ CategoryModel.init(
     updatedAt: {
       type: DataTypes.DATE,
     },
-    deletedAt: {
-      type: DataTypes.DATE,
+    parentId: {
+      type: DataTypes.BIGINT,
     },
   },
   {
     tableName: 'category',
     sequelize,
-    paranoid: true,
+    paranoid: false,
+    deletedAt: false,
   },
 );
 

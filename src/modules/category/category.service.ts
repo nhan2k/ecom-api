@@ -7,7 +7,7 @@ class CategoryService {
 
   public async findAllCategories(): Promise<CategoryModel[] | { message: string }> {
     try {
-      const allCategory: CategoryModel[] = await CategoryModel.findAll();
+      const allCategory: CategoryModel[] = await CategoryModel.findAll({ attributes: ['id', 'title'] });
       return allCategory;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
@@ -30,17 +30,24 @@ class CategoryService {
 
   public async createCategory(categoryData: ICategoryData): Promise<CategoryModel | { message: string }> {
     try {
-      const { title, slug, ...rest } = categoryData;
-      const record = await CategoryModel.findOne({ where: { title: title } });
-      if (record) {
-        return { message: 'Record already exists' };
-      }
+      const { title, parentId, ...rest } = categoryData;
       let newSlug = '';
       if (title) {
         newSlug = slugify(title);
       }
-      const res = await CategoryModel.create({ title, slug: newSlug, ...rest });
-      return res;
+
+      const [category, created] = await CategoryModel.findOrCreate({
+        where: { title: title },
+        defaults: { title, slug: newSlug, parentId, ...rest },
+      });
+      if (!created) {
+        return { message: 'Record already exists' };
+      }
+      if (!category.parentId) {
+        await CategoryModel.update({ parentId: category.id }, { where: { id: category.id } });
+      }
+
+      return category;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return { message: error.message || 'Error' };

@@ -2,40 +2,33 @@ import ProductModel from './product.model';
 import { logger } from '@utils/logger';
 import { IProductData } from './type';
 import slugify from 'slugify';
-import ProductTagModel from '../product-tag/product.tag.model';
 import ProductReviewModel from '../product-review/product.review.model';
 import ProductMetaModel from '../product-meta/product.meta.model';
 import TagModel from '../tag/tag.model';
+import CategoryModel from '../category/category.model';
+import { v4 as uuidv4 } from 'uuid';
+import ProductUtil from './product.util';
+import ProductCategoryModel from '../product-category/product.category.model';
 import { sequelize } from '@connections/databases';
+import { shop } from './enum';
+import { published } from '@modules/product-review/enum';
 
 class ProductService {
   public logFile = __filename;
 
   public async findAllProducts(): Promise<ProductModel[] | { message: string }> {
     try {
-      const allProduct: ProductModel[] = await ProductModel.findAll({
-        attributes: [
-          'id',
-          'userId',
-          'title',
-          'metaTitle',
-          'slug',
-          'summary',
-          'type',
-          'sku',
-          'price',
-          'discount',
-          'quantity',
-          'shop',
-          'publishedAt',
-          'startsAt',
-          'endsAt',
-          'content',
-          'createdAt',
-          'updatedAt',
-          'deletedAt',
-        ],
-      });
+      const allProduct: ProductModel[] = await new ProductUtil().getProducts(shop.available);
+      return allProduct;
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return { message: error.message || 'Error' };
+    }
+  }
+
+  public async findAllProductsUnavailable(): Promise<ProductModel[] | { message: string }> {
+    try {
+      const allProduct: ProductModel[] = await new ProductUtil().getProducts(shop.unavailable);
       return allProduct;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
@@ -71,44 +64,75 @@ class ProductService {
     }
   }
 
-  public async createProduct(ProductData: IProductData, id: number): Promise<ProductModel | { message: string }> {
+  public async createProduct(ProductData: IProductData | any, id: number): Promise<ProductModel | any | { message: string }> {
     try {
-      console.log('🚀 ~ file: product.service.ts ~ line 75 ~ ProductService ~ createProduct ~ ProductData', ProductData);
-      const { slug, sku, title, summary, userId, ...rest } = ProductData;
-      const record = await ProductModel.findOne({ where: { title: title, deletedAt: null } });
-      if (record) {
-        return { message: 'Record already exists' };
-      }
-      let newSlug = '';
-      let newSku = '';
-      if (title) {
-        newSlug = slugify(title);
-      }
-      if (summary) {
-        let arrSummary: Array<string | number> = [];
-        for (const key in summary) {
-          if (Object.prototype.hasOwnProperty.call(summary, key)) {
-            let element = summary[key];
-            arrSummary.push(element);
+      const result = await sequelize.transaction(async t => {
+        const { title, quantity, image, price, meta, category, summary } = ProductData;
+        const record = await ProductModel.findOne({ where: { title: title }, transaction: t });
+        if (record) {
+          return { message: 'Record already exists' };
+        }
+        let newSlug = '';
+        if (title) {
+          newSlug = slugify(title);
+        }
+        if (summary) {
+          let arrSummary: Array<string | number> = [];
+          for (const key in summary) {
+            if (Object.prototype.hasOwnProperty.call(summary, key)) {
+              let element = summary[key];
+              arrSummary.push(element);
+            }
           }
         }
-        newSku = arrSummary.join('-').toLowerCase();
-      }
-      const res = await ProductModel.create({ slug: newSlug, sku: newSku, title, summary, userId: id, ...rest });
-      return res;
+
+        let newSku = `${title}/${uuidv4()}`;
+        const newProduct = await ProductModel.create(
+          { slug: newSlug, sku: newSku, title, userId: id, quantity, image, price, summary },
+          { transaction: t },
+        );
+        await ProductCategoryModel.create(
+          {
+            categoryId: category,
+            productId: newProduct.id,
+          },
+          { transaction: t },
+        );
+
+        await ProductReviewModel.create(
+          {
+            productId: newProduct.id,
+            published: published.public,
+          },
+          { transaction: t },
+        );
+
+        let newMetas = JSON.parse(meta);
+
+        newMetas.map(async e => {
+          await ProductMetaModel.create({
+            productId: newProduct.id,
+            key: e.key,
+            content: e.content,
+          });
+        });
+
+        return newMetas;
+      });
+      return result;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return { message: error.message || 'Error' };
     }
   }
 
-  public async updateProduct(ProductId: number, ProductData: IProductData): Promise<ProductModel | null | { message: string }> {
+  public async updateProduct(ProductId: number, ProductData: IProductData): Promise<ProductModel | any | { message: string }> {
     try {
       const findProduct: ProductModel | null = await ProductModel.findByPk(ProductId);
       if (!findProduct) {
         return { message: "Product doesn't exist" };
       }
-      const { slug, sku, title, summary, userId, ...rest } = ProductData;
+      const { title, summary, ...rest } = ProductData;
       let newSlug = '';
       let newSku = '';
       if (title) {
@@ -124,8 +148,8 @@ class ProductService {
         }
         newSku = arrSummary.join('-').toLowerCase();
       }
-      await ProductModel.update({ slug: newSlug, sku: newSku, title, summary, ...rest }, { where: { id: ProductId } });
-      const res = ProductModel.findByPk(ProductId);
+      await ProductModel.update({ slug: newSlug, sku: newSku, title, summary, shop: shop.unavailable, ...rest }, { where: { id: ProductId } });
+      const res = await new ProductUtil().getProduct(ProductId);
       return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
@@ -153,6 +177,51 @@ class ProductService {
       const count = await ProductModel.count({ where: { userId: id } });
 
       return count;
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return { message: error.message || 'Error' };
+    }
+  }
+
+  public async findAllProductsForVendor(id: number): Promise<ProductModel[] | { message: string }> {
+    try {
+      const allProduct: ProductModel[] = await ProductModel.findAll({
+        where: { userId: id },
+        attributes: [
+          'id',
+          'title',
+          'metaTitle',
+          'summary',
+          'type',
+          'price',
+          'discount',
+          'quantity',
+          'shop',
+          'publishedAt',
+          'startsAt',
+          'endsAt',
+          'image',
+        ],
+        include: [
+          {
+            model: CategoryModel,
+            attributes: ['title'],
+          },
+          {
+            model: ProductReviewModel,
+            attributes: ['rating'],
+          },
+          {
+            model: ProductMetaModel,
+            attributes: ['key', 'content'],
+          },
+          {
+            model: TagModel,
+            attributes: ['title'],
+          },
+        ],
+      });
+      return allProduct;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return { message: error.message || 'Error' };

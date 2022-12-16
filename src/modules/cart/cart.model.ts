@@ -2,7 +2,6 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '@connections/databases';
 export class CartModel extends Model {
   declare id: number;
-  declare userId: number;
   declare sessionId: string;
   declare token: string;
   declare status: number;
@@ -10,14 +9,15 @@ export class CartModel extends Model {
   declare lastName: string;
   declare mobile: string;
   declare email: string;
-  declare line1: string;
-  declare city: string;
+  declare line: string;
+  declare ward: string;
+  declare district: string;
   declare province: string;
   declare country: string;
+  declare content: string;
   declare createdAt: Date;
   declare updatedAt: Date;
-  declare content: string;
-  declare deletedAt: Date;
+  declare userId: number;
 }
 
 CartModel.init(
@@ -28,16 +28,13 @@ CartModel.init(
       primaryKey: true,
       type: DataTypes.BIGINT,
     },
-    userId: {
-      type: DataTypes.BIGINT,
-    },
     sessionId: {
       allowNull: false,
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING,
     },
     token: {
       allowNull: false,
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING,
     },
     status: {
       type: DataTypes.INTEGER,
@@ -50,40 +47,62 @@ CartModel.init(
       type: DataTypes.STRING(50),
     },
     mobile: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(15),
     },
     email: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(50),
     },
-    line1: {
-      type: DataTypes.STRING,
+    line: {
+      type: DataTypes.STRING(50),
     },
-    city: {
-      type: DataTypes.STRING,
+    ward: {
+      type: DataTypes.STRING(50),
+    },
+    district: {
+      type: DataTypes.STRING(50),
     },
     province: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(50),
     },
     country: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(50),
     },
     createdAt: {
       type: DataTypes.DATE,
     },
     content: {
-      type: DataTypes.TEXT,
+      type: DataTypes.JSON,
     },
     updatedAt: {
       type: DataTypes.DATE,
     },
-    deletedAt: {
-      type: DataTypes.DATE,
+    userId: {
+      type: DataTypes.BIGINT,
+    },
+    address: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return `${this.line} ${this.ward} ${this.district} ${this.province} ${this.country}`;
+      },
+      set(value) {
+        throw new Error('Do not try to set the `address` value!');
+      },
+    },
+    fullName: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return `${this.firstName} ${this.lastName}`;
+      },
+      set(value) {
+        throw new Error('Do not try to set the `fullName` value!');
+      },
     },
   },
   {
     tableName: 'cart',
     sequelize,
-    paranoid: true,
+    paranoid: false,
+    deletedAt: false,
   },
 );
 

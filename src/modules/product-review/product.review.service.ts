@@ -1,10 +1,11 @@
 import ProductReviewModel from './product.review.model';
 import { logger } from '@utils/logger';
+import { published, publishedMap } from './enum';
 
 class ProductReviewService {
   public logFile = __filename;
 
-  public async findAllProductCategories(): Promise<ProductReviewModel[] | { message: string }> {
+  public async findAllProductReview(): Promise<ProductReviewModel[] | { message: string }> {
     try {
       const allProductReview = await ProductReviewModel.findAll();
       return allProductReview;
@@ -29,8 +30,23 @@ class ProductReviewService {
 
   public async createProductReview(ProductReviewData: any): Promise<ProductReviewModel | { message: string }> {
     try {
-      const res = await ProductReviewModel.create({ ...ProductReviewData });
-      return res;
+      const { title, ...rest } = ProductReviewData;
+      const [review, created] = await ProductReviewModel.findOrCreate({
+        where: { title },
+        defaults: {
+          title,
+          published: published.public,
+          ...rest,
+        },
+      });
+      if (!created) {
+        return { message: 'Reviews created' };
+      }
+      if (!review.parentId) {
+        await ProductReviewModel.update({ parentId: review.id }, { where: { id: review.id } });
+      }
+
+      return review;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return { message: error.message || 'Error' };

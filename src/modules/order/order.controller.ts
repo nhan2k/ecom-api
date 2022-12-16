@@ -10,10 +10,14 @@ class OrderController {
 
   public getOrders = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const findAllOrdersData = await this.OrderService.findAllOrders();
-      if (!Array.isArray(findAllOrdersData)) {
-        return new HttpResponse(HttpStatus.BadRequest, findAllOrdersData).sendResponse(res);
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
       }
+      const findAllOrdersData = await this.OrderService.findAllOrders(id);
+      // if (!Array.isArray(findAllOrdersData)) {
+      //   return new HttpResponse(HttpStatus.BadRequest, findAllOrdersData).sendResponse(res);
+      // }
       return new HttpResponse(HttpStatus.OK, findAllOrdersData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
@@ -29,25 +33,6 @@ class OrderController {
         return new HttpResponse(HttpStatus.BadRequest, findOneOrderData).sendResponse(res);
       }
       return new HttpResponse(HttpStatus.OK, findOneOrderData).sendResponse(res);
-    } catch (error) {
-      logger.error(`${this.logFile} ${error.message}`);
-      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
-    }
-  };
-
-  public createOrder = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
-    try {
-      let id = req.user ? req.user['id'] : null;
-      if (!id) {
-        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
-      }
-      const OrderData: any = req.body;
-      const createOrderData = await this.OrderService.createOrder(OrderData, id);
-      if (_.get(createOrderData, 'message')) {
-        return new HttpResponse(HttpStatus.BadRequest, createOrderData).sendResponse(res);
-      }
-
-      return new HttpResponse(HttpStatus.Created, createOrderData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);

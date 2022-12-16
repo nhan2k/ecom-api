@@ -2,7 +2,6 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '@connections/databases';
 export class ProductModel extends Model {
   declare id: number;
-  declare userId: number;
   declare title: string;
   declare metaTitle: string;
   declare slug: string;
@@ -16,10 +15,10 @@ export class ProductModel extends Model {
   declare publishedAt: Date;
   declare startsAt: Date;
   declare endsAt: Date;
-  declare content: JSON;
+  declare image: string;
   declare createdAt: Date;
   declare updatedAt: Date;
-  declare deletedAt: Date;
+  declare userId: number;
 }
 
 ProductModel.init(
@@ -35,7 +34,7 @@ ProductModel.init(
       allowNull: false,
     },
     title: {
-      type: DataTypes.STRING(75),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     metaTitle: {
@@ -93,17 +92,15 @@ ProductModel.init(
     endsAt: {
       type: DataTypes.DATE,
     },
-    content: {
-      type: DataTypes.JSON,
-    },
-    deletedAt: {
-      type: DataTypes.DATE,
+    image: {
+      type: DataTypes.TEXT,
     },
   },
   {
     tableName: 'product',
     sequelize,
-    paranoid: true,
+    paranoid: false,
+    deletedAt: false,
   },
 );
 

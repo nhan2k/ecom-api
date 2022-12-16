@@ -7,13 +7,12 @@ export class CartItemModel extends Model {
   declare price: number;
   declare discount: number;
   declare quantity: number;
-  declare productId: number;
-  declare cartId: number;
   declare active: number;
-  declare content: JSON;
+  declare content: string;
   declare createdAt: Date;
   declare updatedAt: Date;
-  declare deletedAt: Date;
+  declare productId: number;
+  declare cartId: number;
 }
 
 CartItemModel.init(
@@ -22,14 +21,6 @@ CartItemModel.init(
       autoIncrement: true,
       autoIncrementIdentity: true,
       primaryKey: true,
-      type: DataTypes.BIGINT,
-    },
-    productId: {
-      allowNull: false,
-      type: DataTypes.BIGINT,
-    },
-    cartId: {
-      allowNull: false,
       type: DataTypes.BIGINT,
     },
     sku: {
@@ -59,18 +50,25 @@ CartItemModel.init(
       type: DataTypes.DATE,
     },
     content: {
-      type: DataTypes.JSON,
+      type: DataTypes.TEXT,
     },
     updatedAt: {
       type: DataTypes.DATE,
     },
-    deletedAt: {
-      type: DataTypes.DATE,
+    productId: {
+      allowNull: false,
+      type: DataTypes.BIGINT,
+    },
+    cartId: {
+      allowNull: false,
+      type: DataTypes.BIGINT,
     },
   },
   {
     tableName: 'cart_item',
     sequelize,
+    paranoid: false,
+    deletedAt: false,
   },
 );
 

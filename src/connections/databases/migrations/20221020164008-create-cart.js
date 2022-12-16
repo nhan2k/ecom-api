@@ -10,16 +10,13 @@ module.exports = {
         type: Sequelize.BIGINT(20),
       },
       sessionId: {
-        type: Sequelize.STRING(100),
+        type: Sequelize.STRING,
       },
       token: {
-        type: Sequelize.STRING(100),
+        type: Sequelize.STRING,
       },
       status: {
         type: Sequelize.SMALLINT,
-      },
-      subTotal: {
-        type: Sequelize.FLOAT,
       },
       firstName: {
         type: Sequelize.STRING(50),
@@ -33,10 +30,13 @@ module.exports = {
       email: {
         type: Sequelize.STRING(50),
       },
-      line1: {
+      line: {
         type: Sequelize.STRING(50),
       },
-      city: {
+      ward: {
+        type: Sequelize.STRING(50),
+      },
+      district: {
         type: Sequelize.STRING(50),
       },
       province: {
@@ -52,10 +52,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
       content: {
-        type: Sequelize.JSON,
-      },
-      deletedAt: {
-        type: Sequelize.DATE,
+        type: Sequelize.TEXT,
       },
     });
   },

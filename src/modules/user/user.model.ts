@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '@connections/databases';
+
 export class UserModel extends Model {
   declare id: number;
   declare firstName: string;
@@ -15,7 +16,6 @@ export class UserModel extends Model {
   declare content: JSON;
   declare createdAt: Date;
   declare updatedAt: Date;
-  declare deletedAt: Date;
 }
 
 UserModel.init(
@@ -71,14 +71,21 @@ UserModel.init(
     updatedAt: {
       type: DataTypes.DATE,
     },
-    deletedAt: {
-      type: DataTypes.DATE,
+    fullName: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return `${this.firstName} ${this.lastName}`;
+      },
+      set(value) {
+        throw new Error('Do not try to set the `fullName` value!');
+      },
     },
   },
   {
     tableName: 'user',
     sequelize,
-    paranoid: true,
+    paranoid: false,
+    deletedAt: false,
   },
 );
 

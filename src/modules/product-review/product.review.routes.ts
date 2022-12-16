@@ -11,7 +11,7 @@ class ProductReviewRoute {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, this.ProductReviewController.getProductCategories);
+    this.router.get(`${this.path}`, this.ProductReviewController.getProductReview);
     this.router.get(`${this.path}/:id(\\d+)`, this.ProductReviewController.getProductReviewById);
     this.router.post(`${this.path}`, this.ProductReviewController.createProductReview);
     this.router.put(`${this.path}/:id(\\d+)`, this.ProductReviewController.updateProductReview);

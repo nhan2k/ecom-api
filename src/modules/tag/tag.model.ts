@@ -8,7 +8,6 @@ export class TagModel extends Model {
   declare content: string;
   declare createdAt: Date;
   declare updatedAt: Date;
-  declare deletedAt: Date;
 }
 
 TagModel.init(
@@ -39,14 +38,12 @@ TagModel.init(
     updatedAt: {
       type: DataTypes.DATE,
     },
-    deletedAt: {
-      type: DataTypes.DATE,
-    },
   },
   {
     tableName: 'tag',
     sequelize,
-    paranoid: true,
+    paranoid: false,
+    deletedAt: false,
   },
 );
 

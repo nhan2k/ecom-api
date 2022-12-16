@@ -13,6 +13,8 @@ class ProductRoute {
 
   private initializeRoutes() {
     this.router.get(`${this.path}`, this.ProductController.getProducts);
+    this.router.get(`${this.path}/una`, this.ProductController.getProductsUnavailable);
+    this.router.get(`${this.path}/vendor`, this.ProductController.getProductsForVendor);
     this.router.get(`${this.path}/:id(\\d+)`, this.ProductController.getProductById);
     this.router.post(`${this.path}`, UploadMiddleware, this.ProductController.createProduct);
     this.router.put(`${this.path}/:id(\\d+)`, UploadMiddleware, this.ProductController.updateProduct);

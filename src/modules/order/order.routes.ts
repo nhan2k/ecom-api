@@ -13,7 +13,6 @@ class OrderRoute {
   private initializeRoutes() {
     this.router.get(`${this.path}`, this.OrderController.getOrders);
     this.router.get(`${this.path}/:id(\\d+)`, this.OrderController.getOrderById);
-    this.router.post(`${this.path}`, this.OrderController.createOrder);
     this.router.put(`${this.path}/:id(\\d+)`, this.OrderController.updateOrder);
     this.router.delete(`${this.path}/:id(\\d+)`, this.OrderController.deleteOrder);
     this.router.get(`${this.path}/count`, this.OrderController.countOrder);

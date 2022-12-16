@@ -3,16 +3,16 @@ import { sequelize } from '@connections/databases';
 
 export class OrderItemModel extends Model {
   declare id: number;
-  declare productId: number;
-  declare orderId: number;
   declare sku: string;
   declare price: number;
   declare discount: number;
   declare quantity: number;
+  declare status: number;
+  declare content: string;
   declare createdAt: Date;
   declare updatedAt: Date;
-  declare content: string;
-  declare deletedAt: Date;
+  declare productId: number;
+  declare orderId: number;
 }
 
 OrderItemModel.init(
@@ -50,23 +50,26 @@ OrderItemModel.init(
       allowNull: false,
       defaultValue: 0,
     },
+    status: {
+      type: DataTypes.SMALLINT,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    content: {
+      type: DataTypes.TEXT,
+    },
     createdAt: {
       type: DataTypes.DATE,
     },
     updatedAt: {
       type: DataTypes.DATE,
     },
-    content: {
-      type: DataTypes.TEXT,
-    },
-    deletedAt: {
-      type: DataTypes.DATE,
-    },
   },
   {
     tableName: 'order_item',
     sequelize,
-    paranoid: true,
+    paranoid: false,
+    deletedAt: false,
   },
 );
 

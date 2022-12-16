@@ -4,6 +4,7 @@ import { FindOptions } from 'sequelize';
 import CartItemModel from '../cart-item/cart.item.model';
 import ProductModel from '../product/product.model';
 import UserModel from '../user/user.model';
+import { statusEnum } from './enum';
 
 class CartService {
   public logFile = __filename;
@@ -11,25 +12,7 @@ class CartService {
   public async findAllCart(): Promise<CartModel[] | { message: string }> {
     try {
       const options: FindOptions = {
-        attributes: [
-          'id',
-          'userId',
-          'sessionId',
-          'token',
-          'status',
-          'firstName',
-          'middleName',
-          'lastName',
-          'mobile',
-          'email',
-          'line1',
-          'city',
-          'province',
-          'country',
-          'createdAt',
-          'content',
-          'updatedAt',
-        ],
+        attributes: ['id', 'sessionId', 'token', 'status', 'fullName', 'mobile', 'email', 'address', 'content', 'createdAt', 'updatedAt', 'userId'],
       };
       const allCart = await CartModel.findAll(options);
 
@@ -40,9 +23,12 @@ class CartService {
     }
   }
 
-  public async findCartById(CartId: number): Promise<CartModel | null | { message: string }> {
+  public async findCartById(userId: number): Promise<CartModel | null | { message: string }> {
     try {
-      const findCart = await CartModel.findByPk(CartId);
+      const findCart = await CartModel.findOne({
+        where: { userId },
+        attributes: ['fullName', 'mobile', 'email', 'address', 'firstName', 'lastName', 'line', 'ward', 'district', 'province', 'country'],
+      });
       if (!findCart) {
         return { message: "Cart doesn't exist" };
       }
@@ -53,24 +39,14 @@ class CartService {
     }
   }
 
-  public async createCart(CartData: any): Promise<CartModel | { message: string }> {
+  public async updateCart(userId: number, CartData: any): Promise<CartModel | null | { message: string }> {
     try {
-      const res = await CartModel.create({ ...CartData });
-      return res;
-    } catch (error) {
-      logger.error(`${this.logFile} ${error.message}`);
-      return { message: error.message || 'Error' };
-    }
-  }
-
-  public async updateCart(CartId: number, CartData: any): Promise<CartModel | null | { message: string }> {
-    try {
-      const findCart = await CartModel.findByPk(CartId);
+      const findCart = await CartModel.findOne({ where: { userId }, attributes: ['id'] });
       if (!findCart) {
         return { message: "Cart doesn't exist" };
       }
-      await CartModel.update({ ...CartData }, { where: { id: CartId } });
-      const res = CartModel.findOne({ where: { id: CartId } });
+      await CartModel.update({ ...CartData }, { where: { id: findCart.id } });
+      const res = CartModel.findOne({ where: { id: findCart.id } });
       return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
@@ -94,7 +70,7 @@ class CartService {
   }
   public async countCart(id: number): Promise<number | any | { message: string }> {
     try {
-      const cart = await CartModel.findOne({ where: { userId: id }, attributes: ['id'] });
+      const cart = await CartModel.findOne({ where: { userId: id, status: statusEnum.New }, attributes: ['id'] });
       if (!cart) {
         return { message: "Cart doesn't exist" };
       }

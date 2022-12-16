@@ -10,7 +10,11 @@ class ProductMetaController {
 
   public getProductCategories = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const findAllProductCategoriesData = await this.ProductMetaService.findAllProductCategories();
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
+      const findAllProductCategoriesData = await this.ProductMetaService.findAllProductCategories(id);
       if (!Array.isArray(findAllProductCategoriesData)) {
         return new HttpResponse(HttpStatus.BadRequest, findAllProductCategoriesData).sendResponse(res);
       }
@@ -23,6 +27,10 @@ class ProductMetaController {
 
   public getProductMetaById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
       const ProductMetaId = Number(req.params.id);
       const findOneProductMetaData = await this.ProductMetaService.findProductMetaById(ProductMetaId);
       if (_.get(findOneProductMetaData, 'message')) {
@@ -37,6 +45,10 @@ class ProductMetaController {
 
   public createProductMeta = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
       const ProductMetaData: any = req.body;
       const createProductMetaData = await this.ProductMetaService.createProductMeta(ProductMetaData);
       if (_.get(createProductMetaData, 'message')) {
@@ -51,6 +63,10 @@ class ProductMetaController {
 
   public updateProductMeta = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
       const ProductMetaId = Number(req.params.id);
       const ProductMetaData: any = req.body;
       const updateProductMetaData: any = await this.ProductMetaService.updateProductMeta(ProductMetaId, ProductMetaData);
@@ -67,6 +83,10 @@ class ProductMetaController {
 
   public deleteProductMeta = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
       const ProductMetaId = Number(req.params.id);
       const deleteProductMetaData: any = await this.ProductMetaService.deleteProductMeta(ProductMetaId);
       if (_.get(deleteProductMetaData, 'message')) {

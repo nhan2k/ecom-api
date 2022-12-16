@@ -7,27 +7,35 @@ import { SALT } from '@config/env';
 import { UpdateOptions } from 'sequelize';
 import CartModel from '../cart/cart.model';
 import { v4 as uuidv4 } from 'uuid';
+import { statusEnum } from '@modules/cart/enum';
+import { sign } from 'jsonwebtoken';
+import { SECRET_KEY } from '@config/env';
 
 class AuthService {
   public logFile = __filename;
 
   public async signUp(userData: any, isVendor?: boolean): Promise<any | { message: string }> {
     try {
-      const { email, password } = userData;
+      const { email, password, firstName, lastName, mobile } = userData;
       const hashedPassword = await hash(password, Number(SALT));
       if (isVendor) {
         const res = await UserModel.create({ email, passwordHash: hashedPassword, vendor: 1 });
         const vendor = await UserModel.findByPk(res.id, { attributes: ['email', 'firstName', 'lastName', 'mobile'] });
         return vendor;
       }
-      const res = await UserModel.create({ email, passwordHash: hashedPassword });
+      const res = await UserModel.create({ email, passwordHash: hashedPassword, firstName: firstName, lastName: lastName, mobile: mobile });
 
       const newUser = await UserModel.findOne({ where: { email: res.email }, attributes: ['id', 'email', 'firstName', 'lastName', 'mobile'] });
       if (newUser) {
         await CartModel.create({
           sessionId: uuidv4(),
-          token: new AuthUtil().makeid(),
+          token: sign({ id: newUser.id }, String(SECRET_KEY)),
           userId: newUser.id,
+          firstName,
+          lastName,
+          mobile,
+          status: statusEnum.New,
+          email,
         });
       }
 
@@ -125,6 +133,8 @@ class AuthService {
         return res;
       }
       await UserModel.update({ ...rest }, { where: { id: userId } });
+      const { intro, content, ...restt } = rest;
+      await CartModel.update({ ...restt }, { where: { userId: userId } });
       const res = UserModel.findByPk(userId, { attributes: ['firstName', 'lastName', 'mobile', 'email', 'intro', 'content'] });
       return res;
     } catch (error) {

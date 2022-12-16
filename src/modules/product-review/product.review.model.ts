@@ -11,7 +11,6 @@ export class ProductReviewModel extends Model {
   declare content: number;
   declare createdAt: Date;
   declare updatedAt: Date;
-  declare deletedAt: Date;
 }
 
 ProductReviewModel.init(
@@ -37,7 +36,7 @@ ProductReviewModel.init(
       allowNull: false,
       defaultValue: 0,
       validate: {
-        min: 1,
+        min: 0,
         max: 5,
       },
     },
@@ -58,14 +57,12 @@ ProductReviewModel.init(
     updatedAt: {
       type: DataTypes.DATE,
     },
-    deletedAt: {
-      type: DataTypes.DATE,
-    },
   },
   {
     tableName: 'product_review',
     sequelize,
-    paranoid: true,
+    paranoid: false,
+    deletedAt: false,
   },
 );
 

@@ -2,12 +2,20 @@ import { hash } from 'bcryptjs';
 import UserModel from '@modules/user/user.model';
 import { logger } from '@utils/logger';
 import { SALT } from '@config/env';
+import { Op } from 'sequelize';
 class UserService {
   public logFile = __filename;
 
-  public async findAllUser(): Promise<UserModel[] | { message: string }> {
+  public async findAllUser(id: number): Promise<UserModel[] | { message: string }> {
     try {
-      const allUser = await UserModel.findAll();
+      const allUser = await UserModel.findAll({
+        where: {
+          id: {
+            [Op.ne]: id,
+          },
+        },
+        attributes: ['fullName', 'mobile', 'email', 'lastLogin', 'intro', 'profile', 'createdAt'],
+      });
       return allUser;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);

@@ -1,19 +1,53 @@
 import OrderModel from './order.model';
 import { logger } from '@utils/logger';
-import { statusEnum } from './enum';
-import CartModel from '../cart/cart.model';
-export { statusEnum } from './enum';
-import { actived } from '@modules/cart-item/enum';
-import CartItemModel from '../cart-item/cart.item.model';
+import OrderItemModel from '@modules/order-item/order.item.model';
+import ProductModel from '@modules/product/product.model';
+import _ from 'lodash';
 
 class OrderService {
   public logFile = __filename;
 
-  public async findAllOrders(): Promise<OrderModel[] | { message: string }> {
+  public async findAllOrders(id: number): Promise<any | { message: string }> {
     try {
-      const allOrder: OrderModel[] = await OrderModel.findAll();
+      let products = await ProductModel.findAll({
+        where: { userId: id },
+        attributes: ['id'],
+      });
 
-      return allOrder;
+      let orders: any[] = [];
+      for (let index = 0; index < products.length; index++) {
+        const element = products[index].id;
+        let order = await OrderItemModel.findAll({
+          where: { productId: element },
+          attributes: ['price', 'discount', 'quantity', 'createdAt', 'updatedAt', 'id', 'status'],
+          include: [
+            {
+              model: OrderModel,
+              attributes: [
+                'fullName',
+                'address',
+                'sessionId',
+                'firstName',
+                'lastName',
+                'mobile',
+                'email',
+                'line',
+                'ward',
+                'district',
+                'province',
+                'country',
+              ],
+            },
+            {
+              model: ProductModel,
+              attributes: ['title'],
+            },
+          ],
+        });
+        orders = [...order, ...orders];
+      }
+
+      return orders;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return { message: error.message || 'Error' };
@@ -27,25 +61,6 @@ class OrderService {
         return { message: "Order doesn't exist" };
       }
       return findOrder;
-    } catch (error) {
-      logger.error(`${this.logFile} ${error.message}`);
-      return { message: error.message || 'Error' };
-    }
-  }
-
-  public async createOrder(OrderData: any, id: number): Promise<OrderModel | { message: string }> {
-    try {
-      const status = statusEnum.Ordered;
-      const findCart = await CartModel.findOne({ where: { userId: id }, attributes: ['sessionId', 'token', 'id'] });
-      if (!findCart) {
-        return { message: "Cart doesn't exist" };
-      }
-
-      const res = await OrderModel.create({ sessionId: findCart.sessionId, token: findCart.token, userId: id });
-
-      await CartItemModel.update({ active: actived.Ordered }, { where: { active: actived.Added } });
-
-      return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return { message: error.message || 'Error' };
@@ -84,9 +99,45 @@ class OrderService {
 
   public async countOrder(id: number): Promise<number | { message: string }> {
     try {
-      const count = await OrderModel.count({ where: { userId: id } });
+      let products = await ProductModel.findAll({
+        where: { userId: id },
+        attributes: ['id'],
+      });
 
-      return count;
+      let orders: any[] = [];
+      for (let index = 0; index < products.length; index++) {
+        const element = products[index].id;
+        let order = await OrderItemModel.findAll({
+          where: { productId: element },
+          attributes: ['price', 'discount', 'quantity', 'createdAt'],
+          include: [
+            {
+              model: OrderModel,
+              attributes: [
+                'fullName',
+                'address',
+                'sessionId',
+                'firstName',
+                'lastName',
+                'mobile',
+                'email',
+                'line',
+                'ward',
+                'district',
+                'province',
+                'country',
+              ],
+            },
+            {
+              model: ProductModel,
+              attributes: ['title'],
+            },
+          ],
+        });
+        orders = [...orders, ...order];
+      }
+
+      return orders.length;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return { message: error.message || 'Error' };

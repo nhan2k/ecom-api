@@ -1,14 +1,10 @@
-export enum actived {
-  'Added',
-  'Ordered',
-  'Pending',
-  'Done',
+enum activeEnum {
+  'notExist',
+  'existed',
 }
 
 const activedMap = new Map<number, string>();
-activedMap.set(actived.Added, 'Added');
-activedMap.set(actived.Ordered, 'Ordered');
-activedMap.set(actived.Pending, 'Pending');
-activedMap.set(actived.Done, 'Done');
+activedMap.set(activeEnum.notExist, 'notExist');
+activedMap.set(activeEnum.existed, 'existed');
 
-export { activedMap };
+export { activeEnum, activedMap };

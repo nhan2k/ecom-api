@@ -11,7 +11,6 @@ export class TransactionModel extends Model {
   declare content: string;
   declare createdAt: Date;
   declare updatedAt: Date;
-  declare deletedAt: Date;
 }
 
 TransactionModel.init(
@@ -58,14 +57,12 @@ TransactionModel.init(
     content: {
       type: DataTypes.TEXT,
     },
-    deletedAt: {
-      type: DataTypes.DATE,
-    },
   },
   {
     tableName: 'transaction',
     sequelize,
-    paranoid: true,
+    paranoid: false,
+    deletedAt: false,
   },
 );
 

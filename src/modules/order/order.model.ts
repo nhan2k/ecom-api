@@ -2,10 +2,8 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '@connections/databases';
 export class OrderModel extends Model {
   declare id: number;
-  declare userId: number;
   declare sessionId: string;
   declare token: string;
-  declare status: number;
   declare subTotal: number;
   declare itemDiscount: number;
   declare tax: number;
@@ -18,14 +16,15 @@ export class OrderModel extends Model {
   declare lastName: string;
   declare mobile: string;
   declare email: string;
-  declare line1: string;
-  declare city: string;
+  declare line: string;
+  declare ward: string;
+  declare district: string;
   declare province: string;
   declare country: string;
   declare content: string;
   declare createdAt: Date;
   declare updatedAt: Date;
-  declare deletedAt: Date;
+  declare userId: number;
 }
 
 OrderModel.init(
@@ -47,11 +46,6 @@ OrderModel.init(
     token: {
       type: DataTypes.STRING(100),
       allowNull: false,
-    },
-    status: {
-      type: DataTypes.SMALLINT,
-      allowNull: false,
-      defaultValue: 0,
     },
     subTotal: {
       type: DataTypes.FLOAT,
@@ -103,11 +97,14 @@ OrderModel.init(
     email: {
       type: DataTypes.STRING(50),
     },
-    line1: {
-      type: DataTypes.STRING(50),
+    line: {
+      type: DataTypes.STRING,
     },
-    city: {
-      type: DataTypes.STRING(50),
+    ward: {
+      type: DataTypes.STRING,
+    },
+    district: {
+      type: DataTypes.STRING,
     },
     province: {
       type: DataTypes.STRING(50),
@@ -115,23 +112,38 @@ OrderModel.init(
     country: {
       type: DataTypes.STRING(50),
     },
+    content: {
+      type: DataTypes.TEXT,
+    },
     createdAt: {
       type: DataTypes.DATE,
     },
     updatedAt: {
       type: DataTypes.DATE,
     },
-    content: {
-      type: DataTypes.TEXT,
+    fullName: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return `${this.firstName} ${this.lastName}`;
+      },
+      set(value) {
+        throw new Error('Do not try to set the `fullName` value!');
+      },
     },
-    deletedAt: {
-      type: DataTypes.DATE,
+    address: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return `${this.line} ${this.ward} ${this.district} ${this.province} ${this.country}`;
+      },
+      set(value) {
+        throw new Error('Do not try to set the `address` value!');
+      },
     },
   },
   {
     tableName: 'order',
     sequelize,
-    paranoid: true,
+    paranoid: false,
   },
 );
 

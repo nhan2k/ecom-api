@@ -4,14 +4,19 @@ import CartModel from '../cart/cart.model';
 import ProductModel from '../product/product.model';
 import UserModel from '../user/user.model';
 import _ from 'lodash';
-import { actived } from './enum';
+import { activeEnum } from './enum';
+import { statusEnum } from '@modules/cart/enum';
+import { Op } from 'sequelize';
+import { v4 as uuidv4 } from 'uuid';
+import { sign } from 'jsonwebtoken';
+import { SECRET_KEY } from '@config/env';
 
 class CartItemService {
   public logFile = __filename;
 
   public async findAllCartItemsForShop(id: number): Promise<any | { message: string }> {
     try {
-      const findCart = await CartModel.findOne({ where: { userId: id }, attributes: ['id'] });
+      const findCart = await CartModel.findOne({ where: { userId: id, status: statusEnum.New }, attributes: ['id'] });
       if (!findCart) {
         return { message: "Cart Item doesn't exist" };
       }
@@ -21,7 +26,7 @@ class CartItemService {
         include: [
           {
             model: ProductModel,
-            attributes: ['content', 'quantity', 'price', 'title'],
+            attributes: ['image', 'quantity', 'price', 'title'],
             include: [
               {
                 model: UserModel,
@@ -80,21 +85,67 @@ class CartItemService {
 
   public async createCartItem(CartItemData: any, userId: number): Promise<CartItemModel | { message: string }> {
     try {
-      const { productId } = CartItemData;
-      const sku = `${productId}-${userId}`;
-      const quantity = 1;
-      const active = actived.Added;
-
-      const cart = await CartModel.findOne({ where: { userId }, attributes: ['id'] });
+      let cartId: number | null = null;
+      const cart = await CartModel.findOne({ where: { userId, status: statusEnum.New }, attributes: ['id'] });
       if (!cart) {
-        return { message: "Cart doesn't exist" };
+        const findCart = await CartModel.findOne({
+          where: {
+            userId,
+            status: {
+              [Op.ne]: statusEnum.New,
+            },
+          },
+          attributes: ['firstName', 'lastName', 'mobile', 'line', 'ward', 'district', 'province', 'country'],
+        });
+        if (!findCart) {
+          return { message: "Cart doesn't exist" };
+        }
+        const newCart = await CartModel.create({
+          sessionId: uuidv4(),
+          token: sign({ id: userId }, String(SECRET_KEY)),
+          userId: userId,
+          firstName: findCart.firstName,
+          lastName: findCart.lastName,
+          mobile: findCart.mobile,
+          status: statusEnum.New,
+        });
+        cartId = newCart.id;
       }
-      const cartId = cart.id;
+
+      if (!cartId) {
+        cartId = cart ? cart.id : null;
+      }
+
+      const { productId } = CartItemData;
       const product = await ProductModel.findByPk(productId, { attributes: ['price', 'discount'] });
       if (!product) {
         return { message: "Product doesn't exist" };
       }
 
+      const sku = `${productId}/${cartId}/${userId}`;
+      const quantity = 1;
+      const active = activeEnum.existed;
+      const checkItemExist = await CartItemModel.findOne({
+        where: {
+          productId,
+          cartId,
+          active,
+        },
+        attributes: ['quantity'],
+      });
+      if (checkItemExist) {
+        await CartItemModel.update({ quantity: checkItemExist.quantity + 1 }, { where: { productId, cartId, active } });
+        const res = await CartItemModel.findOne({
+          where: {
+            productId,
+            cartId,
+          },
+        });
+        if (!res) {
+          return { message: "Cart doesn't exist" };
+        }
+        return res;
+      }
       const res = await CartItemModel.create({ productId, cartId, sku, quantity, active, price: product.price, discount: product.discount });
       return res;
     } catch (error) {

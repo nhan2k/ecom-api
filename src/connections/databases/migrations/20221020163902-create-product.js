@@ -10,13 +10,13 @@ module.exports = {
         type: Sequelize.BIGINT(20),
       },
       title: {
-        type: Sequelize.STRING(75),
+        type: Sequelize.STRING,
       },
       metaTitle: {
-        type: Sequelize.STRING(100),
+        type: Sequelize.STRING,
       },
       slug: {
-        type: Sequelize.STRING(100),
+        type: Sequelize.STRING,
         unique: true,
       },
       summary: {
@@ -26,7 +26,7 @@ module.exports = {
         type: Sequelize.SMALLINT,
       },
       sku: {
-        type: Sequelize.STRING(100),
+        type: Sequelize.STRING,
       },
       price: {
         type: Sequelize.FLOAT,
@@ -55,11 +55,8 @@ module.exports = {
       endsAt: {
         type: Sequelize.DATE,
       },
-      content: {
-        type: Sequelize.JSON,
-      },
-      deletedAt: {
-        type: Sequelize.DATE,
+      image: {
+        type: Sequelize.TEXT,
       },
     });
   },

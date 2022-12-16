@@ -23,8 +23,11 @@ class CartController {
 
   public getCartById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const CartId = Number(req.params.id);
-      const findOneCartData = await this.CartService.findCartById(CartId);
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
+      const findOneCartData = await this.CartService.findCartById(id);
       if (_.get(findOneCartData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, findOneCartData).sendResponse(res);
       }
@@ -36,25 +39,14 @@ class CartController {
     }
   };
 
-  public createCart = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
-    try {
-      const CartData = req.body;
-      const createCartData = await this.CartService.createCart(CartData);
-      if (_.get(createCartData, 'message')) {
-        return new HttpResponse(HttpStatus.BadRequest, createCartData).sendResponse(res);
-      }
-      return new HttpResponse(HttpStatus.Created, createCartData).sendResponse(res);
-    } catch (error) {
-      logger.error(`${this.logFile} ${error.message}`);
-      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
-    }
-  };
-
   public updateCart = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const CartId = Number(req.params.id);
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
       const CartData = req.body;
-      const updateCartData = await this.CartService.updateCart(CartId, CartData);
+      const updateCartData = await this.CartService.updateCart(id, CartData);
       if (_.get(updateCartData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateCartData).sendResponse(res);
       }

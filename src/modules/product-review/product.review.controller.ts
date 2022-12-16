@@ -8,14 +8,14 @@ class ProductReviewController {
   private logFile = __filename;
   public ProductReviewService = new ProductReviewService();
 
-  public getProductCategories = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+  public getProductReview = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const findAllProductCategoriesData = await this.ProductReviewService.findAllProductCategories();
-      if (!Array.isArray(findAllProductCategoriesData)) {
-        return new HttpResponse(HttpStatus.BadRequest, findAllProductCategoriesData).sendResponse(res);
+      const findAllProductReviewData = await this.ProductReviewService.findAllProductReview();
+      if (!Array.isArray(findAllProductReviewData)) {
+        return new HttpResponse(HttpStatus.BadRequest, findAllProductReviewData).sendResponse(res);
       }
 
-      return new HttpResponse(HttpStatus.OK, findAllProductCategoriesData).sendResponse(res);
+      return new HttpResponse(HttpStatus.OK, findAllProductReviewData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);

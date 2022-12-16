@@ -23,6 +23,20 @@ class ProductController {
     }
   };
 
+  public getProductsUnavailable = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+    try {
+      const findAllProductsData = await this.ProductService.findAllProductsUnavailable();
+      if (!Array.isArray(findAllProductsData)) {
+        return new HttpResponse(HttpStatus.BadRequest, findAllProductsData).sendResponse(res);
+      }
+
+      return new HttpResponse(HttpStatus.OK, findAllProductsData).sendResponse(res);
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+    }
+  };
+
   public getProductById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const ProductId = Number(req.params.id);
@@ -44,12 +58,10 @@ class ProductController {
       if (!id) {
         return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
       }
-      const productData: ProductModel = req.body;
+      const productData: any = req.body;
 
-      let content: string = `{"img": "${String(req.file?.filename)}"}`;
-      if (!content.includes('undefined')) {
-        productData.content = JSON.parse(content);
-      }
+      productData.image = String(req.file?.filename);
+
       const createProductData = await this.ProductService.createProduct(productData, id);
       if (_.get(createProductData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createProductData).sendResponse(res);
@@ -66,10 +78,10 @@ class ProductController {
     try {
       const ProductId = Number(req.params.id);
       const productData = req.body;
-      let content: string = `{"img": "${String(req.file?.filename)}"}`;
-      if (!content.includes('undefined')) {
-        productData.content = JSON.parse(content);
+      if (req.file) {
+        productData.image = req.file?.filename;
       }
+
       const updateProductData = await this.ProductService.updateProduct(ProductId, productData);
       if (_.get(updateProductData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateProductData).sendResponse(res);
@@ -109,6 +121,24 @@ class ProductController {
       }
 
       return new HttpResponse(HttpStatus.OK, countProductData).sendResponse(res);
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+    }
+  };
+
+  public getProductsForVendor = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+    try {
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
+      const findAllProductsData = await this.ProductService.findAllProductsForVendor(id);
+      if (!Array.isArray(findAllProductsData)) {
+        return new HttpResponse(HttpStatus.BadRequest, findAllProductsData).sendResponse(res);
+      }
+
+      return new HttpResponse(HttpStatus.OK, findAllProductsData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);

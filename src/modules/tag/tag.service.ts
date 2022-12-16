@@ -5,7 +5,7 @@ import slugify from 'slugify';
 
 class TagService {
   public logFile = __filename;
-  public attributes = ['id', 'title', 'metaTitle', 'slug', 'content', 'createdAt'];
+  public attributes = ['id', 'title'];
 
   public async findAllTags(): Promise<TagModel[] | { message: string }> {
     try {

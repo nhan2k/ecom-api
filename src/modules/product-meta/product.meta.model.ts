@@ -4,10 +4,9 @@ export class ProductMetaModel extends Model {
   declare id: number;
   declare productId: number;
   declare key: string;
-  declare content: string;
+  declare content: string | Array<string>;
   declare createdAt: Date;
   declare updatedAt: Date;
-  declare deletedAt: Date;
 }
 
 ProductMetaModel.init(
@@ -35,14 +34,12 @@ ProductMetaModel.init(
     updatedAt: {
       type: DataTypes.DATE,
     },
-    deletedAt: {
-      type: DataTypes.DATE,
-    },
   },
   {
     tableName: 'product_meta',
     sequelize,
-    paranoid: true,
+    paranoid: false,
+    deletedAt: false,
   },
 );
 

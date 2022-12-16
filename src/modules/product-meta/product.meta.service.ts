@@ -1,12 +1,24 @@
 import ProductMetaModel from './product.meta.model';
 import { logger } from '@utils/logger';
+import ProductMetaUtil from './product.meta.util';
+import ProductModel from '@modules/product/product.model';
 
 class ProductMetaService {
-  public logFile = __filename;
+  private logFile = __filename;
+  private productMetaUtil: ProductMetaUtil = new ProductMetaUtil();
 
-  public async findAllProductCategories(): Promise<ProductMetaModel[] | { message: string }> {
+  public async findAllProductCategories(id: number): Promise<ProductMetaModel[] | { message: string }> {
     try {
-      const allProductMeta = await ProductMetaModel.findAll();
+      const allProductMeta = await ProductMetaModel.findAll({
+        attributes: ['key', 'content'],
+      });
+
+      allProductMeta.map(e => {
+        if (e.content) {
+          e.content = this.productMetaUtil.convertContent(e.content);
+        }
+      });
+
       return allProductMeta;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
@@ -16,10 +28,11 @@ class ProductMetaService {
 
   public async findProductMetaById(ProductMetaId: number): Promise<ProductMetaModel | null | { message: string }> {
     try {
-      const findProductMeta = await ProductMetaModel.findByPk(ProductMetaId);
+      const findProductMeta = await ProductMetaModel.findByPk(ProductMetaId, { attributes: ['key', 'content'] });
       if (!findProductMeta) {
         return { message: "Cart Item doesn't exist" };
       }
+      findProductMeta.content = this.productMetaUtil.convertContent(findProductMeta.content);
       return findProductMeta;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
@@ -29,7 +42,9 @@ class ProductMetaService {
 
   public async createProductMeta(ProductMetaData: any): Promise<ProductMetaModel | { message: string }> {
     try {
-      const res = await ProductMetaModel.create({ ...ProductMetaData });
+      const { content, ...rest } = ProductMetaData;
+      let formatContent = this.productMetaUtil.convertContent(content);
+      const res = await ProductMetaModel.create({ content: formatContent, ...rest });
       return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
@@ -43,7 +58,9 @@ class ProductMetaService {
       if (!findProductMeta) {
         return { message: "ProductMeta doesn't exist" };
       }
-      await ProductMetaModel.update({ ...ProductMetaData }, { where: { id: ProductMetaId } });
+      const { content, ...rest } = ProductMetaData;
+      let formatContent = this.productMetaUtil.convertContent(content);
+      await ProductMetaModel.update({ content: formatContent, ...rest }, { where: { id: ProductMetaId } });
       const res = ProductMetaModel.findByPk(ProductMetaId);
       return res;
     } catch (error) {

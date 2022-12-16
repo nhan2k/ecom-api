@@ -10,7 +10,11 @@ class UserController {
 
   public getUsers = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const findAllUsersData = await this.userService.findAllUser();
+      let id = req.user ? req.user['id'] : null;
+      if (!id) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
+      const findAllUsersData = await this.userService.findAllUser(id);
       if (!Array.isArray(findAllUsersData)) {
         return new HttpResponse(HttpStatus.BadRequest, findAllUsersData).sendResponse(res);
       }
@@ -57,7 +61,10 @@ class UserController {
 
   public updateUser = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      const userId = Number(req.params.id);
+      let userId = req.user ? req.user['id'] : null;
+      if (!userId) {
+        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      }
       const userData = req.body;
       const updateUserData = await this.userService.updateUser(userId, userData);
       if (_.get(updateUserData, 'message')) {

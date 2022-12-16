@@ -40,8 +40,6 @@ class CategoryController {
     try {
       const categoryData = req.body;
 
-      let content: string = `{"img": "${String(req.file?.filename)}"}`;
-      categoryData.content = JSON.parse(content);
       const createCategoryData = await this.categoryService.createCategory(categoryData);
       if (_.get(createCategoryData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, createCategoryData).sendResponse(res);

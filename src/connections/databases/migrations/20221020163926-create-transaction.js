@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.BIGINT(20),
       },
       code: {
-        type: Sequelize.STRING(100),
+        type: Sequelize.STRING,
       },
       type: {
         type: Sequelize.SMALLINT,
@@ -29,9 +29,6 @@ module.exports = {
       },
       content: {
         type: Sequelize.JSON,
-      },
-      deletedAt: {
-        type: Sequelize.DATE,
       },
     });
   },

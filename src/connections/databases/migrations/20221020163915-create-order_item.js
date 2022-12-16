@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.BIGINT(20),
       },
       sku: {
-        type: Sequelize.STRING(100),
+        type: Sequelize.STRING,
       },
       price: {
         type: Sequelize.FLOAT,
@@ -21,16 +21,16 @@ module.exports = {
       quantity: {
         type: Sequelize.SMALLINT,
       },
+      status: {
+        type: Sequelize.SMALLINT,
+      },
+      content: {
+        type: Sequelize.TEXT,
+      },
       createdAt: {
         type: Sequelize.DATE,
       },
       updatedAt: {
-        type: Sequelize.DATE,
-      },
-      content: {
-        type: Sequelize.JSON,
-      },
-      deletedAt: {
         type: Sequelize.DATE,
       },
     });

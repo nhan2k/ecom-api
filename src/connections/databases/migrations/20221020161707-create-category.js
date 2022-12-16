@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.STRING(75),
       },
       metaTitle: {
-        type: Sequelize.STRING(100),
+        type: Sequelize.STRING,
       },
       slug: {
         type: Sequelize.STRING(100),
@@ -25,9 +25,6 @@ module.exports = {
         type: Sequelize.DATE,
       },
       updatedAt: {
-        type: Sequelize.DATE,
-      },
-      deletedAt: {
         type: Sequelize.DATE,
       },
     });
