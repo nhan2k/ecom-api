@@ -28,7 +28,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
       content: {
-        type: Sequelize.JSON,
+        type: Sequelize.TEXT,
       },
     });
   },

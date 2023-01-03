@@ -14,19 +14,28 @@ import { SECRET_KEY } from '@config/env';
 class AuthService {
   public logFile = __filename;
 
-  public async signUp(userData: any, isVendor?: boolean): Promise<any | { message: string }> {
+  public async signUp(userData: any, isAdmin?: boolean): Promise<any | { message: string }> {
     try {
       const { email, password, firstName, lastName, mobile } = userData;
       const hashedPassword = await hash(password, Number(SALT));
-      if (isVendor) {
-        const res = await UserModel.create({ email, passwordHash: hashedPassword, vendor: 1 });
-        const vendor = await UserModel.findByPk(res.id, { attributes: ['email', 'firstName', 'lastName', 'mobile'] });
-        return vendor;
-      }
-      const res = await UserModel.create({ email, passwordHash: hashedPassword, firstName: firstName, lastName: lastName, mobile: mobile });
 
-      const newUser = await UserModel.findOne({ where: { email: res.email }, attributes: ['id', 'email', 'firstName', 'lastName', 'mobile'] });
-      if (newUser) {
+      const [newUser, created] = await UserModel.findOrCreate({
+        where: { email },
+        defaults: {
+          firstName,
+          lastName,
+          mobile,
+          email,
+          passwordHash: hashedPassword,
+          admin: isAdmin ? 1 : 0,
+          vendor: isAdmin ? 0 : 1,
+        },
+      });
+      if (!created) {
+        return { message: 'Email created' };
+      }
+
+      if (newUser && !isAdmin) {
         await CartModel.create({
           sessionId: uuidv4(),
           token: sign({ id: newUser.id }, String(SECRET_KEY)),
@@ -46,41 +55,23 @@ class AuthService {
     }
   }
 
-  public async signIn(email: string): Promise<{ message: string } | { accessToken: string; refreshToken: string; role: string }> {
+  public async signIn(email: string, isAdmin?: boolean): Promise<{ message: string } | { accessToken: string; refreshToken: string; role: string }> {
     try {
       const findUser = await UserModel.findOne({ where: { email: email }, attributes: ['vendor', 'admin', 'id'] });
       if (!findUser) {
         return { message: 'Not found user' };
       }
-      if (findUser.admin === 1 || findUser.vendor === 1) {
+      if (findUser.vendor === 1 && isAdmin) {
+        return { message: 'Not found user' };
+      }
+      if (findUser.admin === 1 && !isAdmin) {
         return { message: 'Not found user' };
       }
       const { vendor, admin, id } = findUser;
       const { accessToken, refreshToken } = new AuthUtil().createToken({ vendor, admin, id });
       await new UserService().updateUser(findUser.id, { lastLogin: new Date() });
 
-      let role = findUser.vendor === 1 ? 'VENDOR' : findUser.admin === 1 ? 'ADMIN' : 'USER';
-      return { accessToken, refreshToken, role };
-    } catch (error) {
-      logger.error(`${this.logFile} ${error}`);
-      return { message: error.message || 'Error' };
-    }
-  }
-
-  public async signInVendor(email: string): Promise<{ message: string } | { accessToken: string; refreshToken: string; role: string }> {
-    try {
-      const findUser = await UserModel.findOne({ where: { email: email }, attributes: ['vendor', 'admin', 'id'] });
-      if (!findUser) {
-        return { message: 'Not found user' };
-      }
-      if (findUser.admin === 0 && findUser.vendor === 0) {
-        return { message: 'Not found Vendor' };
-      }
-      const { vendor, admin, id } = findUser;
-      const { accessToken, refreshToken } = new AuthUtil().createToken({ vendor, admin, id });
-      await new UserService().updateUser(findUser.id, { lastLogin: new Date() });
-
-      let role = findUser.vendor === 1 ? 'VENDOR' : findUser.admin === 1 ? 'ADMIN' : 'USER';
+      let role = findUser.vendor === 1 ? 'VENDOR' : 'ADMIN';
       return { accessToken, refreshToken, role };
     } catch (error) {
       logger.error(`${this.logFile} ${error}`);

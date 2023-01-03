@@ -7,45 +7,9 @@ import _ from 'lodash';
 class OrderService {
   public logFile = __filename;
 
-  public async findAllOrders(id: number): Promise<any | { message: string }> {
+  public async findAllOrders(): Promise<any | { message: string }> {
     try {
-      let products = await ProductModel.findAll({
-        where: { userId: id },
-        attributes: ['id'],
-      });
-
-      let orders: any[] = [];
-      for (let index = 0; index < products.length; index++) {
-        const element = products[index].id;
-        let order = await OrderItemModel.findAll({
-          where: { productId: element },
-          attributes: ['price', 'discount', 'quantity', 'createdAt', 'updatedAt', 'id', 'status'],
-          include: [
-            {
-              model: OrderModel,
-              attributes: [
-                'fullName',
-                'address',
-                'sessionId',
-                'firstName',
-                'lastName',
-                'mobile',
-                'email',
-                'line',
-                'ward',
-                'district',
-                'province',
-                'country',
-              ],
-            },
-            {
-              model: ProductModel,
-              attributes: ['title'],
-            },
-          ],
-        });
-        orders = [...order, ...orders];
-      }
+      const orders = OrderModel.findAll();
 
       return orders;
     } catch (error) {

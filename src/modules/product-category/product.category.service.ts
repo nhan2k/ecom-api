@@ -1,13 +1,17 @@
 import ProductCategoryModel from './product.category.model';
 import { logger } from '@utils/logger';
 import { IProductCategoryData } from './type';
+import ProductModel from '../product/product.model';
+import CategoryModel from '../category/category.model';
 class ProductCategoryService {
   public logFile = __filename;
 
-  public async findAllProductCategories(): Promise<ProductCategoryModel[] | { message: string }> {
+  public async findAllProductCategories(): Promise<any | { message: string }> {
     try {
       const allProductCategory = await ProductCategoryModel.findAll();
-      return allProductCategory;
+      const allProduct = await ProductModel.findAll({ attributes: ['id', 'title'] });
+      const allCategory = await CategoryModel.findAll({ attributes: ['id', 'title'] });
+      return { allProductCategory, allProduct, allCategory };
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return { message: error.message || 'Error' };

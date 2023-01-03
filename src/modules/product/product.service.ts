@@ -8,10 +8,10 @@ import TagModel from '../tag/tag.model';
 import CategoryModel from '../category/category.model';
 import { v4 as uuidv4 } from 'uuid';
 import ProductUtil from './product.util';
-import ProductCategoryModel from '../product-category/product.category.model';
 import { sequelize } from '@connections/databases';
 import { shop } from './enum';
 import { published } from '@modules/product-review/enum';
+import fs from 'fs';
 
 class ProductService {
   public logFile = __filename;
@@ -67,7 +67,7 @@ class ProductService {
   public async createProduct(ProductData: IProductData | any, id: number): Promise<ProductModel | any | { message: string }> {
     try {
       const result = await sequelize.transaction(async t => {
-        const { title, quantity, image, price, meta, category, summary } = ProductData;
+        const { title, quantity, content, price, meta, summary } = ProductData;
         const record = await ProductModel.findOne({ where: { title: title }, transaction: t });
         if (record) {
           return { message: 'Record already exists' };
@@ -88,14 +88,7 @@ class ProductService {
 
         let newSku = `${title}/${uuidv4()}`;
         const newProduct = await ProductModel.create(
-          { slug: newSlug, sku: newSku, title, userId: id, quantity, image, price, summary },
-          { transaction: t },
-        );
-        await ProductCategoryModel.create(
-          {
-            categoryId: category,
-            productId: newProduct.id,
-          },
+          { slug: newSlug, sku: newSku, title, userId: id, quantity, content, price, summary, shop: shop.available },
           { transaction: t },
         );
 
@@ -107,17 +100,19 @@ class ProductService {
           { transaction: t },
         );
 
-        let newMetas = JSON.parse(meta);
+        if (meta) {
+          let newMetas = JSON.parse(meta);
 
-        newMetas.map(async e => {
-          await ProductMetaModel.create({
-            productId: newProduct.id,
-            key: e.key,
-            content: e.content,
+          newMetas.map(async (e: any) => {
+            await ProductMetaModel.create({
+              productId: newProduct.id,
+              key: e.key,
+              content: e.content,
+            });
           });
-        });
+        }
 
-        return newMetas;
+        return newProduct;
       });
       return result;
     } catch (error) {
@@ -148,7 +143,23 @@ class ProductService {
         }
         newSku = arrSummary.join('-').toLowerCase();
       }
-      await ProductModel.update({ slug: newSlug, sku: newSku, title, summary, shop: shop.unavailable, ...rest }, { where: { id: ProductId } });
+      await ProductModel.update({ slug: newSlug, sku: newSku, title, summary, ...rest }, { where: { id: ProductId } });
+      const res = await new ProductUtil().getProduct(ProductId);
+      return res;
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return { message: error.message || 'Error' };
+    }
+  }
+
+  public async updateShopProduct(ProductId: number, ProductData: IProductData): Promise<ProductModel | any | { message: string }> {
+    try {
+      const findProduct: ProductModel | null = await ProductModel.findByPk(ProductId);
+      if (!findProduct) {
+        return { message: "Product doesn't exist" };
+      }
+      const { shop } = ProductData;
+      await ProductModel.update({ shop }, { where: { id: ProductId } });
       const res = await new ProductUtil().getProduct(ProductId);
       return res;
     } catch (error) {
@@ -164,6 +175,9 @@ class ProductService {
         return { message: "Product doesn't exist" };
       }
       await ProductModel.destroy({ where: { id: ProductId } });
+      if (fs.existsSync(`public/${findProduct.content}`)) {
+        fs.unlinkSync(`public/${findProduct.content}`);
+      }
 
       return { id: ProductId };
     } catch (error) {
@@ -200,7 +214,7 @@ class ProductService {
           'publishedAt',
           'startsAt',
           'endsAt',
-          'image',
+          'content',
         ],
         include: [
           {

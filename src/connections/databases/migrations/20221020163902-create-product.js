@@ -20,7 +20,7 @@ module.exports = {
         unique: true,
       },
       summary: {
-        type: Sequelize.JSON,
+        type: Sequelize.TEXT,
       },
       type: {
         type: Sequelize.SMALLINT,
@@ -55,7 +55,7 @@ module.exports = {
       endsAt: {
         type: Sequelize.DATE,
       },
-      image: {
+      content: {
         type: Sequelize.TEXT,
       },
     });

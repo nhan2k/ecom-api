@@ -11,9 +11,6 @@ class AuthUtil {
       {
         role: admin === 1 ? 'ADMIN' : null,
       },
-      {
-        role: vendor === 0 && admin === 0 ? 'USER' : null,
-      },
     ];
     const payload = role.filter((element: { role: string | null }) => element.role !== null);
 

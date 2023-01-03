@@ -25,6 +25,7 @@ export class OrderModel extends Model {
   declare createdAt: Date;
   declare updatedAt: Date;
   declare userId: number;
+  declare status: number;
 }
 
 OrderModel.init(
@@ -50,6 +51,10 @@ OrderModel.init(
     subTotal: {
       type: DataTypes.FLOAT,
       allowNull: false,
+      defaultValue: 0,
+    },
+    status: {
+      type: DataTypes.SMALLINT,
       defaultValue: 0,
     },
     itemDiscount: {

@@ -49,10 +49,10 @@ class IndexRoute {
     this.router.get('/category', this.categoryController.getCategories);
 
     this.router.post('/signup', signup, this.authController.signUp);
-    this.router.post('/signup/vendor', signup, this.authController.signUpVendor);
+    this.router.post('/signup/admin', signup, this.authController.signUpAdmin);
     this.router.get('/link-reset/:email', this.authController.sendLinkReset);
     this.router.post(`${this.path}`, passport.authenticate('local', { failureRedirect: '/signin' }), this.authController.signIn);
-    this.router.post(`${this.path}/vendor`, passport.authenticate('local', { failureRedirect: '/signin' }), this.authController.signInVendor);
+    this.router.post(`${this.path}/admin`, passport.authenticate('local', { failureRedirect: '/signin' }), this.authController.signInVendor);
     this.router.get('/signin', this.authController.signInFail);
     this.router.use(`${this.path}`, passport.authenticate('jwt', { session: false }), this.moduleRoute.router);
   }

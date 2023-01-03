@@ -7,7 +7,7 @@ class CategoryService {
 
   public async findAllCategories(): Promise<CategoryModel[] | { message: string }> {
     try {
-      const allCategory: CategoryModel[] = await CategoryModel.findAll({ attributes: ['id', 'title'] });
+      const allCategory: CategoryModel[] = await CategoryModel.findAll();
       return allCategory;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);

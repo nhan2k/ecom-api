@@ -8,68 +8,68 @@ class CartController {
   private logFile = __filename;
   public CartService = new CartService();
 
-  public getCarts = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
-    try {
-      const findAllCartsData = await this.CartService.findAllCart();
-      if (!Array.isArray(findAllCartsData)) {
-        return new HttpResponse(HttpStatus.BadRequest, findAllCartsData).sendResponse(res);
-      }
-      return new HttpResponse(HttpStatus.OK, findAllCartsData).sendResponse(res);
-    } catch (error) {
-      logger.error(`${this.logFile} ${error.message}`);
-      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
-    }
-  };
+  // public getCarts = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+  //   try {
+  //     const findAllCartsData = await this.CartService.findAllCart();
+  //     if (!Array.isArray(findAllCartsData)) {
+  //       return new HttpResponse(HttpStatus.BadRequest, findAllCartsData).sendResponse(res);
+  //     }
+  //     return new HttpResponse(HttpStatus.OK, findAllCartsData).sendResponse(res);
+  //   } catch (error) {
+  //     logger.error(`${this.logFile} ${error.message}`);
+  //     return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
+  //   }
+  // };
 
-  public getCartById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
-    try {
-      let id = req.user ? req.user['id'] : null;
-      if (!id) {
-        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
-      }
-      const findOneCartData = await this.CartService.findCartById(id);
-      if (_.get(findOneCartData, 'message')) {
-        return new HttpResponse(HttpStatus.BadRequest, findOneCartData).sendResponse(res);
-      }
+  // public getCartById = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+  //   try {
+  //     let id = req.user ? req.user['id'] : null;
+  //     if (!id) {
+  //       return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+  //     }
+  //     const findOneCartData = await this.CartService.findCartById(id);
+  //     if (_.get(findOneCartData, 'message')) {
+  //       return new HttpResponse(HttpStatus.BadRequest, findOneCartData).sendResponse(res);
+  //     }
 
-      return new HttpResponse(HttpStatus.OK, findOneCartData).sendResponse(res);
-    } catch (error) {
-      logger.error(`${this.logFile} ${error.message}`);
-      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
-    }
-  };
+  //     return new HttpResponse(HttpStatus.OK, findOneCartData).sendResponse(res);
+  //   } catch (error) {
+  //     logger.error(`${this.logFile} ${error.message}`);
+  //     return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
+  //   }
+  // };
 
-  public updateCart = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
-    try {
-      let id = req.user ? req.user['id'] : null;
-      if (!id) {
-        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
-      }
-      const CartData = req.body;
-      const updateCartData = await this.CartService.updateCart(id, CartData);
-      if (_.get(updateCartData, 'message')) {
-        return new HttpResponse(HttpStatus.BadRequest, updateCartData).sendResponse(res);
-      }
-      return new HttpResponse(HttpStatus.Created, updateCartData).sendResponse(res);
-    } catch (error) {
-      logger.error(`${this.logFile} ${error.message}`);
-      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
-    }
-  };
+  // public updateCart = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+  //   try {
+  //     let id = req.user ? req.user['id'] : null;
+  //     if (!id) {
+  //       return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+  //     }
+  //     const CartData = req.body;
+  //     const updateCartData = await this.CartService.updateCart(id, CartData);
+  //     if (_.get(updateCartData, 'message')) {
+  //       return new HttpResponse(HttpStatus.BadRequest, updateCartData).sendResponse(res);
+  //     }
+  //     return new HttpResponse(HttpStatus.Created, updateCartData).sendResponse(res);
+  //   } catch (error) {
+  //     logger.error(`${this.logFile} ${error.message}`);
+  //     return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
+  //   }
+  // };
 
-  public deleteCart = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
-    try {
-      const CartId = Number(req.params.id);
-      const deleteCartData: any = await this.CartService.deleteCart(CartId);
-      if (_.get(deleteCartData, 'message')) {
-        return new HttpResponse(HttpStatus.BadRequest, deleteCartData).sendResponse(res);
-      }
-      return new HttpResponse(HttpStatus.OK, deleteCartData).sendResponse(res);
-    } catch (error) {
-      logger.error(`${this.logFile} ${error.message}`);
-      return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
-    }
-  };
+  // public deleteCart = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+  //   try {
+  //     const CartId = Number(req.params.id);
+  //     const deleteCartData: any = await this.CartService.deleteCart(CartId);
+  //     if (_.get(deleteCartData, 'message')) {
+  //       return new HttpResponse(HttpStatus.BadRequest, deleteCartData).sendResponse(res);
+  //     }
+  //     return new HttpResponse(HttpStatus.OK, deleteCartData).sendResponse(res);
+  //   } catch (error) {
+  //     logger.error(`${this.logFile} ${error.message}`);
+  //     return new HttpResponse(HttpStatus.BadRequest, error.message).sendResponse(res);
+  //   }
+  // };
 
   public countCart = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {

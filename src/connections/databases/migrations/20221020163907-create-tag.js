@@ -20,7 +20,7 @@ module.exports = {
         unique: true,
       },
       content: {
-        type: Sequelize.JSON,
+        type: Sequelize.TEXT,
       },
       createdAt: {
         type: Sequelize.DATE,

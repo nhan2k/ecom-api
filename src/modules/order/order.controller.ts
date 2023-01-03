@@ -10,14 +10,10 @@ class OrderController {
 
   public getOrders = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
-      let id = req.user ? req.user['id'] : null;
-      if (!id) {
-        return new HttpResponse(HttpStatus.BadRequest, { message: 'Not Found User' }).sendResponse(res);
+      const findAllOrdersData = await this.OrderService.findAllOrders();
+      if (!Array.isArray(findAllOrdersData)) {
+        return new HttpResponse(HttpStatus.BadRequest, findAllOrdersData).sendResponse(res);
       }
-      const findAllOrdersData = await this.OrderService.findAllOrders(id);
-      // if (!Array.isArray(findAllOrdersData)) {
-      //   return new HttpResponse(HttpStatus.BadRequest, findAllOrdersData).sendResponse(res);
-      // }
       return new HttpResponse(HttpStatus.OK, findAllOrdersData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);

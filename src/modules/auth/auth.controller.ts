@@ -23,12 +23,11 @@ class AuthController {
     }
   }
 
-  public async signUpVendor(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
+  public async signUpAdmin(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
     try {
       const userData = req.body;
-      let isVendor = true;
-      const result = await new AuthService().signUp(userData, isVendor);
-      // BotTelegram.botSendMessage(`${email} signUp`);
+      let isAdmin = true;
+      const result = await new AuthService().signUp(userData, isAdmin);
       if (_.get(result, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, result).sendResponse(res);
       }
@@ -57,8 +56,8 @@ class AuthController {
   public async signInVendor(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
     try {
       const { email } = req.body;
-      let isVendor = true;
-      const data = await new AuthService().signInVendor(email);
+      let isAdmin = true;
+      const data = await new AuthService().signIn(email, isAdmin);
       // BotTelegram.botSendMessage(`${email} signIn`);
       if (_.get(data, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, data).sendResponse(res);

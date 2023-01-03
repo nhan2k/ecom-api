@@ -11,10 +11,10 @@ class CartRoute {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, this.CartController.getCarts);
-    this.router.get(`${this.path}/getOne`, this.CartController.getCartById);
-    this.router.put(`${this.path}/`, this.CartController.updateCart);
-    this.router.delete(`${this.path}/:id(\\d+)`, this.CartController.deleteCart);
+    // this.router.get(`${this.path}`, this.CartController.getCarts);
+    // this.router.get(`${this.path}/getOne`, this.CartController.getCartById);
+    // this.router.put(`${this.path}/`, this.CartController.updateCart);
+    // this.router.delete(`${this.path}/:id(\\d+)`, this.CartController.deleteCart);
     this.router.get(`${this.path}/count`, this.CartController.countCart);
     this.router.get(`${this.path}/personCart`, this.CartController.getPersonCart);
   }

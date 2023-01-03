@@ -22,7 +22,7 @@ class ProductUtil {
         'publishedAt',
         'startsAt',
         'endsAt',
-        'image',
+        'content',
       ],
       include: [
         {
@@ -32,7 +32,6 @@ class ProductUtil {
         {
           model: ProductReviewModel,
           attributes: ['title', 'rating'],
-          // where: { published: published.public },
         },
         {
           model: ProductMetaModel,
@@ -63,7 +62,7 @@ class ProductUtil {
         'publishedAt',
         'startsAt',
         'endsAt',
-        'image',
+        'content',
       ],
       include: [
         {

@@ -11,9 +11,6 @@ class ProductCategoryController {
   public getProductCategories = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const findAllProductCategoriesData = await this.ProductCategoryService.findAllProductCategories();
-      if (!Array.isArray(findAllProductCategoriesData)) {
-        return new HttpResponse(HttpStatus.BadRequest, findAllProductCategoriesData).sendResponse(res);
-      }
 
       return new HttpResponse(HttpStatus.OK, findAllProductCategoriesData).sendResponse(res);
     } catch (error) {

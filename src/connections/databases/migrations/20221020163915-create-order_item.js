@@ -21,9 +21,6 @@ module.exports = {
       quantity: {
         type: Sequelize.SMALLINT,
       },
-      status: {
-        type: Sequelize.SMALLINT,
-      },
       content: {
         type: Sequelize.TEXT,
       },

@@ -3,7 +3,6 @@ import ProductService from './product.service';
 import { HttpResponse, HttpStatus } from '@config/Http';
 import { logger } from '@utils/logger';
 import _ from 'lodash';
-import ProductModel from './product.model';
 
 class ProductController {
   private logFile = __filename;
@@ -60,7 +59,9 @@ class ProductController {
       }
       const productData: any = req.body;
 
-      productData.image = String(req.file?.filename);
+      if (req.file?.filename) {
+        productData.content = String(req.file?.filename);
+      }
 
       const createProductData = await this.ProductService.createProduct(productData, id);
       if (_.get(createProductData, 'message')) {
@@ -78,8 +79,9 @@ class ProductController {
     try {
       const ProductId = Number(req.params.id);
       const productData = req.body;
+      console.log('🚀 ~ file: product.controller.ts:82 ~ ProductController ~ updateProduct= ~ productData', productData);
       if (req.file) {
-        productData.image = req.file?.filename;
+        productData.content = req.file?.filename;
       }
 
       const updateProductData = await this.ProductService.updateProduct(ProductId, productData);
@@ -139,6 +141,23 @@ class ProductController {
       }
 
       return new HttpResponse(HttpStatus.OK, findAllProductsData).sendResponse(res);
+    } catch (error) {
+      logger.error(`${this.logFile} ${error.message}`);
+      return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);
+    }
+  };
+
+  public updateShopProduct = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
+    try {
+      const ProductId = Number(req.params.id);
+      const productData = req.body;
+
+      const updateProductData = await this.ProductService.updateShopProduct(ProductId, productData);
+      if (_.get(updateProductData, 'message')) {
+        return new HttpResponse(HttpStatus.BadRequest, updateProductData).sendResponse(res);
+      }
+
+      return new HttpResponse(HttpStatus.Created, updateProductData).sendResponse(res);
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
       return new HttpResponse(HttpStatus.BadRequest, error).sendResponse(res);

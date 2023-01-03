@@ -39,6 +39,7 @@ class CategoryController {
   public createCategory = async (req: Request, res: Response): Promise<Response<any, Record<string, any>>> => {
     try {
       const categoryData = req.body;
+      categoryData.content = String(req.file?.filename);
 
       const createCategoryData = await this.categoryService.createCategory(categoryData);
       if (_.get(createCategoryData, 'message')) {
@@ -57,8 +58,11 @@ class CategoryController {
       const categoryId = Number(req.params.id);
       const categoryData = req.body;
 
-      let content: string = `{"img": "${String(req.file?.filename)}"}`;
-      categoryData.content = JSON.parse(content);
+      console.log('🚀 ~ file: category.controller.ts:62 ~ CategoryController ~ updateCategory= ~ req.file?.filename', req.file?.filename);
+      if (req.file?.filename) {
+        categoryData.content = String(req.file?.filename);
+      }
+
       const updateCategoryData = await this.categoryService.updateCategory(categoryId, categoryData);
       if (_.get(updateCategoryData, 'message')) {
         return new HttpResponse(HttpStatus.BadRequest, updateCategoryData).sendResponse(res);

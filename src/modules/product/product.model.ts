@@ -15,7 +15,7 @@ export class ProductModel extends Model {
   declare publishedAt: Date;
   declare startsAt: Date;
   declare endsAt: Date;
-  declare image: string;
+  declare content: string;
   declare createdAt: Date;
   declare updatedAt: Date;
   declare userId: number;
@@ -92,7 +92,7 @@ ProductModel.init(
     endsAt: {
       type: DataTypes.DATE,
     },
-    image: {
+    content: {
       type: DataTypes.TEXT,
     },
   },

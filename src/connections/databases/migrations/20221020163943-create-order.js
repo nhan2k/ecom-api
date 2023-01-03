@@ -75,6 +75,9 @@ module.exports = {
       content: {
         type: Sequelize.TEXT,
       },
+      status: {
+        type: Sequelize.SMALLINT,
+      },
     });
   },
   down: (queryInterface, Sequelize) => {

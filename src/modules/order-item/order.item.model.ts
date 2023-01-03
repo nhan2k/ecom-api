@@ -7,7 +7,6 @@ export class OrderItemModel extends Model {
   declare price: number;
   declare discount: number;
   declare quantity: number;
-  declare status: number;
   declare content: string;
   declare createdAt: Date;
   declare updatedAt: Date;
@@ -50,11 +49,7 @@ OrderItemModel.init(
       allowNull: false,
       defaultValue: 0,
     },
-    status: {
-      type: DataTypes.SMALLINT,
-      allowNull: false,
-      defaultValue: 0,
-    },
+
     content: {
       type: DataTypes.TEXT,
     },

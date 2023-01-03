@@ -42,15 +42,12 @@ module.exports = {
         type: Sequelize.TEXT,
       },
       content: {
-        type: Sequelize.JSON,
+        type: Sequelize.TEXT,
       },
       createdAt: {
         type: Sequelize.DATE,
       },
       updatedAt: {
-        type: Sequelize.DATE,
-      },
-      deletedAt: {
         type: Sequelize.DATE,
       },
     });

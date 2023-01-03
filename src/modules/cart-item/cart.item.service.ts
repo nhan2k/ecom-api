@@ -22,11 +22,11 @@ class CartItemService {
       }
       const allCartItem: any = await CartItemModel.findAll({
         where: { cartId: findCart.id },
-        attributes: ['price', 'discount', 'quantity', 'id'],
+        attributes: ['price', 'discount', 'quantity', 'id', 'content'],
         include: [
           {
             model: ProductModel,
-            attributes: ['image', 'quantity', 'price', 'title'],
+            attributes: ['content', 'quantity', 'price', 'title'],
             include: [
               {
                 model: UserModel,
@@ -36,9 +36,7 @@ class CartItemService {
           },
         ],
       });
-      return _.chain(allCartItem)
-        .groupBy(x => x.ProductModel.UserModel.intro)
-        .value();
+      return allCartItem.sort();
     } catch (error) {
       logger.error(`${this.logFile} ${error}`);
       return { message: error.message || 'Error' };
@@ -47,14 +45,14 @@ class CartItemService {
 
   public async findAllCartItemsForReviews(CartItemId: number): Promise<CartItemModel[] | null | { message: string }> {
     try {
-      const findCart = await CartModel.findOne({ where: { userId: CartItemId }, attributes: ['id'] });
+      const findCart = await CartModel.findOne({ where: { userId: CartItemId, status: statusEnum.New }, attributes: ['id'] });
       if (!findCart) {
         return { message: "Cart doesn't exist" };
       }
 
       const findCartItem = await CartItemModel.findAll({
         where: { cartId: findCart.id },
-        attributes: ['price', 'quantity'],
+        attributes: ['price', 'quantity', 'content'],
         include: [
           {
             model: ProductModel,
@@ -116,7 +114,7 @@ class CartItemService {
         cartId = cart ? cart.id : null;
       }
 
-      const { productId } = CartItemData;
+      const { productId, meta } = CartItemData;
       const product = await ProductModel.findByPk(productId, { attributes: ['price', 'discount'] });
       if (!product) {
         return { message: "Product doesn't exist" };
@@ -146,7 +144,16 @@ class CartItemService {
         }
         return res;
       }
-      const res = await CartItemModel.create({ productId, cartId, sku, quantity, active, price: product.price, discount: product.discount });
+      const res = await CartItemModel.create({
+        productId,
+        cartId,
+        sku,
+        quantity,
+        active,
+        price: product.price,
+        discount: product.discount,
+        content: meta,
+      });
       return res;
     } catch (error) {
       logger.error(`${this.logFile} ${error.message}`);
